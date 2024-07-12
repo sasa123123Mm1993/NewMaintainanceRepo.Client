@@ -1,0 +1,45 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6" style="background-color: #2d3e50; height: 100vh">
+      <div class="row justify-content-center" style="height: 100vh">
+        <div class="col-sm-8 align-self-center">
+          <img src="../../assets/images/meterlogowhite.png" class="img-fluid" alt="charge" />
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="row justify-content-center" style="height: 100vh">
+        <form class="col-8 align-items-center d-flex">
+          <div class="row">
+            <div class="col-12 text-center pb-5">
+              <p class="display-4 text-monospace font-weight-bold darkColor"> METERS OFF</p>
+            </div>
+            <div class="col-12 pb-5">
+              <p-floatLabel>
+                <input id="username" type="text" pInputText [(ngModel)]="userName"
+                  [ngModelOptions]="{standalone: true}" />
+                <label for="username">Username</label>
+              </p-floatLabel>
+            </div>
+
+            <div class="col-12  pb-5">
+              <p-floatLabel>
+                <input id="password" type="password" pInputText [(ngModel)]="password"
+                  [ngModelOptions]="{standalone: true}" />
+                <label for="password">Password</label>
+              </p-floatLabel>
+            </div>
+
+
+            <a class="col-12" (click)="isLogged()">
+              <p-button label="Login" [text]="true" [raised]="true"></p-button>
+            </a>
+ <!-- href="/dashboard" -->
+
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,96 @@
+export interface Meter {
+  code: number;
+  name: string;
+  uploadReasonId: number;
+  id: number;
+  isDeleted: boolean;
+  creatorById: number;
+  modifiedById: string;
+  creationTime: string;
+  modificationTime: string;
+}
+
+export interface MeterInsertDto {
+  code: number;
+  name: string;
+}
+
+export interface MeterOffDto {
+  vendorCode: number;
+  customerCode: string;
+  serialNumber: number;
+  companyName: string;
+  customerName: string;
+  nationalId: string;
+  address: string;
+  placeTypeName: string;
+  activityName: string;
+  sectionName: string;
+  mainDepartmentName: string;
+  smallDepartmentName: string;
+  branchNo: number;
+  accountNo: number;
+  dailyNo: number;
+  regionNo: number;
+  meterPreparedDate: Date;
+  meterInstallationDate: Date;
+  meterOffDate: Date;
+  uploadDate: Date;
+  deliveryDateToLaboratory: string;
+  uploadReason: string;
+  meterOffStatus: string;
+  meterOffReason: string;
+  meterOffMaintainNote: string;
+  examinationNumber: string;
+  examinationDate: Date;
+  meterTypeId: number;
+  isExaminationdata: boolean;
+  mainDepartmentCode: number;
+  smallDepartmentCode: number;
+}
+export interface MeterOffInsert {
+  isDeleted: boolean;
+  creatorById: number;
+  modifiedById: number;
+  creationTime: string;
+  modificationTime: string;
+  vendorCode: number;
+  customerCode: string;
+  serialNumber: number;
+  customerName: string;
+  nationalId: string;
+  address: string;
+  placeTypeId: number;
+  activityTypeId: number;
+  sectionId: number;
+  mainDepartmentId: number;
+  smallDepartmentId: number;
+  branchNo: number;
+  accountNo: number;
+  dailyNo: number;
+  regionNo: number;
+  meterPreparedDate: Date;
+  meterInstallationDate: Date;
+  meterOffDate: Date;
+  uploadDate: Date;
+  deliveryDateToLaboratory: Date;
+  cUploadMainteneceMetersOffReasonId: number;
+  meterOffStatusId: number;
+  meterOffReason: string;
+  meterOffMaintainNote: string;
+  examinationNumber: string;
+  examinationDate: Date;
+  meterTypeId: number;
+  isExaminationdata: true;
+  mainDepartmentCode: number;
+  smallDepartmentCode: number;
+  isMeterRecieved: boolean;
+  isEnded: boolean;
+  isMeterInstalled: boolean;
+  maintenanceDate: boolean;
+}
+export interface MeterFixDto {
+  installationDate: Date;
+  deliveryDateToTechnician: Date;
+  maintenanceDate: Date;
+}

@@ -1,0 +1,18 @@
+<h1>Body Content data-transfer</h1>
+<section class="row pt-4">
+  <div class="card flex justify-content-center p-5">
+    <div class="flex flex-column gap-2">
+      <label for="port">COM Port</label>
+      <input pInputText id="port" aria-describedby="username-help" [(ngModel)]="COMPort" />
+    </div>
+    <div class="flex flex-column gap-2 pt-4">
+      <label for="data">Data</label>
+      <input pInputText id="data" aria-describedby="username-help" [(ngModel)]="data" />
+    </div>
+    <div class="flex gap-2 pt-4">
+      <p-button label="Read Meter" class="w-50" [raised]="true" />
+      <p-button label="Write On Meter" class="w-50" [raised]="true" severity="success" />
+    </div>
+  </div>
+
+</section>

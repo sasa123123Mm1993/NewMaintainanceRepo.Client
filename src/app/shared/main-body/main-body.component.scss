@@ -1,0 +1,158 @@
+.home {
+  position: relative;
+  height: calc(100vh - 90px);
+  // right: 250px;
+  right: 0px;
+  width: calc(100vw - 250px);
+  background: var(--body-color);
+  transition: all 0.5s ease;
+  padding: 20px 40px;
+  top: 80px;
+  direction: rtl;
+}
+.fixedHeader.closeMenu {
+  right: 88px;
+  width: calc(100vw - 88px);
+  direction: rtl;
+}
+
+.close {
+  right: 0px;
+  // right: 88px;
+  width: calc(100vw - 88px);
+  direction: rtl;
+}
+
+::ng-deep .p-float-label input:focus ~ label {
+  top: -0.75rem !important;
+  color: #2d3e50 !important;
+  font-weight: 900 !important;
+}
+
+.fixedHeader {
+  // width: calc(100vw - 88px);
+  // left: 88px;
+  right: 250px;
+  width: calc(100vw - 250px);
+  z-index: 5;
+  height: 80px;
+  background-color: #2d3e50 !important;
+  transition: all 0.2s linear;
+  direction: rtl;
+}
+.navbar-brand {
+  color: #f3f3f3 !important;
+  padding: 5px;
+  font-weight: bold;
+}
+::ng-deep ul {
+  padding-left: 0;
+  margin: 0;
+}
+::ng-deep .p-inputtext {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+::ng-deep .p-dropdown .p-dropdown-clear-icon {
+  //right: 5rem;
+  right: auto !important;
+}
+
+//section
+::ng-deep .p-datatable {
+  padding-bottom: 1.5rem !important;
+}
+::ng-deep .p-inputtext {
+  align-items: center;
+  display: flex;
+}
+::ng-deep .p-inputnumber {
+  width: 100%;
+}
+::ng-deep .p-float-label input:focus > label {
+  top: -1.75rem !important;
+  font-size: 15px;
+  font-weight: 800;
+  color: #000;
+}
+::ng-deep .p-toolbar {
+  background: transparent;
+  padding-right: 0px;
+  padding-left: 0;
+}
+::ng-deep .p-multiselect-filter-container {
+  display: flex;
+}
+::ng-deep .calender-class .p-datepicker {
+  scale: 0.6 !important;
+}
+::ng-deep .p-datepicker {
+  scale: 0.6 !important;
+  top: -165px !important;
+  font-weight: 800;
+}
+::ng-deep searchicon {
+  display: flex;
+}
+::ng-deep .p-button {
+  padding: 6px;
+  width: 7rem;
+}
+::ng-deep .btnIcon {
+  padding: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 100px;
+}
+::ng-deep p-radiobutton {
+  padding-left: 10px;
+}
+//table style
+::ng-deep .p-datatable-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+::ng-deep .p-datatable-thead > tr > th {
+  background-color: #2d3e50 !important;
+  color: #f1f1f1 !important;
+  text-align: center;
+}
+::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  text-align: center !important;
+}
+::ng-deep .p-datatable .p-paginator-bottom {
+  padding-right: 12px;
+  padding-left: 0;
+  direction: ltr;
+}
+::ng-deep .p-dialog.p-confirm-dialog .p-confirm-dialog-message {
+  padding-right: 1rem !important;
+}
+
+/////////scroll/////////////
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0cc29a;
+}
+::-webkit-scrollbar-thumb {
+  background: #2d3e50;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2d3e50c7;
+}
+//////////////////table
+::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.75rem 1rem;
+}
+::ng-deep .darkBack {
+  background: var(--text-color);
+  color: #fff;
+  padding: 5px;
+}
+::ng-deep .defaultBtnColor {
+  background: #0cc29a;
+  border-color: #0cc29a;
+}

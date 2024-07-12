@@ -1,0 +1,20 @@
+.mainCard {
+  border: solid 1px #ccc;
+  text-decoration: none;
+  color: var(--text-color);
+  background-color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 30vh;
+  font-weight: 600;
+  font-size: 30px;
+}
+.mainCard:hover {
+  background-color: var(--text-color);
+  color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.24) 7px 7px 4px;
+}

@@ -1,0 +1,43 @@
+::ng-deep .calenderBottom-class .p-datepicker {
+  transform-origin: center bottom !important;
+}
+::ng-deep .calenderTop-class .p-datepicker {
+  transform-origin: center top !important;
+}
+::ng-deep label,
+th,
+td {
+  text-wrap: nowrap;
+}
+::ng-deep .p-datatable {
+  padding-bottom: 1.5rem !important;
+}
+::ng-deep .p-inputtext {
+  align-items: center;
+  display: flex;
+}
+::ng-deep .p-inputnumber {
+  width: 100%;
+}
+::ng-deep .p-float-label input:focus > label {
+  top: -1.75rem !important;
+  font-size: 15px;
+  font-weight: 800;
+  color: #000;
+}
+::ng-deep .p-toolbar {
+  background: transparent;
+  padding: 10px 0px;
+}
+::ng-deep .p-multiselect-filter-container {
+  display: flex;
+}
+.searchInput {
+  width: 35rem !important;
+}
+.bx-error {
+  color: var(--text-color);
+}
+// ::ng-deep .p-datatable-thead > tr > th {
+//   padding: 0.45rem 1rem !important;
+// }

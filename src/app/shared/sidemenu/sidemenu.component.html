@@ -1,0 +1,33 @@
+<nav class="sidebar" [ngClass]="close ? 'close' : ' '">
+  <header>
+    <div class="image-text">
+      @if (close == true) {
+      <span class="smallLogo">
+        <img src="../../../assets/images/logo.png" alt="logo">
+      </span>
+      }
+      @if (close == false) {
+      <span class="image">
+        <img src="../../../assets/images/meterlogo.png" alt="logo">
+      </span>
+      }
+
+    </div>
+    <i class='bx bx-chevron-right toggle' (click)="closeMenu($event)"></i>
+  </header>
+
+  <div class="menu-bar">
+    <div class="menu">
+      <ul class="menu-links">
+        @for (menuItem of MenuList; track $index) {
+        <li class="nav-link" (click)="navigate(menuItem.title)" [ngClass]="menuItem.active == true ? 'activated' : '' ">
+          <a [routerLink]='menuItem.link'>
+            <i class='bx-sm icons' [ngClass]="menuItem.icon"></i>
+            <span class="text nav-text">{{menuItem.title}}</span>
+          </a>
+        </li>
+        }
+      </ul>
+    </div>
+  </div>
+</nav>

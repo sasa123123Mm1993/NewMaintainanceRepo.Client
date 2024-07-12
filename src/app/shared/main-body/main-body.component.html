@@ -1,0 +1,18 @@
+
+<app-sidemenu (sendToggleValue)="toggleFromMenu($event)" [MenuList]="sideMenuContent"  (sendSelectedPageName)="getPageTitle($event)">
+</app-sidemenu>
+<nav class="navbar navbar-light bg-light navbar-expand-lg fixed-top fixedHeader" [ngClass]="closedMenu?'closeMenu':' '">
+  <div class="container-md px-5">
+    <p class="navbar-brand pt-3">{{pageTitle}}</p>
+    <div class="card flex justify-content-center">
+      <p-dropdown [options]="countries" [(ngModel)]="selectedCountry" optionLabel="name" [filter]="true" filterBy="name"
+        [showClear]="true" placeholder="اختر القطاع">
+      </p-dropdown>
+    </div>
+  </div> <!-- wrapper -->
+</nav>
+
+<!-- [closedMenu?'close':' ',loggedValue == 'true'?'home':''] -->
+<section class="home" [ngClass]="[closedMenu?'close':' ']">
+  <router-outlet></router-outlet>
+</section>

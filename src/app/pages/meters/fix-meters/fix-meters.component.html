@@ -1,0 +1,651 @@
+<section>
+  <div [hidden]="!showAccountDiv">
+    <div class="flex justify-content-center">
+      <div class="col-md-3 gap-2 mb-2 p-2">
+        <p-dropdown [options]="indexArr" class="row-cols-1" optionLabel="id" optionValue="id"
+          [(ngModel)]="refAddressObj.regionNum" placeholder="اختر المنطقة" />
+      </div>
+      <div class="col-md-3 gap-2 mb-2 p-2">
+        <p-dropdown [options]="indexArr" class="row-cols-1" optionLabel="id" optionValue="id"
+          [(ngModel)]="refAddressObj.dailyNum" placeholder="اختر اليومية" />
+      </div>
+      <div class="col-auto gap-2 mb-2 p-2">
+        <p-inputNumber [useGrouping]="false" id="accountNum" pTooltip="حساب" autocomplete="off"
+          [(ngModel)]="refAddressObj.accountNum" class="w-100" />
+      </div>
+      <div class="col-auto gap-2 mb-2 p-2">
+        <p-inputNumber [useGrouping]="false" id="branchNum" pTooltip="فرع" autocomplete="off"
+          [(ngModel)]="refAddressObj.branchNum" class="w-100" />
+      </div>
+      <div class="col-md-1 gap-2 mb-2 p-2">
+        <button pButton [raised]="true" icon="pi pi-search" pTooltip="بحث بمرجع الحساب" class=" btnIcon defaultBtnColor"
+          (click)="getDataByRefAddress(refAddressObj)"></button>
+      </div>
+    </div>
+
+  </div>
+  @if (offMetersList) {
+  <p-table #dt [value]="offMetersList" styleClass="p-datatable-striped"
+    [tableStyle]="{ 'max-width': '100vw , padding-bottom: 1.25rem' }" [scrollable]="true" scrollHeight="450px"
+    [paginator]="true" [rows]="5" [showCurrentPageReport]="true" columnResizeMode="expand"
+    [globalFilterFields]="['customerCode','serialNumber','customerName','examinationNumber']"
+    [rowsPerPageOptions]="[5, 10, 20]" currentPageReportTemplate="عرض {first}  الى  {last}   من {totalRecords} سبب">
+
+    <ng-template pTemplate="caption" class="row">
+      <div class="flex"><button pButton (click)="showDialog()" [raised]="true" icon="pi pi-plus" pTooltip="إضافة"
+          class=" btnIcon defaultBtnColor"></button>
+      </div>
+
+      <div class="flex"><button pButton icon="pi pi-print" [raised]="true" class="mr-2 btnIcon defaultBtnColor"
+          pTooltip="طباعة"></button>
+      </div>
+      <div class="flex">
+        <button pButton [raised]="true" class="mr-2 defaultBtnColor w-100" label="مرجع الحساب"
+          pTooltip="بحث بمرجع الحساب " (click)="showAccountDiv = !showAccountDiv"></button>
+      </div>
+      <div class="flex pt-1 mr-2 ml-2">
+        <p-iconField iconPosition="left" class="ml-auto">
+          <p-inputIcon pTooltip="بحث">
+            <i class="pi pi-search"></i>
+          </p-inputIcon>
+          <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')"
+            placeholder=" بحث بـ / رقم العداد / كود المشترك / اسم المشترك / رقم الفحص" class="searchInput" />
+        </p-iconField>
+      </div>
+      <div class="flex pt-1">
+        <p-columnFilter field="company" matchMode="equals" [showMenu]="false">
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback" #companyFilter>
+            <p-dropdown inputId="companyFilterId" [showClear]="true" [options]="companies" optionLabel="name"
+              placeholder="اسم الشركة" #companyDropdown (onChange)="filterWithCompany(companyDropdown.value)">
+              <ng-template let-option pTemplate="item">
+                <div>{{option.name}}</div>
+              </ng-template>
+            </p-dropdown>
+          </ng-template>
+        </p-columnFilter>
+      </div>
+      <div class="flex pt-1">
+        <p-columnFilter field="status" matchMode="equals" [showMenu]="false">
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback" #statusFilter>
+            <p-dropdown inputId="statusFilterId" [showClear]="true" [options]="meterStatus" optionLabel="name"
+              placeholder="حالة العداد" #statusDropdown (onChange)="filterWithStatus(statusDropdown.value)">
+              <ng-template let-option pTemplate="item">
+                <div>{{option.name}}</div>
+              </ng-template>
+            </p-dropdown>
+          </ng-template>
+        </p-columnFilter>
+      </div>
+      <div class="flex">
+        <button pButton icon="pi pi-filter" [raised]="true" class="mr-2 btnIcon defaultBtnColor" pTooltip="تصفية اضافية"
+          (click)="op.toggle($event)"></button>
+      </div>
+      <div class="flex">
+        <button pButton icon="pi pi-refresh" [raised]="true" class="mr-2 btnIcon defaultBtnColor" pTooltip="اعادة تحميل"
+          (click)="reloadPage()"></button>
+      </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th>الاداره الفرعيه</th>
+        <th>اسم الشركه</th>
+        <th>رقم العداد</th>
+        <th>كود المشترك</th>
+        <th>اسم المشترك</th>
+        <th>مرجع الحساب</th>
+        <th>نوع النشاط</th>
+        <th>تاريخ إصلاح العداد</th>
+        <th>الحالة</th>
+        <th style="width: 5rem"></th>
+        <th style="width: 5rem"></th>
+        <th style="width: 5rem"></th>
+      </tr>
+
+    </ng-template>
+    <ng-template pTemplate="body" let-offMeter>
+      <tr>
+        <td>{{ offMeter.smallDepartmentName }}</td>
+        @switch (offMeter.vendorCode) {
+        @case (1) {
+        <td>جلوبال</td>
+        }
+        @case (2) {
+        <td>اسكرا</td>
+        }
+        @case (3) {
+        <td>السويدي</td>
+        }
+        @case (4) {
+        <td>المصرية</td>
+        }
+        @case (5) {
+        <td>المعصرة</td>
+        }
+        @case (6) {
+        <td>الجيزة</td>
+        }
+        @default {
+        <td>الجيزة</td>
+        }
+        }
+        <td>{{ offMeter.serialNumber }}</td>
+        <td>{{ offMeter.customerCode }}</td>
+        <td>{{ offMeter.customerName }}</td>
+        <td>{{ offMeter.mainDepartmentCode }}/{{ offMeter.smallDepartmentCode }}/{{ offMeter.regionNo }}/{{
+          offMeter.dailyNo }}/{{ offMeter.accountNo }}/{{ offMeter.branchNo }}</td>
+        <td>{{ offMeter.activityName }}</td>
+        <td>{{ offMeter.meterPreparedDate | date:"dd-MM-yyyy"}}</td>
+        <td>
+          @switch (offMeter.meterOffStatusId) {
+          @case (1) {
+          سليم
+          }
+          @case (2) {
+          تالف تماما
+          }
+          @case (3) {
+          يحتاج صيانه بالمعمل }
+          }
+        </td>
+        <td>
+          <button type="button" [raised]="true" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-wrench"
+            pTooltip="اصلاح العطل" tooltipPosition="right" (click)="showFixModal(offMeter)">
+          </button>
+        </td>
+        <td>
+          <button type="button" [raised]="true" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-pencil"
+            (click)="getMeterById(offMeter.id)" pTooltip="تعديل">
+          </button>
+        </td>
+        <td>
+          <button type="button" [raised]="true" class="btnIcon" pButton pRipple icon="pi pi-trash" severity="danger"
+            (click)="deleteOffMeter($event,offMeter.id)" pTooltip="حذف">
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4"></td>
+        <td colspan="4">لا يوجد بيانات لعرضها</td>
+        <td colspan="4"></td>
+      </tr>
+    </ng-template>
+  </p-table>
+  }
+  @else {
+  <div class="row pt-5 mt-5">
+    <div class="col-md-12 mt-5" style="margin: auto;display: flex;justify-content: center;">
+      <i class='bx bx-error fa-10x'></i>
+    </div>
+    <div class="col-md-12" style="margin: auto;display: flex;justify-content: center;">
+      <h4>من فضلك تأكد من الاتصال بالخادم</h4>
+    </div>
+  </div>
+  }
+  <!-- إضافة عطل -->
+  <p-dialog header="إضافة عداد معطل" [modal]="true" [(visible)]="showAddModal" [style]="{ width: '75vw' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [draggable]="false" [resizable]="false">
+    <div class="flex align-items-center gap-3 mb-3 mt-1">
+      <label for="company" class="font-semibold w-8rem">الشركة المصنعة</label>
+      <p-dropdown [options]="companies" class="w-25 row-cols-1" [(ngModel)]="offMeterObj.vendorCode"
+        optionValue="vendorCode" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true"
+        placeholder="اختر الشركة" id="company">
+        <ng-template pTemplate="selectedOption.id" let-selectedOption>
+          <div class="flex align-items-center gap-2">
+            <div>{{ selectedOption.name }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      @if (offMeterObj.vendorCode == 6) {
+      <label for="serialNum" class="flex font-semibold w-3rem">رقم العداد</label>
+      <p-inputNumber [useGrouping]="false" id="serialNum" class="flex flex-auto" autocomplete="off"
+        [(ngModel)]="offMeterObj.serialNumber" />
+      <button type="button" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-search" pTooltip="بحث"
+        (click)="searchByMeterNum(offMeterObj.serialNumber);"></button>
+      }
+
+    </div>
+    <p-divider />
+    @if (offMeterObj.vendorCode != 6 || showAllModalData) {
+    <h4 class="darkBack">بيانات العميل الحالى</h4>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">رقم العداد</label>
+        <input pInputText id="serialNum" autocomplete="off" class="w-100" [(ngModel)]="offMeterObj.serialNumber"
+          [disabled]="showAllModalData" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">كود المشترك</label>
+        <input pInputText id="serialNum" autocomplete="off" class="w-100" [(ngModel)]="offMeterObj.customerCode"
+          [disabled]="showAllModalData" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">اسم المشترك</label>
+        <input pInputText id="serialNum" autocomplete="off" class="w-100" [(ngModel)]="offMeterObj.customerName"
+          [disabled]="showAllModalData" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">الرقم القومى </label>
+        <input pInputText id="serialNum" autocomplete="off" class="w-100" [(ngModel)]="offMeterObj.nationalId"
+          [disabled]="showAllModalData" />
+      </div>
+      <div class="col-md-8 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">عنوان العميل </label>
+        <input pInputText id="serialNum" autocomplete="off" class="w-100" [(ngModel)]="offMeterObj.address"
+          [disabled]="showAllModalData" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">نوع النشاط</label>
+        <p-dropdown [options]="activityTypes" class="row-cols-1" [(ngModel)]="offMeterObj.activityTypeId"
+          optionLabel="name" optionValue="id" placeholder="اختر نوع النشاط" [disabled]="showAllModalData" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">وصف المكان</label>
+        <p-dropdown [options]="placesTypes" [disabled]="!offMeterObj.activityTypeId" class="row-cols-1"
+          [(ngModel)]="offMeterObj.placeTypeId" optionLabel="name" optionValue="id" placeholder="اختر وصف المكان"
+          [disabled]="showAllModalData" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> القطاع</label>
+        <p-dropdown [options]="sections" class="row-cols-1" [(ngModel)]="offMeterObj.sectionId" optionLabel="name"
+          optionValue="id" placeholder="اختر القطاع" [disabled]="showAllModalData" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> ادارة رئيسية</label>
+        <p-dropdown [options]="mainDepartements" class="row-cols-1" [(ngModel)]="offMeterObj.mainDepartmentId"
+          optionLabel="name" optionValue="id" placeholder="اختر الادارة الرئيسية" [disabled]="showAllModalData" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> ادارة فرعية</label>
+        <p-dropdown [options]="smallDepartements" class="row-cols-1" [(ngModel)]="offMeterObj.smallDepartmentId"
+          optionLabel="name" optionValue="id" placeholder="اختر الادارة الفرعية" [disabled]="showAllModalData" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> فرعي</label>
+        <p-inputNumber [useGrouping]="false" id="serialNum" autocomplete="off" class="w-100"
+          [(ngModel)]="offMeterObj.branchNo" [disabled]="showAllModalData" />
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> رئيسي</label>
+        <p-inputNumber [useGrouping]="false" id="serialNum" autocomplete="off" class="w-100"
+          [(ngModel)]="offMeterObj.accountNo" [disabled]="showAllModalData" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">منطقة</label>
+        <p-dropdown [options]="indexArr" class="row-cols-1" optionLabel="id" optionValue="id"
+          [(ngModel)]="offMeterObj.regionNo" placeholder="اختر المنطقة" [disabled]="showAllModalData" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">يومية</label>
+        <p-dropdown [options]="indexArr" class="row-cols-1" optionLabel="id" optionValue="id"
+          [(ngModel)]="offMeterObj.dailyNo" placeholder="اختر اليومية" [disabled]="showAllModalData" />
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التهيئة</label>
+        <p-calendar [(ngModel)]="offMeterObj.meterPreparedDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" [disabled]="showAllModalData" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التركيب</label>
+        <p-calendar [(ngModel)]="offMeterObj.meterInstallationDate" class="row-cols-1"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
+          [disabled]="showAllModalData" />
+      </div>
+    </div>
+
+    <p-divider></p-divider>
+    }
+
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="meterOffDate" class="font-semibold  block mb-2 block mb-2">تاريخ العطل</label>
+        <p-calendar [(ngModel)]="offMeterObj.meterOffDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="uploadDate" class="font-semibold  block mb-2 ">تاريخ رفع العداد</label>
+        <p-calendar [(ngModel)]="offMeterObj.uploadDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="deliveryDateToLaboratory" class="font-semibold  block mb-2 ">تاريخ استلام العداد فى المعمل</label>
+        <p-calendar [(ngModel)]="offMeterObj.deliveryDateToLaboratory" class="row-cols-1"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="MetersOffReasons" class="font-semibold  block mb-2 ">سبب الرفع</label>
+        <p-dropdown [options]="MetersOffReasons" class="row-cols-1"
+          [(ngModel)]="offMeterObj.cUploadMainteneceMetersOffReasonId" optionLabel="name" optionValue="id"
+          placeholder="اختر سبب الرفع" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="offReason" class="font-semibold  block mb-2 ">حالة العداد عند الرفع</label>
+        <p-dropdown [options]="meterStatus" class="row-cols-1" [(ngModel)]="offMeterObj.meterOffStatusId"
+          optionLabel="name" optionValue="id" placeholder="اختر حالة العداد" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="meterOffReason" class="font-semibold  block mb-2 ">سبب العطل</label>
+        <input pInputText id="meterOffReason" class="w-100" autocomplete="off"
+          [(ngModel)]="offMeterObj.meterOffReason" />
+      </div>
+    </div>
+    <div class="row">
+      <label for="notes" class="font-semibold  block mb-2 ">ملاحظات</label>
+      <textarea rows="3" cols="100" pInputTextarea [autoResize]="false"
+        [(ngModel)]="offMeterObj.meterOffMaintainNote"></textarea>
+    </div>
+
+    <div class="row mb-2 mt-2">
+      <div class="col-md-12 gap-2 mb-2">
+        <p-checkbox [(ngModel)]="offMeterObj.isExaminationdata" [binary]="true" inputId="binary" />
+        <label for="binary" class="mr-2">بيانات الفحص</label>
+      </div>
+      @if (offMeterObj.isExaminationdata == true) {
+      <div class="col-md-6 gap-2 mb-2">
+        <label for="examinationDate" class="font-semibold  block mb-2 ">تاريخ العطل</label>
+        <p-calendar [(ngModel)]="offMeterObj.examinationDate" class="row-cols-1" [styleClass]="'calenderTop-class'"
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+      <div class="col-md-6 gap-2 mb-2">
+        <label for="examinationNumber" class="font-semibold  block mb-2 ">رقم الفحص </label>
+        <input pInputText id="examinationNumber" class="w-100" autocomplete="off"
+          [(ngModel)]="offMeterObj.examinationNumber" />
+      </div>
+      }
+    </div>
+
+
+    <div class="flex justify-content-start gap-2" style="direction: ltr;">
+      <p-button label="الغاء" severity="secondary" (click)="showAddModal = false;" />
+      <p-button label="حفظ" (click)="addOffMeter(offMeterObj)" />
+    </div>
+  </p-dialog>
+  <!-- تعديل عطل -->
+  <p-dialog header="إضافة عداد معطل" [modal]="true" [(visible)]="showEdit" [style]="{ width: '75vw' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [draggable]="false" [resizable]="false">
+    <div class="flex align-items-center gap-3 mb-3 mt-1">
+      <label for="company" class="font-semibold w-8rem">الشركة المصنعة</label>
+      <p-dropdown [options]="companies" class="w-25 row-cols-1" [(ngModel)]="offMeterObj.vendorCode"
+        optionValue="vendorCode" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true"
+        placeholder="اختر الشركة" id="company">
+        <ng-template pTemplate="selectedOption.id" let-selectedOption>
+          <div class="flex align-items-center gap-2">
+            <div>{{ selectedOption.name }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      @if (offMeterObj.vendorCode == 6) {
+      <label for="serialNum" class="flex font-semibold w-3rem">رقم العداد</label>
+      <p-inputNumber [useGrouping]="false" id="serialNum" class="flex flex-auto" autocomplete="off"
+        [(ngModel)]="offMeterObj.serialNumber" />
+      <button type="button" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-search" pTooltip="بحث"
+        (click)="searchByMeterNum(offMeterObj.serialNumber);"></button>
+      }
+    </div>
+    <p-divider />
+    @if (offMeterObj.vendorCode != 6 || showAllModalData) {
+    <h4 class="darkBack">بيانات العميل الحالى</h4>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">رقم العداد</label>
+        <input pInputText id="serialNum" autocomplete="off" class="w-100" [(ngModel)]="offMeterObj.serialNumber" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">كود المشترك</label>
+        <input pInputText id="serialNum" autocomplete="off" class="w-100" [(ngModel)]="offMeterObj.customerCode" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">اسم المشترك</label>
+        <input pInputText id="serialNum" autocomplete="off" class="w-100" [(ngModel)]="offMeterObj.customerName" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">الرقم القومى </label>
+        <input pInputText id="serialNum" autocomplete="off" class="w-100" [(ngModel)]="offMeterObj.nationalId" />
+      </div>
+      <div class="col-md-8 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">عنوان العميل </label>
+        <input pInputText id="serialNum" autocomplete="off" class="w-100" [(ngModel)]="offMeterObj.address" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">نوع النشاط</label>
+        <p-dropdown [options]="activityTypes" class="row-cols-1" [(ngModel)]="offMeterObj.activityTypeId"
+          optionLabel="name" optionValue="id" placeholder="اختر نوع النشاط" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">وصف المكان</label>
+        <p-dropdown [options]="placesTypes" [disabled]="!offMeterObj.activityTypeId" class="row-cols-1"
+          [(ngModel)]="offMeterObj.placeTypeId" optionLabel="name" optionValue="id" placeholder="اختر وصف المكان" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> القطاع</label>
+        <p-dropdown [options]="sections" class="row-cols-1" [(ngModel)]="offMeterObj.sectionId" optionLabel="name"
+          optionValue="id" placeholder="اختر القطاع" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> ادارة رئيسية</label>
+        <p-dropdown [options]="mainDepartements" class="row-cols-1" [(ngModel)]="offMeterObj.mainDepartmentId"
+          optionLabel="name" optionValue="id" placeholder="اختر الادارة الرئيسية" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> ادارة فرعية</label>
+        <p-dropdown [options]="smallDepartements" class="row-cols-1" [(ngModel)]="offMeterObj.smallDepartmentId"
+          optionLabel="name" optionValue="id" placeholder="اختر الادارة الفرعية" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> فرعي</label>
+        <p-inputNumber [useGrouping]="false" id="serialNum" autocomplete="off" class="w-100"
+          [(ngModel)]="offMeterObj.branchNo" />
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> رئيسي</label>
+        <p-inputNumber [useGrouping]="false" id="serialNum" autocomplete="off" class="w-100"
+          [(ngModel)]="offMeterObj.accountNo" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">منطقة</label>
+        <p-dropdown [options]="indexArr" class="row-cols-1" optionLabel="id" optionValue="id"
+          [(ngModel)]="offMeterObj.regionNo" placeholder="اختر المنطقة" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem">يومية</label>
+        <p-dropdown [options]="indexArr" class="row-cols-1" optionLabel="id" optionValue="id"
+          [(ngModel)]="offMeterObj.dailyNo" placeholder="اختر اليومية" />
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التهيئة</label>
+        <p-calendar [(ngModel)]="offMeterObj.meterPreparedDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التركيب</label>
+        <p-calendar [(ngModel)]="offMeterObj.meterInstallationDate" class="row-cols-1"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+    </div>
+
+    <p-divider></p-divider>
+    }
+
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="meterOffDate" class="font-semibold  block mb-2 block mb-2">تاريخ العطل</label>
+        <p-calendar [(ngModel)]="offMeterObj.meterOffDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="uploadDate" class="font-semibold  block mb-2 ">تاريخ رفع العداد</label>
+        <p-calendar [(ngModel)]="offMeterObj.uploadDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="deliveryDateToLaboratory" class="font-semibold  block mb-2 ">تاريخ استلام العداد فى المعمل</label>
+        <p-calendar [(ngModel)]="offMeterObj.deliveryDateToLaboratory" class="row-cols-1"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="MetersOffReasons" class="font-semibold  block mb-2 ">سبب الرفع</label>
+        <p-dropdown [options]="MetersOffReasons" class="row-cols-1"
+          [(ngModel)]="offMeterObj.cUploadMainteneceMetersOffReasonId" optionLabel="name" optionValue="id"
+          placeholder="اختر سبب الرفع" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="offReason" class="font-semibold  block mb-2 ">حالة العداد عند الرفع</label>
+        <p-dropdown [options]="meterStatus" class="row-cols-1" [(ngModel)]="offMeterObj.meterOffStatusId"
+          optionLabel="name" optionValue="id" placeholder="اختر حالة العداد" />
+      </div>
+      <div class="col-md-4 gap-2 mb-2">
+        <label for="meterOffReason" class="font-semibold  block mb-2 ">سبب العطل</label>
+        <input pInputText id="meterOffReason" class="w-100" autocomplete="off"
+          [(ngModel)]="offMeterObj.meterOffReason" />
+      </div>
+    </div>
+    <div class="row">
+      <label for="notes" class="font-semibold  block mb-2 ">ملاحظات</label>
+      <textarea rows="3" cols="100" pInputTextarea [autoResize]="false"
+        [(ngModel)]="offMeterObj.meterOffMaintainNote"></textarea>
+    </div>
+
+    <div class="row mb-2 mt-2">
+      <div class="col-md-12 gap-2 mb-2">
+        <p-checkbox [(ngModel)]="offMeterObj.isExaminationdata" [binary]="true" inputId="binary" />
+        <label for="binary" class="mr-2">بيانات الفحص</label>
+      </div>
+      @if (offMeterObj.isExaminationdata == true) {
+      <div class="col-md-6 gap-2 mb-2">
+        <label for="examinationDate" class="font-semibold  block mb-2 ">تاريخ العطل</label>
+        <p-calendar [(ngModel)]="offMeterObj.examinationDate" class="row-cols-1" [styleClass]="'calenderTop-class'"
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+      <div class="col-md-6 gap-2 mb-2">
+        <label for="examinationNumber" class="font-semibold  block mb-2 ">رقم الفحص </label>
+        <input pInputText id="examinationNumber" class="w-100" autocomplete="off"
+          [(ngModel)]="offMeterObj.examinationNumber" />
+      </div>
+      }
+    </div>
+    <div class="flex justify-content-start gap-2" style="direction: ltr;">
+      <p-button label="الغاء" severity="secondary" (click)="showEdit = false;" />
+      <p-button label="حفظ" (click)="editOffMeter()" />
+    </div>
+  </p-dialog>
+  <!-- اصلاح عطل عداد -->
+  <p-dialog header="إصلاح عطل العداد" [modal]="true" [(visible)]="showFix" [style]="{ width: '50rem' , height:'30rem'}">
+    <span class="p-text-secondary block bg-secondary-subtle block mb-5">تاريخ رفع العداد : {{offMeterObj.uploadDate |
+      date: 'dd - MM - yyyy'}}</span>
+
+    <div class="flex align-items-center gap-5 mb-4 mt-2">
+      <label for="fixMeterDate" class="font-semibold w-6rem">تاريخ اصلاح العداد</label>
+      <p-calendar class="w-100  row-cols-1" [ngModel]="offMeterFix.maintenanceDate"
+        [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+    </div>
+
+    <div class="flex align-items-center gap-5 mb-4">
+      <label for="date" class="font-semibold w-6rem">تاريخ تسليم العداد للفنى</label>
+      <p-calendar class="w-100  row-cols-1" [ngModel]="offMeterFix.deliveryDateToTechnician"
+        [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+    </div>
+
+    <div class="flex align-items-center gap-5 mb-4">
+      <label for="date" class="font-semibold w-6rem">تاريخ التركيب بعد الاصلاح</label>
+      <p-calendar class="w-100  row-cols-1" [ngModel]="offMeterFix.installationDate" [styleClass]="'calenderTop-class'"
+        [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+    </div>
+
+    <div class="flex justify-content-end gap-2 pt-5 mt-5">
+      <p-button label="حفظ" (click)="fixMeter(offMeterFix)" />
+      <p-button label="الغاء" severity="secondary" (click)="showFix = false;" />
+    </div>
+  </p-dialog>
+  <p-toast />
+  <p-confirmDialog />
+  <!-- new extra filter  -->
+  <!-- <div class="card flex justify-content-center"> -->
+  <p-overlayPanel #op [style]="{ width: '800px' }">
+    <div class="flex row gap-3 w-25rem" dir="rtl">
+      <!-- flex-column  -->
+      <div class="col-md-3 gap-3">
+        <span class="p-text-secondary block mb-2 text-black">حالة عطل العداد</span>
+        <div class="field-checkbox">
+          <p-radioButton name="isEnded" [value]=" " [(ngModel)]="offMeterObj.isEnded" />
+          <label class="ml-2">الكل</label>
+        </div>
+        <div class="field-checkbox">
+          <p-radioButton name="isEnded" [value]="false" [(ngModel)]="offMeterObj.isEnded" />
+          <label class="ml-2">المعطل</label>
+        </div>
+        <div class="field-checkbox">
+          <p-radioButton name="isEnded" [value]="true" [(ngModel)]="offMeterObj.isEnded" />
+          <label class="ml-2">المنتهى</label>
+        </div>
+      </div>
+      <div class="col-md-4 gap-3">
+        <span class="p-text-secondary block  mb-2  text-black">حالة تركيب العداد</span>
+        <div class="field-checkbox">
+          <p-radioButton name="isMeterInstalled" [value]=" " [(ngModel)]="offMeterObj.isMeterInstalled" />
+          <label class="ml-2">الكل</label>
+        </div>
+        <div class="field-checkbox">
+          <p-radioButton name="isMeterInstalled" [value]="false" [(ngModel)]="offMeterObj.isMeterInstalled" />
+          <label class="ml-2">مركب</label>
+        </div>
+        <div class="field-checkbox">
+          <p-radioButton name="isMeterInstalled" [value]="true" [(ngModel)]="offMeterObj.isMeterInstalled" />
+          <label class="ml-2">غير مركب</label>
+        </div>
+      </div>
+      <div class="col-md-4 gap-3">
+        <span class="p-text-secondary block  mb-2  text-black">حالة تسليم العداد للفنى</span>
+        <div class="field-checkbox">
+          <p-radioButton name="isMeterRecieved" [value]="" [(ngModel)]="offMeterObj.isMeterRecieved" />
+          <label class="ml-2">الكل</label>
+        </div>
+        <div class="field-checkbox">
+          <p-radioButton name="isMeterRecieved" [value]="true" [(ngModel)]="offMeterObj.isMeterRecieved" />
+          <label class="ml-2">تم تسليمه</label>
+        </div>
+        <div class="field-checkbox">
+          <p-radioButton name="isMeterRecieved" [value]="false" [(ngModel)]="offMeterObj.isMeterRecieved" />
+          <label class="ml-2">لم يتم تسليمه</label>
+        </div>
+      </div>
+
+      <div class="flex justify-content-end gap-2 pt-2">
+        <p-button label="تصفية"
+          (click)="sendFilterVal(offMeterObj.isEnded,offMeterObj.isMeterInstalled,offMeterObj.isMeterRecieved)" />
+        <p-button label="الغاء" severity="secondary" (click)="closeExtraFilterOp($event, op)" />
+      </div>
+    </div>
+  </p-overlayPanel>
+  <!-- </div> -->
+</section>
