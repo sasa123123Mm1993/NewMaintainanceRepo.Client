@@ -40,4 +40,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/users/users-permissions/users-permissions.component'),
   },
+  {
+    path: 'totalOffMeterReport',
+    loadComponent: () =>
+      import('./pages/reports/total-off-meter-report/total-off-meter-report.component'),
+  },
 ];

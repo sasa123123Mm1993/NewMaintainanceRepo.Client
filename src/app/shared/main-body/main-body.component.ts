@@ -40,12 +40,6 @@ export class MainBodyComponent {
       active: false,
     },
     {
-      icon: 'bx bxs-user-account',
-      title: 'صلاحيات المستخدمين',
-      link: '/usersPermissions',
-      active: false,
-    },
-    {
       icon: 'bx bx-spreadsheet',
       title: 'أسباب رفع العدادات',
       link: '/reasons',
@@ -58,6 +52,12 @@ export class MainBodyComponent {
       active: false,
     },
     {
+      icon: 'bx bxs-user-account',
+      title: 'صلاحيات المستخدمين',
+      link: '/usersPermissions',
+      active: false,
+    },
+    {
       icon: 'bx bx-transfer',
       title: 'نقل البيانات بوصلة ضوئية',
       link: '/dataTransfer',
@@ -67,6 +67,12 @@ export class MainBodyComponent {
       icon: 'bx bx-credit-card-front',
       title: 'إصدار كروت التحكم',
       link: '/cards',
+      active: false,
+    },
+    {
+      icon: 'bx bxs-report',
+      title: 'تقرير اجمالي أعطال العدادات',
+      link: '/totalOffMeterReport',
       active: false,
     },
   ];

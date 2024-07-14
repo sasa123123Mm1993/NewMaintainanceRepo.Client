@@ -17,6 +17,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export default class UsersSettingsComponent {
   showAddModal: boolean = false;
+  showEditModal: boolean = false;
   formGroup!: FormGroup;
   selectedRole!: string;
 
@@ -26,7 +27,15 @@ export default class UsersSettingsComponent {
     private messageService: MessageService
   ) {}
   mainDepartements: any = [];
-  getAllMainDepartments() {
+  userList: any = [];
+  ngOnInit(): void {
+    //get list to fill table
+    this.meterService.getAllMetersOffReasons().subscribe({
+      next: (res) => {
+        this.userList = res;
+      },
+    });
+    //get all main departements
     this.meterService.getAllMainDepartments().subscribe({
       next: (res) => {
         this.mainDepartements = res;
@@ -34,11 +43,31 @@ export default class UsersSettingsComponent {
       },
     });
   }
-  ngOnInit(): void {
-    this.getAllMainDepartments();
-    this.formGroup = new FormGroup({
-      userDepartements: new FormControl<string | null>(null),
-      activateUser: new FormControl<string | null>(null),
+  banUser(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: ' هل تريد حظر هذا المستخدم ؟',
+      header: 'تأكيد الحظر',
+      icon: 'pi pi-ban-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text p-button-text',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+
+      accept: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'تأكيد',
+          detail: 'تم الحظر بنجاح',
+        });
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'إلغاء',
+          detail: 'تم رفض الحظر',
+        });
+      },
     });
   }
 }

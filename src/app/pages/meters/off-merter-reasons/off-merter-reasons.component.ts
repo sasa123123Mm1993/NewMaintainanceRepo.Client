@@ -2,23 +2,11 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
 import { MeterService } from '../../../configs/meter.service';
+import { Meter, MeterInsertDto } from '../meter';
 import { Table, TableModule } from 'primeng/table';
-import { ToolbarModule } from 'primeng/toolbar';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { DialogModule } from 'primeng/dialog';
+import { SharedModule } from '../../../shared/sharedModules';
 import { InputNumber, InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ToastModule } from 'primeng/toast';
-import { DropdownModule } from 'primeng/dropdown';
-import { Meter, MeterInsertDto } from '../meter';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   selector: 'app-off-merter-reasons',
@@ -27,19 +15,8 @@ import { InputIconModule } from 'primeng/inputicon';
     SidemenuComponent,
     CommonModule,
     TableModule,
-    ToolbarModule,
-    InputTextModule,
-    ButtonModule,
-    FormsModule,
-    MultiSelectModule,
-    DialogModule,
+    SharedModule,
     InputNumberModule,
-    ConfirmDialogModule,
-    ToastModule,
-    InputGroupModule,
-    InputGroupAddonModule,
-    IconFieldModule,
-    InputIconModule,
   ],
   templateUrl: './off-merter-reasons.component.html',
   styleUrls: ['./off-merter-reasons.component.scss'],
@@ -128,16 +105,15 @@ export default class OffMerterReasonsComponent {
 
       accept: () => {
         this.meterService.deleteMetersOffReason(reasonId).subscribe({
-          next:(res)=>{
+          next: (res) => {
             this.messageService.add({
               severity: 'info',
               summary: 'تأكيد',
               detail: 'تم الحذف بنجاح',
             });
             this.getAllReasons();
-          }
-        })
-
+          },
+        });
       },
       reject: () => {
         this.messageService.add({
@@ -150,7 +126,7 @@ export default class OffMerterReasonsComponent {
   }
 
   @ViewChild('dt') dt!: Table;
-  applyFilterGlobal($event : any, stringVal : any) {
+  applyFilterGlobal($event: any, stringVal: any) {
     this.dt.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 }

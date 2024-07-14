@@ -103,7 +103,8 @@ export class MeterService {
     );
   }
   FixOffMeter(id: number, offMeterData: MeterFixDto) {
-    return this.http.put<MeterOffInsert>(
+    debugger;
+    return this.http.post<MeterOffInsert>(
       apiUrl + 'CMaintenenceMetersOff/AddFixedMeterToTechinicion/' + id,
       offMeterData
     );
