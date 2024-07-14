@@ -130,6 +130,9 @@
   padding-right: 1rem !important;
 }
 
+::ng-deep .p-checkbox {
+  margin-left: 0.35rem !important;
+}
 /////////scroll/////////////
 ::-webkit-scrollbar {
   width: 8px;

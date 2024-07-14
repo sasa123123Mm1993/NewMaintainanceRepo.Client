@@ -4,30 +4,8 @@ import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
 import { MeterService } from '../../../configs/meter.service';
 import { Table, TableModule } from 'primeng/table';
-import { ToolbarModule } from 'primeng/toolbar';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { DialogModule } from 'primeng/dialog';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ToastModule } from 'primeng/toast';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { CalendarModule } from 'primeng/calendar';
-import { DropdownModule } from 'primeng/dropdown';
-import { DividerModule } from 'primeng/divider';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { CheckboxModule } from 'primeng/checkbox';
-import { TagModule } from 'primeng/tag';
-import { TooltipModule } from 'primeng/tooltip';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
-
+import { SharedModule } from '../../../shared/sharedModules';
 interface Company {
   name: string;
   vendorCode: number;
@@ -45,29 +23,8 @@ interface Index {
   imports: [
     SidemenuComponent,
     CommonModule,
-    TableModule,
-    ToolbarModule,
-    InputTextModule,
-    ButtonModule,
-    FormsModule,
-    MultiSelectModule,
-    DialogModule,
-    InputNumberModule,
-    ConfirmDialogModule,
-    ToastModule,
-    RadioButtonModule,
-    CalendarModule,
-    DropdownModule,
-    DividerModule,
-    InputTextareaModule,
-    InputGroupModule,
-    InputGroupAddonModule,
-    IconFieldModule,
-    InputIconModule,
-    CheckboxModule,
-    TagModule,
-    TooltipModule,
-    OverlayPanelModule,
+    SharedModule,
+
   ],
   templateUrl: './fix-meters.component.html',
   styleUrl: './fix-meters.component.scss',

@@ -20,7 +20,7 @@
     <div class="menu">
       <ul class="menu-links">
         @for (menuItem of MenuList; track $index) {
-        <li class="nav-link" (click)="navigate(menuItem.title)" [ngClass]="menuItem.active == true ? 'activated' : '' ">
+        <li class="nav-link" (click)="navigate(menuItem.title)"  [pTooltip]="menuItem.title"  [ngClass]="menuItem.active == true ? 'activated' : '' ">
           <a [routerLink]='menuItem.link'>
             <i class='bx-sm icons' [ngClass]="menuItem.icon"></i>
             <span class="text nav-text">{{menuItem.title}}</span>

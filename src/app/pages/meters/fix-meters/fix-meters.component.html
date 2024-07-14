@@ -44,8 +44,8 @@
           pTooltip="بحث بمرجع الحساب " (click)="showAccountDiv = !showAccountDiv"></button>
       </div>
       <div class="flex pt-1 mr-2 ml-2">
-        <p-iconField iconPosition="left" class="ml-auto">
-          <p-inputIcon pTooltip="بحث">
+        <p-iconField iconPosition="left" class="ml-auto"  pTooltip="بحث">
+          <p-inputIcon>
             <i class="pi pi-search"></i>
           </p-inputIcon>
           <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')"
@@ -168,9 +168,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="4"></td>
-        <td colspan="4">لا يوجد بيانات لعرضها</td>
-        <td colspan="4"></td>
+        <td colspan="12">لا يوجد بيانات لعرضها</td>
       </tr>
     </ng-template>
   </p-table>
@@ -561,7 +559,7 @@
   </p-dialog>
   <!-- اصلاح عطل عداد -->
   <p-dialog header="إصلاح عطل العداد" [modal]="true" [(visible)]="showFix" [style]="{ width: '50rem' , height:'30rem'}">
-    <span class="p-text-secondary block bg-secondary-subtle block mb-5">تاريخ رفع العداد : {{offMeterObj.uploadDate |
+    <span class="bg-secondary-subtle block fw-bold mb-3 p-2 p-text-secondary w-100">تاريخ رفع العداد : {{offMeterObj.uploadDate |
       date: 'dd - MM - yyyy'}}</span>
 
     <div class="flex align-items-center gap-5 mb-4 mt-2">

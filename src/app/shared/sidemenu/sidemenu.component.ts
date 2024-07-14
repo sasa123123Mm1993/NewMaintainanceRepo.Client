@@ -1,10 +1,12 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { TooltipModule } from 'primeng/tooltip';
+
 @Component({
   selector: 'app-sidemenu',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive,TooltipModule],
   templateUrl: './sidemenu.component.html',
   styleUrl: './sidemenu.component.scss',
 })
