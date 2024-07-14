@@ -56,7 +56,7 @@ export class MeterService {
   }
 
   editMetersOffReason(reasonId: number | string, meterReason: MeterInsertDto) {
-    return this.http.put<Meter>(
+    return this.http.post<Meter>(
       apiUrl + 'MetersOffReasons/Update/' + reasonId,
       meterReason,
       { headers: headers }
@@ -64,7 +64,7 @@ export class MeterService {
   }
 
   deleteMetersOffReason(reasonId: number | string) {
-    return this.http.delete<Meter>(
+    return this.http.get<Meter>(
       apiUrl + 'MetersOffReasons/Delete/' + reasonId
       // { headers: headers }
     );
@@ -89,7 +89,7 @@ export class MeterService {
     );
   }
   updtaeOffMeter(id: number | string, offMeter: MeterOffInsert) {
-    return this.http.put<MeterOffInsert>(
+    return this.http.post<MeterOffInsert>(
       apiUrl + 'CMaintenenceMetersOff/Update/' + id,
       offMeter
     );
@@ -97,7 +97,7 @@ export class MeterService {
   deleteOffMeter(id: number | string) {
     debugger;
     console.log('delete id', id);
-    return this.http.delete<MeterOffInsert>(
+    return this.http.get<MeterOffInsert>(
       apiUrl + 'CMaintenenceMetersOff/Delete/' + id,
       { headers: headers }
     );
