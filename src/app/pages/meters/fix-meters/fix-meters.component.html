@@ -296,15 +296,15 @@
     <div class="row">
       <div class="col-md-4 gap-2 mb-2">
         <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التهيئة</label>
-        <p-calendar [(ngModel)]="offMeterObj.meterPreparedDate" dateFormat="dd/mm/yy" class="row-cols-1"
+        <p-calendar [(ngModel)]="offMeterObj.meterPreparedDate" class="row-cols-1"
           [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
-          [disabled]="showAllModalData" />
+          [disabled]="showAllModalData"  dateFormat="dd/mm/yy"  />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التركيب</label>
-        <p-calendar [(ngModel)]="offMeterObj.meterInstallationDate" dateFormat="dd/mm/yy" class="row-cols-1"
+        <p-calendar [(ngModel)]="offMeterObj.meterInstallationDate" class="row-cols-1"
           [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
-          [disabled]="showAllModalData" />
+          [disabled]="showAllModalData"  dateFormat="dd/mm/yy"  />
       </div>
     </div>
 
@@ -314,18 +314,18 @@
     <div class="row">
       <div class="col-md-4 gap-2 mb-2">
         <label for="meterOffDate" class="font-semibold  block mb-2 block mb-2">تاريخ العطل</label>
-        <p-calendar [(ngModel)]="offMeterObj.meterOffDate" class="row-cols-1" dateFormat="dd/mm/yy"
-          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+        <p-calendar [(ngModel)]="offMeterObj.meterOffDate" class="row-cols-1"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"  dateFormat="dd/mm/yy" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="uploadDate" class="font-semibold  block mb-2 ">تاريخ رفع العداد</label>
-        <p-calendar [(ngModel)]="offMeterObj.uploadDate" class="row-cols-1" dateFormat="dd/mm/yy"
-          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+        <p-calendar [(ngModel)]="offMeterObj.uploadDate" class="row-cols-1"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"  dateFormat="dd/mm/yy" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="deliveryDateToLaboratory" class="font-semibold  block mb-2 ">تاريخ استلام العداد فى المعمل</label>
-        <p-calendar [(ngModel)]="offMeterObj.deliveryDateToLaboratory" dateFormat="dd/mm/yy" class="row-cols-1"
-          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+        <p-calendar [(ngModel)]="offMeterObj.deliveryDateToLaboratory" class="row-cols-1"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"  dateFormat="dd/mm/yy" />
       </div>
     </div>
     <div class="row">
@@ -360,8 +360,8 @@
       @if (offMeterObj.isExaminationdata == true) {
       <div class="col-md-6 gap-2 mb-2">
         <label for="examinationDate" class="font-semibold  block mb-2 ">تاريخ العطل</label>
-        <p-calendar [(ngModel)]="offMeterObj.examinationDate" class="row-cols-1" dateFormat="dd/mm/yy"
-          [styleClass]="'calenderTop-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+        <p-calendar [(ngModel)]="offMeterObj.examinationDate" class="row-cols-1"
+          [styleClass]="'calenderTop-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"  dateFormat="dd/mm/yy" />
       </div>
       <div class="col-md-6 gap-2 mb-2">
         <label for="examinationNumber" class="font-semibold  block mb-2 ">رقم الفحص </label>
@@ -483,12 +483,12 @@
       <div class="col-md-4 gap-2 mb-2">
         <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التهيئة</label>
         <p-calendar [(ngModel)]="offMeterObj.meterPreparedDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"  dateFormat="dd/mm/yy" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التركيب</label>
         <p-calendar [(ngModel)]="offMeterObj.meterInstallationDate" class="row-cols-1"
-          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"  dateFormat="dd/mm/yy" />
       </div>
     </div>
 
@@ -499,17 +499,17 @@
       <div class="col-md-4 gap-2 mb-2">
         <label for="meterOffDate" class="font-semibold  block mb-2 block mb-2">تاريخ العطل</label>
         <p-calendar [(ngModel)]="offMeterObj.meterOffDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"  dateFormat="dd/mm/yy" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="uploadDate" class="font-semibold  block mb-2 ">تاريخ رفع العداد</label>
         <p-calendar [(ngModel)]="offMeterObj.uploadDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"  dateFormat="dd/mm/yy" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="deliveryDateToLaboratory" class="font-semibold  block mb-2 ">تاريخ استلام العداد فى المعمل</label>
         <p-calendar [(ngModel)]="offMeterObj.deliveryDateToLaboratory" class="row-cols-1"
-          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"  dateFormat="dd/mm/yy" />
       </div>
     </div>
     <div class="row">
@@ -545,7 +545,7 @@
       <div class="col-md-6 gap-2 mb-2">
         <label for="examinationDate" class="font-semibold  block mb-2 ">تاريخ العطل</label>
         <p-calendar [(ngModel)]="offMeterObj.examinationDate" class="row-cols-1" [styleClass]="'calenderTop-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"  dateFormat="dd/mm/yy" />
       </div>
       <div class="col-md-6 gap-2 mb-2">
         <label for="examinationNumber" class="font-semibold  block mb-2 ">رقم الفحص </label>
