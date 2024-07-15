@@ -24,6 +24,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { BadgeModule } from 'primeng/badge';
 
 @NgModule({
   imports: [CommonModule],
@@ -55,6 +56,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     TooltipModule,
     OverlayPanelModule,
     ReactiveFormsModule,
+    BadgeModule
   ],
 })
 export class SharedModule {}

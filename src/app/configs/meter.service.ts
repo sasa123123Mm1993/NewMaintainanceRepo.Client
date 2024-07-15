@@ -13,6 +13,7 @@ import {
   MeterFixDto,
   MeterOffInsert,
 } from '../pages/meters/meter';
+import { UserDto } from '../pages/users/user';
 
 // const headers = { 'Content-Type': 'application/json', Accept: '*/*' };
 const headers = {
@@ -156,10 +157,17 @@ export class MeterService {
       apiUrl + 'CMaintenenceMetersOff/GetAllSmallDepartments'
     );
   }
+  //    البحـــــث برقم العـــــــــداد
   searchMeter(meterNum: number | string) {
     console.log(meterNum);
     return this.http.get<any>(
       'http://192.168.15.10:1001/api/meter/GetMetersInfo/' + meterNum
     );
   }
+   //////////////////  ////////////////////// USERS  //////////////////  //////////////////////
+   getAllUsers(){
+    return this.http.get<UserDto>(
+      apiUrl + 'User/GetAllUsers'
+    )
+   }
 }

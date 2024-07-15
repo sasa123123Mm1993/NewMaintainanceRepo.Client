@@ -20,12 +20,7 @@ interface Index {
 @Component({
   selector: 'app-fix-meters',
   standalone: true,
-  imports: [
-    SidemenuComponent,
-    CommonModule,
-    SharedModule,
-
-  ],
+  imports: [SidemenuComponent, CommonModule, SharedModule],
   templateUrl: './fix-meters.component.html',
   styleUrl: './fix-meters.component.scss',
   providers: [ConfirmationService, MessageService],
@@ -76,7 +71,7 @@ export default class FixMetersComponent {
     isMeterRecieved: false,
     isEnded: false,
     isMeterInstalled: false,
-    maintenanceDate: false,
+    maintenanceDate: new Date(),
   };
   offMeterFix: MeterFixDto = {
     installationDate: new Date(),
@@ -169,27 +164,48 @@ export default class FixMetersComponent {
   }
   // GET METER BY ID
   selectedOffMeterId!: any;
-  getMeterById(id: number) {
+  getMeterById(id: number, flag: string) {
     this.selectedOffMeterId = id;
     this.meterService.getOffMeterById(id).subscribe({
       next: (res) => {
-        this.showEdit = true;
-        console.log('meter by id :', res);
         this.offMeterObj = res;
-        this.offMeterObj.meterPreparedDate = new Date(
-          this.offMeterObj.meterPreparedDate
-        );
-        this.offMeterObj.meterInstallationDate = new Date(
-          this.offMeterObj.meterInstallationDate
-        );
-        this.offMeterObj.examinationDate = new Date(
-          this.offMeterObj.examinationDate
-        );
-        this.offMeterObj.meterOffDate = new Date(this.offMeterObj.meterOffDate);
-        this.offMeterObj.uploadDate = new Date(this.offMeterObj.uploadDate);
-        this.offMeterObj.deliveryDateToLaboratory = new Date(
-          this.offMeterObj.deliveryDateToLaboratory
-        );
+        if (flag == 'edit') {
+          this.showEdit = true;
+          console.log('meter by id  for edit:', res);
+
+          this.offMeterObj.meterPreparedDate = new Date(
+            this.offMeterObj.meterPreparedDate
+          );
+          this.offMeterObj.meterInstallationDate = new Date(
+            this.offMeterObj.meterInstallationDate
+          );
+          this.offMeterObj.examinationDate = new Date(
+            this.offMeterObj.examinationDate
+          );
+          this.offMeterObj.meterOffDate = new Date(
+            this.offMeterObj.meterOffDate
+          );
+          this.offMeterObj.uploadDate = new Date(this.offMeterObj.uploadDate);
+          this.offMeterObj.deliveryDateToLaboratory = new Date(
+            this.offMeterObj.deliveryDateToLaboratory
+          );
+        }
+        if (flag == 'fix') {
+          this.showFix = true;
+          debugger;
+          if (res.maintenanceDate) {
+            this.offMeterFix.maintenanceDate = new Date(res.maintenanceDate);
+          } else {
+            this.offMeterFix.maintenanceDate = new Date();
+          }
+
+          this.offMeterFix.installationDate = new Date(
+            res.meterInstallationDate
+          );
+          this.offMeterFix.deliveryDateToTechnician = new Date(
+            res.deliveryDateToLaboratory
+          );
+        }
       },
     });
   }
@@ -200,6 +216,31 @@ export default class FixMetersComponent {
       .subscribe({
         next: (res) => {
           console.log('edit', res);
+        },
+      });
+  }
+  // FIX METER
+  fixMeter(fixMeterObj: any) {
+    console.log('fixxxxxxxxxxx', fixMeterObj);
+    if (fixMeterObj.maintenanceDate) {
+      fixMeterObj.maintenanceDate = new Date(fixMeterObj.maintenanceDate);
+    }
+    if (fixMeterObj.installationDate) {
+      fixMeterObj.installationDate = new Date(fixMeterObj.installationDate);
+    }
+    if (fixMeterObj.deliveryDateToTechnician) {
+      fixMeterObj.deliveryDateToTechnician = new Date(
+        fixMeterObj.deliveryDateToTechnician
+      );
+    }
+    console.log('fixxxxxxxxxxx', this.selectedOffMeterId, fixMeterObj);
+    this.meterService
+      .FixOffMeter(this.selectedOffMeterId, fixMeterObj)
+      .subscribe({
+        next: (res) => {
+          console.log('fixed', res);
+          window.location.reload();
+          this.showFix = false;
         },
       });
   }
@@ -240,43 +281,31 @@ export default class FixMetersComponent {
   //ADD NEW ITEM
   addOffMeter(addMeterObj: any) {
     if (addMeterObj.meterPreparedDate) {
-      addMeterObj.meterPreparedDate = new Date(addMeterObj.meterPreparedDate)
-        .toISOString()
-        .slice(0, 10);
+      addMeterObj.meterPreparedDate = new Date(addMeterObj.meterPreparedDate);
     }
     if (addMeterObj.meterInstallationDate) {
       addMeterObj.meterInstallationDate = new Date(
         addMeterObj.meterInstallationDate
-      )
-        .toISOString()
-        .slice(0, 10);
+      );
     }
     if (addMeterObj.meterOffDate) {
-      addMeterObj.meterOffDate = new Date(addMeterObj.meterOffDate)
-        .toISOString()
-        .slice(0, 10);
+      addMeterObj.meterOffDate = new Date(addMeterObj.meterOffDate);
     }
     if (addMeterObj.uploadDate) {
-      addMeterObj.uploadDate = new Date(addMeterObj.uploadDate)
-        .toISOString()
-        .slice(0, 10);
+      addMeterObj.uploadDate = new Date(addMeterObj.uploadDate);
     }
     if (addMeterObj.deliveryDateToLaboratory) {
       addMeterObj.deliveryDateToLaboratory = new Date(
         addMeterObj.deliveryDateToLaboratory
-      )
-        .toISOString()
-        .slice(0, 10);
+      );
     }
     if (addMeterObj.examinationDate) {
-      addMeterObj.examinationDate = new Date(addMeterObj.examinationDate)
-        .toISOString()
-        .slice(0, 10);
+      addMeterObj.examinationDate = new Date(addMeterObj.examinationDate);
     }
     if (addMeterObj.meterOffStatusId) {
       addMeterObj.meterOffStatusId = +addMeterObj.meterOffStatusId;
     }
-
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaadddddddddddd', addMeterObj);
     this.meterService.addOffMeter(addMeterObj).subscribe({
       next: (res) => {
         this.showAddModal = false;
@@ -354,43 +383,10 @@ export default class FixMetersComponent {
       isMeterRecieved: false,
       isEnded: false,
       isMeterInstalled: false,
-      maintenanceDate: false,
+      maintenanceDate: new Date(),
     };
   }
-  // SHOW FIX MODAL
-  fixMeterId!: any;
-  showFixModal(offMeterObjToFix: any) {
-    this.showFix = true;
-    console.log(offMeterObjToFix);
-    this.fixMeterId = offMeterObjToFix.id;
-  }
-  // FIX METER
-  fixMeter(fixMeterObj: any) {
-    if (fixMeterObj.maintenanceDate) {
-      fixMeterObj.maintenanceDate = new Date(fixMeterObj.maintenanceDate)
-        .toISOString()
-        .slice(0, 10);
-    }
-    if (fixMeterObj.installationDate) {
-      fixMeterObj.installationDate = new Date(fixMeterObj.installationDate)
-        .toISOString()
-        .slice(0, 10);
-    }
-    if (fixMeterObj.deliveryDateToTechnician) {
-      fixMeterObj.deliveryDateToTechnician = new Date(
-        fixMeterObj.deliveryDateToTechnician
-      )
-        .toISOString()
-        .slice(0, 10);
-    }
-    console.log('fixxxxxxxxxxx', this.fixMeterId, fixMeterObj);
-    this.meterService.FixOffMeter(this.fixMeterId, fixMeterObj).subscribe({
-      next: (res) => {
-        console.log('fixed', res);
-        this.showFix = false;
-      },
-    });
-  }
+
   //TABLE FILTERS
   @ViewChild('dt') dt!: Table;
   applyFilterGlobal($event: any, stringVal: any) {
@@ -422,27 +418,32 @@ export default class FixMetersComponent {
     }
     console.log(isEndedVal, isMeterInstalledVal, isMeterRecievedVal);
   }
+  visibleSearchMeterDialog: boolean = false;
   searchByMeterNum(meterNum: number) {
     this.meterService.searchMeter(meterNum).subscribe({
       next: (res) => {
-        console.log('search result', res);
-        this.offMeterObj.serialNumber = res.SerialNumber;
-        this.offMeterObj.customerCode = res.CustomerCode;
-        this.offMeterObj.customerName = res.Name;
-        this.offMeterObj.nationalId = res.NationalId;
-        this.offMeterObj.address = res.Address;
-        this.offMeterObj.activityTypeId = res.ActivityName;
-        this.offMeterObj.placeTypeId = res.PlaceName;
-        this.offMeterObj.sectionId = res.Sector;
-        this.offMeterObj.mainDepartmentId = res.Department;
-        this.offMeterObj.smallDepartmentId = res.smalldepartment;
-        this.offMeterObj.branchNo = res.BranchNo;
-        this.offMeterObj.accountNo = res.AccountNo;
-        this.offMeterObj.regionNo = res.RegionNo;
-        this.offMeterObj.dailyNo = res.DailyNo;
-        this.offMeterObj.meterPreparedDate = res.MeterPreparedDate;
-        this.offMeterObj.meterInstallationDate = res.MeterInstallationDate;
-        this.showAllModalData = true;
+        if (res == null) {
+          this.visibleSearchMeterDialog = true;
+        } else {
+          console.log('search result', res);
+          this.offMeterObj.serialNumber = res.SerialNumber;
+          this.offMeterObj.customerCode = res.CustomerCode;
+          this.offMeterObj.customerName = res.Name;
+          this.offMeterObj.nationalId = res.NationalId;
+          this.offMeterObj.address = res.Address;
+          this.offMeterObj.activityTypeId = res.ActivityName;
+          this.offMeterObj.placeTypeId = res.PlaceName;
+          this.offMeterObj.sectionId = res.Sector;
+          this.offMeterObj.mainDepartmentId = res.Department;
+          this.offMeterObj.smallDepartmentId = res.smalldepartment;
+          this.offMeterObj.branchNo = res.BranchNo;
+          this.offMeterObj.accountNo = res.AccountNo;
+          this.offMeterObj.regionNo = res.RegionNo;
+          this.offMeterObj.dailyNo = res.DailyNo;
+          this.offMeterObj.meterPreparedDate = res.MeterPreparedDate;
+          this.offMeterObj.meterInstallationDate = res.MeterInstallationDate;
+          this.showAllModalData = true;
+        }
       },
     });
   }

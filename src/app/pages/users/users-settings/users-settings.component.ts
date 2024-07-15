@@ -5,7 +5,8 @@ import { MeterService } from '../../../configs/meter.service';
 import { Table, TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../../shared/sharedModules';
-import { FormControl, FormGroup } from '@angular/forms';
+// import { FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-users-settings',
@@ -18,23 +19,30 @@ import { FormControl, FormGroup } from '@angular/forms';
 export default class UsersSettingsComponent {
   showAddModal: boolean = false;
   showEditModal: boolean = false;
-  formGroup!: FormGroup;
+  // formGroup!: FormGroup;
   selectedRole!: string;
 
   constructor(
     private meterService: MeterService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) {}
   mainDepartements: any = [];
   userList: any = [];
-  ngOnInit(): void {
+  userObj: any = {};
+  getAllUsers() {
     //get list to fill table
-    this.meterService.getAllMetersOffReasons().subscribe({
+    this.meterService.getAllUsers().subscribe({
       next: (res) => {
         this.userList = res;
+        console.log(this.userList);
       },
     });
+  }
+  ngOnInit(): void {
+    //init func
+    this.getAllUsers();
     //get all main departements
     this.meterService.getAllMainDepartments().subscribe({
       next: (res) => {
@@ -69,5 +77,13 @@ export default class UsersSettingsComponent {
         });
       },
     });
+  }
+
+  @ViewChild('dt') dt!: Table;
+  applyFilterGlobal($event: any, stringVal: any) {
+    this.dt.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  }
+  reloadPage(){
+    window.location.reload();
   }
 }

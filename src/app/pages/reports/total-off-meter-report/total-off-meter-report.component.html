@@ -11,13 +11,13 @@
         <div class="col-md-5">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التسجيل بالنظام
             من </label>
-          <p-calendar [(ngModel)]="date" class="row-cols-1" [styleClass]="'calenderBottom-class'"
+          <p-calendar [(ngModel)]="date" class="row-cols-1"  dateFormat="dd/mm/yy"  [styleClass]="'calenderBottom-class'"
             [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
         </div>
         <div class="col-md-5">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem">
             الى </label>
-          <p-calendar [(ngModel)]="date" class="row-cols-1" [styleClass]="'calenderBottom-class'"
+          <p-calendar [(ngModel)]="date" class="row-cols-1"  dateFormat="dd/mm/yy"  [styleClass]="'calenderBottom-class'"
             [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
         </div>
         <div class="col-md-2 pt-4 align-self-center flex justify-content-evenly">
@@ -57,7 +57,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="4">لا يوجد بيانات لعرضها</td>
+        <td colspan="6">لا يوجد بيانات لعرضها</td>
       </tr>
     </ng-template>
   </p-table>

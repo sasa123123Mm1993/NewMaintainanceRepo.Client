@@ -5,8 +5,8 @@
   <div class="container-md px-5">
     <p class="navbar-brand pt-3">{{pageTitle}}</p>
     <div class="card flex justify-content-center">
-      <p-dropdown [options]="countries" [(ngModel)]="selectedCountry" optionLabel="name" [filter]="true" filterBy="name"
-        [showClear]="true" placeholder="اختر القطاع">
+      <p-dropdown [options]="sections" [(ngModel)]="selectedSection" optionValue="id" optionLabel="name" [filter]="true" filterBy="name"
+        [showClear]="true" placeholder="اختر القطاع" (onChange)="getSelectedSection()">
       </p-dropdown>
     </div>
   </div> <!-- wrapper -->

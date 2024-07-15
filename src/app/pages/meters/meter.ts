@@ -87,7 +87,7 @@ export interface MeterOffInsert {
   isMeterRecieved: boolean;
   isEnded: boolean;
   isMeterInstalled: boolean;
-  maintenanceDate: boolean;
+  maintenanceDate: Date;
 }
 export interface MeterFixDto {
   installationDate: Date;

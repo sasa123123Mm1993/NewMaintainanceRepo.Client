@@ -5,6 +5,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { SidemenuComponent } from '../sidemenu/sidemenu.component';
 import { RouterOutlet } from '@angular/router';
 import { Location } from '@angular/common';
+import { MeterService } from '../../configs/meter.service';
 
 @Component({
   selector: 'app-main-body',
@@ -24,7 +25,7 @@ export class MainBodyComponent {
   closedMenu: boolean = true;
   pageTitle!: string;
   //countries
-  countries: any[] | undefined;
+  sections!: any[];
   //sideMenu list
   sideMenuContent = [
     {
@@ -46,13 +47,13 @@ export class MainBodyComponent {
       active: false,
     },
     {
-      icon: 'bx bx-cog',
+      icon: 'bx bxs-user-account',
       title: 'إدارة المستخدمين',
       link: '/usersSettings',
       active: false,
     },
     {
-      icon: 'bx bxs-user-account',
+      icon: 'bx bx-cog',
       title: 'صلاحيات المستخدمين',
       link: '/usersPermissions',
       active: false,
@@ -76,7 +77,7 @@ export class MainBodyComponent {
       active: false,
     },
   ];
-  selectedCountry: string | undefined;
+  selectedSection: number | undefined;
   currentPath!: string;
   toggleFromMenu(value: any) {
     this.closedMenu = value;
@@ -91,21 +92,12 @@ export class MainBodyComponent {
       }
     }
   }
-  constructor(private location: Location) {}
+  getSelectedSection(){
+    console.log('jjjjjjjjjjjjjjjj',this.selectedSection)
+  }
+  constructor(private location: Location, private meterService: MeterService) {}
 
   ngOnInit() {
-    this.countries = [
-      { name: 'Australia', code: 'AU' },
-      { name: 'Brazil', code: 'BR' },
-      { name: 'China', code: 'CN' },
-      { name: 'Egypt', code: 'EG' },
-      { name: 'France', code: 'FR' },
-      { name: 'Germany', code: 'DE' },
-      { name: 'India', code: 'IN' },
-      { name: 'Japan', code: 'JP' },
-      { name: 'Spain', code: 'ES' },
-      { name: 'United States', code: 'US' },
-    ];
     this.currentPath = this.location.path();
     for (let i = 0; i < this.sideMenuContent.length; i++) {
       if (this.sideMenuContent[i].link == this.currentPath) {
@@ -113,5 +105,10 @@ export class MainBodyComponent {
         this.sideMenuContent[i].active = true;
       }
     }
+    this.meterService.getAllSections().subscribe({
+      next: (res) => {
+        this.sections = res;
+      },
+    });
   }
 }

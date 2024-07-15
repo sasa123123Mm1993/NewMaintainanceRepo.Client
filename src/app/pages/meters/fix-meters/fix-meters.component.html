@@ -44,7 +44,7 @@
           pTooltip="بحث بمرجع الحساب " (click)="showAccountDiv = !showAccountDiv"></button>
       </div>
       <div class="flex pt-1 mr-2 ml-2">
-        <p-iconField iconPosition="left" class="ml-auto"  pTooltip="بحث">
+        <p-iconField iconPosition="left" class="ml-auto" pTooltip="بحث">
           <p-inputIcon>
             <i class="pi pi-search"></i>
           </p-inputIcon>
@@ -127,7 +127,7 @@
         <td>الجيزة</td>
         }
         @default {
-        <td>الجيزة</td>
+        <td>-</td>
         }
         }
         <td>{{ offMeter.serialNumber }}</td>
@@ -151,12 +151,13 @@
         </td>
         <td>
           <button type="button" [raised]="true" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-wrench"
-            pTooltip="اصلاح العطل" tooltipPosition="right" (click)="showFixModal(offMeter)">
+            pTooltip="اصلاح العطل" tooltipPosition="right" (click)="getMeterById(offMeter.id,'fix')">
           </button>
+          <!-- showFixModal(offMeter) -->
         </td>
         <td>
           <button type="button" [raised]="true" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-pencil"
-            (click)="getMeterById(offMeter.id)" pTooltip="تعديل">
+            (click)="getMeterById(offMeter.id,'edit')" pTooltip="تعديل">
           </button>
         </td>
         <td>
@@ -295,12 +296,13 @@
     <div class="row">
       <div class="col-md-4 gap-2 mb-2">
         <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التهيئة</label>
-        <p-calendar [(ngModel)]="offMeterObj.meterPreparedDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" [disabled]="showAllModalData" />
+        <p-calendar [(ngModel)]="offMeterObj.meterPreparedDate" dateFormat="dd/mm/yy" class="row-cols-1"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
+          [disabled]="showAllModalData" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التركيب</label>
-        <p-calendar [(ngModel)]="offMeterObj.meterInstallationDate" class="row-cols-1"
+        <p-calendar [(ngModel)]="offMeterObj.meterInstallationDate" dateFormat="dd/mm/yy" class="row-cols-1"
           [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
           [disabled]="showAllModalData" />
       </div>
@@ -312,17 +314,17 @@
     <div class="row">
       <div class="col-md-4 gap-2 mb-2">
         <label for="meterOffDate" class="font-semibold  block mb-2 block mb-2">تاريخ العطل</label>
-        <p-calendar [(ngModel)]="offMeterObj.meterOffDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+        <p-calendar [(ngModel)]="offMeterObj.meterOffDate" class="row-cols-1" dateFormat="dd/mm/yy"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="uploadDate" class="font-semibold  block mb-2 ">تاريخ رفع العداد</label>
-        <p-calendar [(ngModel)]="offMeterObj.uploadDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+        <p-calendar [(ngModel)]="offMeterObj.uploadDate" class="row-cols-1" dateFormat="dd/mm/yy"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="deliveryDateToLaboratory" class="font-semibold  block mb-2 ">تاريخ استلام العداد فى المعمل</label>
-        <p-calendar [(ngModel)]="offMeterObj.deliveryDateToLaboratory" class="row-cols-1"
+        <p-calendar [(ngModel)]="offMeterObj.deliveryDateToLaboratory" dateFormat="dd/mm/yy" class="row-cols-1"
           [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
       </div>
     </div>
@@ -358,8 +360,8 @@
       @if (offMeterObj.isExaminationdata == true) {
       <div class="col-md-6 gap-2 mb-2">
         <label for="examinationDate" class="font-semibold  block mb-2 ">تاريخ العطل</label>
-        <p-calendar [(ngModel)]="offMeterObj.examinationDate" class="row-cols-1" [styleClass]="'calenderTop-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+        <p-calendar [(ngModel)]="offMeterObj.examinationDate" class="row-cols-1" dateFormat="dd/mm/yy"
+          [styleClass]="'calenderTop-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
       </div>
       <div class="col-md-6 gap-2 mb-2">
         <label for="examinationNumber" class="font-semibold  block mb-2 ">رقم الفحص </label>
@@ -559,25 +561,26 @@
   </p-dialog>
   <!-- اصلاح عطل عداد -->
   <p-dialog header="إصلاح عطل العداد" [modal]="true" [(visible)]="showFix" [style]="{ width: '50rem' , height:'30rem'}">
-    <span class="bg-secondary-subtle block fw-bold mb-3 p-2 p-text-secondary w-100">تاريخ رفع العداد : {{offMeterObj.uploadDate |
-      date: 'dd - MM - yyyy'}}</span>
+    <span class="bg-secondary-subtle block fw-bold mb-3 p-2 p-text-secondary w-100">تاريخ رفع العداد :
+      {{offMeterObj.uploadDate |
+      date: 'yyyy - MM - dd'}}</span>
 
     <div class="flex align-items-center gap-5 mb-4 mt-2">
       <label for="fixMeterDate" class="font-semibold w-6rem">تاريخ اصلاح العداد</label>
-      <p-calendar class="w-100  row-cols-1" [ngModel]="offMeterFix.maintenanceDate"
+      <p-calendar class="w-100  row-cols-1" [(ngModel)]="offMeterFix.maintenanceDate" dateFormat="dd/mm/yy"
         [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
     </div>
 
     <div class="flex align-items-center gap-5 mb-4">
       <label for="date" class="font-semibold w-6rem">تاريخ تسليم العداد للفنى</label>
-      <p-calendar class="w-100  row-cols-1" [ngModel]="offMeterFix.deliveryDateToTechnician"
+      <p-calendar class="w-100  row-cols-1" dateFormat="dd/mm/yy" [(ngModel)]="offMeterFix.deliveryDateToTechnician"
         [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
     </div>
 
     <div class="flex align-items-center gap-5 mb-4">
       <label for="date" class="font-semibold w-6rem">تاريخ التركيب بعد الاصلاح</label>
-      <p-calendar class="w-100  row-cols-1" [ngModel]="offMeterFix.installationDate" [styleClass]="'calenderTop-class'"
-        [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      <p-calendar class="w-100  row-cols-1" [(ngModel)]="offMeterFix.installationDate" dateFormat="dd/mm/yy"
+        [styleClass]="'calenderTop-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
     </div>
 
     <div class="flex justify-content-end gap-2 pt-5 mt-5">
@@ -645,5 +648,14 @@
       </div>
     </div>
   </p-overlayPanel>
-  <!-- </div> -->
+  <!-- SearchMeterDialog alert -->
+  <p-dialog  [(visible)]="visibleSearchMeterDialog" [modal]="true"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [style]="{ width: '25vw' }" [draggable]="false"
+    [resizable]="false">
+    <h3 class="text-center text-warning" >
+      <i class="pi pi-spin pi-cog" severity="warning" style="font-size: 2.5rem"></i>
+    </h3>
+    <b> هذا العداد غير موجود بالنظام من فضلك تأكد من رقم العداد الصحيح</b>
+
+  </p-dialog>
 </section>
