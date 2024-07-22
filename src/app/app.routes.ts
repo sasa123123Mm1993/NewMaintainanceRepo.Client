@@ -43,6 +43,13 @@ export const routes: Routes = [
   {
     path: 'totalOffMeterReport',
     loadComponent: () =>
-      import('./pages/reports/total-off-meter-report/total-off-meter-report.component'),
+      import(
+        './pages/reports/total-off-meter-report/total-off-meter-report.component'
+      ),
+  },
+  {
+    path: 'offMeterReport',
+    loadComponent: () =>
+      import('./pages/reports/off-meter-report/off-meter-report.component'),
   },
 ];

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Product } from './../../dto/meter';
 import { CommonModule } from '@angular/common';
 import { MeterService } from '../../../configs/meter.service';
 import { Table, TableModule } from 'primeng/table';

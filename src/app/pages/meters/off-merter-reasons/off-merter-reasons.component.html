@@ -8,8 +8,10 @@
 
     <ng-template pTemplate="caption">
       <div class="p-toolbar-group-start pt-0">
-        <button pButton [raised]="true" (click)="visible = true" icon="pi pi-plus" pTooltip="إضافة" class="mr-2 ml-2 btnIcon defaultBtnColor"></button>
-        <button pButton [raised]="true" icon="pi pi-print" class="mr-2 btnIcon defaultBtnColor" pTooltip="طباعة"></button>
+        <button pButton [raised]="true" (click)="visible = true" icon="pi pi-plus" pTooltip="إضافة"
+          class="mr-2 ml-2 btnIcon defaultBtnColor"></button>
+        <button pButton [raised]="true" icon="pi pi-print" class="mr-2 btnIcon defaultBtnColor"
+          pTooltip="طباعة"></button>
       </div>
       <div class="flex">
         <p-iconField iconPosition="left" class="ml-auto">
@@ -17,7 +19,7 @@
             <i class="pi pi-search"></i>
           </p-inputIcon>
           <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')"
-            placeholder=" بحث برقم الكود و الاسم" class="searchInput" />
+            placeholder=" بحث بـ / رقم الكود / الاسم" class="searchInput" />
         </p-iconField>
       </div>
     </ng-template>
@@ -35,7 +37,8 @@
         <td>{{ reason.code }}</td>
         <td>{{ reason.name }}</td>
         <td>
-          <button [raised]="true" type="button" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-pencil" (click)="openEditDialog(reason)">
+          <button [raised]="true" type="button" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-pencil"
+            (click)="openEditDialog(reason)">
           </button>
         </td>
         <td>
@@ -77,7 +80,7 @@
       <p-inputNumber mode="decimal" class="flex-auto" inputId="withoutgrouping" [useGrouping]="false" #reasonCode />
     </div>
     <div class="flex justify-content-end gap-2">
-      <p-button label="حفظ" (click)="createReason(reasonName.value,reasonCode.value)" />
+      <p-button label="حفظ" class="confirmBtn" (click)="createReason(reasonName.value,reasonCode.value)" />
       <p-button label="الغاء" severity="secondary" (click)="cancelAdd()" />
     </div>
   </p-dialog>
@@ -93,7 +96,7 @@
         [useGrouping]="false" />
     </div>
     <div class="flex justify-content-end gap-2">
-      <p-button label="حفظ" (click)="editReason()" />
+      <p-button label="حفظ" class="confirmBtn" (click)="editReason()" />
       <p-button label="الغاء" severity="secondary" (click)="showEdit = false" />
     </div>
   </p-dialog>

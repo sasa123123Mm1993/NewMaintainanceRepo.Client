@@ -84,9 +84,9 @@ export interface MeterOffInsert {
   isExaminationdata: true;
   mainDepartmentCode: number;
   smallDepartmentCode: number;
-  isMeterRecieved: boolean;
-  isEnded: boolean;
-  isMeterInstalled: boolean;
+  isMeterRecieved: any;
+  isEnded: any;
+  isMeterInstalled: any;
   maintenanceDate: Date;
 }
 export interface MeterFixDto {

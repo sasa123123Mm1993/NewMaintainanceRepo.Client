@@ -13,7 +13,7 @@ import {
   MeterFixDto,
   MeterOffInsert,
 } from '../pages/meters/meter';
-import { UserDto } from '../pages/users/user';
+import { UserDto, userInsert } from '../pages/users/user';
 
 // const headers = { 'Content-Type': 'application/json', Accept: '*/*' };
 const headers = {
@@ -129,10 +129,58 @@ export class MeterService {
         branchNo
     );
   }
+  //    البحـــــث برقم العـــــــــداد
+  searchMeter(meterNum: number | string) {
+    console.log(meterNum);
+    return this.http.get<any>(
+      'http://192.168.15.10:1001/api/meter/GetMetersInfo/' + meterNum
+    );
+  }
+  //////////////  //////// USERS ////////////  ////////////////
+  getAllUsers() {
+    //done
+    return this.http.get<UserDto>(apiUrl + 'User/GetAllUsersWithDepartments');
+  }
+  getAllRoles() {
+    //done
+    return this.http.get<UserDto>(apiUrl + 'User/GetAllRoles');
+  }
+  getUserById(userId: any, data: any) {
+    return this.http.post<any>(
+      apiUrl + 'User/GetUserWithDepartments?userId=' + userId,
+      data
+    );
+  }
+  deactiveUser(userId: number, data: any) {
+    return this.http.post<UserDto>(
+      apiUrl + 'User/DeactivateUser?userId=' + userId,
+      data
+    );
+  }
+  resetUserPassword(userId: number, data: any) {
+    return this.http.post<UserDto>(
+      apiUrl + 'User/ResetPassword?userId=' + userId,
+      data
+    );
+  }
+  addUser(data: userInsert) {
+    return this.http.post<userInsert>(apiUrl + 'User/AddUserWithDeps', data);
+  }
+
+  //////////////  //////// PUBLIC ////////////  ////////////////
+
   //نوع النشــــــــــــاط
   getAllActivityTypes() {
     return this.http.get<any>(
       apiUrl + 'CMaintenenceMetersOff/GetAllActivityTypes'
+    );
+  }
+  // by activity id وصف مكــــــــــــان
+  getAllPlacesTypesByActitvityId(activityId: number) {
+    return this.http.get<any>(
+      apiUrl +
+        'CMaintenenceMetersOff/GetAllPlaceTypesByActivityTypeId/' +
+        activityId
     );
   }
   //وصف مكــــــــــــان
@@ -144,6 +192,22 @@ export class MeterService {
   // قطــــــــــــاع
   getAllSections() {
     return this.http.get<any>(apiUrl + 'CMaintenenceMetersOff/GetAllSections');
+  }
+  // by section id الادارة الرئيـــــــسية
+  getAllMainDepartmentsBySectionId(sectionId: number) {
+    return this.http.get<any>(
+      apiUrl +
+        'CMaintenenceMetersOff/GetAllMainDepartmentsBySectionId/' +
+        sectionId
+    );
+  }
+  // by section id الادارة الفــــرعية
+  getAllSmallDepartmentsByMainDepId(depId: number) {
+    return this.http.get<any>(
+      apiUrl +
+        'CMaintenenceMetersOff/GetAllSmallDepartmentsByMainDepId/' +
+        depId
+    );
   }
   // الادارة الرئيـــــــسية
   getAllMainDepartments() {
@@ -157,17 +221,4 @@ export class MeterService {
       apiUrl + 'CMaintenenceMetersOff/GetAllSmallDepartments'
     );
   }
-  //    البحـــــث برقم العـــــــــداد
-  searchMeter(meterNum: number | string) {
-    console.log(meterNum);
-    return this.http.get<any>(
-      'http://192.168.15.10:1001/api/meter/GetMetersInfo/' + meterNum
-    );
-  }
-   //////////////////  ////////////////////// USERS  //////////////////  //////////////////////
-   getAllUsers(){
-    return this.http.get<UserDto>(
-      apiUrl + 'User/GetAllUsers'
-    )
-   }
 }

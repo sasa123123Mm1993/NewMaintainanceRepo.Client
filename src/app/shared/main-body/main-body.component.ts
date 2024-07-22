@@ -71,11 +71,18 @@ export class MainBodyComponent {
       active: false,
     },
     {
+      icon: 'bx bx-file',
+      title: 'تقرير أعطال العدادات',
+      link: '/offMeterReport',
+      active: false,
+    },
+    {
       icon: 'bx bxs-report',
       title: 'تقرير اجمالي أعطال العدادات',
       link: '/totalOffMeterReport',
       active: false,
     },
+
   ];
   selectedSection: number | undefined;
   currentPath!: string;

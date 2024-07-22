@@ -10,7 +10,7 @@
     <ng-template pTemplate="caption">
       <div class="p-toolbar-group-start pt-0">
         <button pButton [raised]="true" icon="pi pi-plus" pTooltip="إضافة" class=" btnIcon defaultBtnColor"
-          (click)="showAddModal = true;"></button>
+          (click)="openAddModal()"></button>
         <button pButton icon="pi pi-print" [raised]="true" class="mr-2 btnIcon defaultBtnColor"
           pTooltip="طباعة"></button>
       </div>
@@ -22,8 +22,8 @@
           <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')"
             placeholder=" بحث بـ / الرقم القومى" class="searchInput" class="searchInput" />
         </p-iconField>
-        <button pButton icon="pi pi-refresh" [raised]="true" class="mr-2 btnIcon defaultBtnColor"
-          pTooltip="اعادة تحميل" (click)="reloadPage()"></button>
+        <button pButton icon="pi pi-refresh" [raised]="true" class="mr-2 btnIcon defaultBtnColor" pTooltip="اعادة تحميل"
+          (click)="reloadPage()"></button>
       </div>
     </ng-template>
 
@@ -57,21 +57,30 @@
         }
 
         <td><button type="button" [raised]="true" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-pencil"
-            pTooltip="تعديل" (click)="showEditModal = true;">
+            pTooltip="تعديل" (click)="showEditModal = true;getUserById(user.id)">
           </button></td>
         <td><button type="button" [raised]="true" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-key"
-            pTooltip="إعادة تعيين كلمة المرور">
+            pTooltip="إعادة تعيين كلمة المرور" (click)="resetPassword(user.id)">
           </button></td>
+        @if (user.isActive==true) {
         <td>
           <button type="button" [raised]="true" class="btnIcon" pButton pRipple icon="pi pi-ban" severity="danger"
-            pTooltip="حظر المستخدم" (click)="banUser($event)">
+            pTooltip="حظر المستخدم" (click)="banUser($event,user.id)">
           </button>
         </td>
+        }@else {
+        <td>
+          <button type="button" [raised]="true" class="btnIcon" pButton pRipple icon="pi pi-check" severity="success"
+            pTooltip="تفعيل المستخدم" (click)="activateUser($event,user.id)">
+          </button>
+        </td>
+        }
+
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="7">لا يوجد بيانات لعرضها</td>
+        <td colspan="9">لا يوجد بيانات لعرضها</td>
       </tr>
     </ng-template>
   </p-table>
@@ -93,12 +102,12 @@
     <div class="flex align-items-center gap-3 mb-3 mt-1 row">
       <div class="row">
         <div class="col-md-6 gap-2 mb-2">
-          <label for="userName" [ngModel]="" class="font-semibold  block mb-2 w-3rem">الاسم </label>
-          <input pInputText id="userName" autocomplete="off" class="w-100" />
+          <label for="userName" class="font-semibold  block mb-2 w-3rem">الاسم </label>
+          <input pInputText id="userName" autocomplete="off" class="w-100" [(ngModel)]="userObj.fullName" />
         </div>
         <div class="col-md-6 gap-2 mb-2">
           <label for="nationalId" class="font-semibold  block mb-2 w-3rem">الرقم القومى </label>
-          <input pInputText id="nationalId" autocomplete="off" class="w-100" />
+          <input pInputText id="nationalId" autocomplete="off" class="w-100"  [(ngModel)]="userObj.natId"/>
         </div>
       </div>
       <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">اختر الادارات الخاصة
@@ -113,7 +122,7 @@
         @if (mainDepartements.length > 0) {
         @for (dep of mainDepartements; track $index) {
         <div class="col-md-3">
-          <p-checkbox value="{{dep.id}}" inputId="userDep" />
+          <p-checkbox value="{{dep.id}}" inputId="userDep" [(ngModel)]="userObj.smallDepartmentsIds"/>
           <label for="userDep" class="fw-bold"> {{dep.name}} </label>
         </div>
         }
@@ -124,52 +133,51 @@
       <div class="row  align-items-center">
         <div class="col-md-6 gap-2 mb-2">
           <label for="userNAme" class="font-semibold  block mb-2 w-3rem">إسم المستخدم </label>
-          <input pInputText id="userNAme" autocomplete="off" class="w-100" />
+          <input pInputText id="userNAme" autocomplete="off" class="w-100"  [(ngModel)]="userObj.userName"/>
         </div>
         <div class="col-md-6 gap-2 pt-4">
-          <p-checkbox value="selectAll" inputId="activateUser" />
+          <p-checkbox value="true" inputId="activateUser"  (ngModel)="userObj.isActive"/>
           <label for="activateUser" class="fw-bold">تفعيل المستخدم </label>
         </div>
       </div>
       <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">الادوار</span>
       <div class="row">
-        <div class="col-md-12 flex flex-wrap gap-3">
+
+        @if (roles) {
+        @for (role of roles; track role.id) {
+        <div class="col-md-3 flex flex-wrap gap-3">
           <div class="field-checkbox">
-            <p-radioButton name="userRole" [value]=" " [(ngModel)]="selectedRole"
+            <p-radioButton name="userRole" [value]="role.roleId"  [(ngModel)]="userObj.roleId"
               [ngModelOptions]="{standalone: true}" />
-            <label class="ml-2">admin</label>
-          </div>
-          <div class="field-checkbox">
-            <p-radioButton name="userRole" [value]="false" [(ngModel)]="selectedRole"
-              [ngModelOptions]="{standalone: true}" />
-            <label class="ml-2">user</label>
-          </div>
-          <div class="field-checkbox">
-            <p-radioButton name="userRole" [value]="true" [(ngModel)]="selectedRole"
-              [ngModelOptions]="{standalone: true}" />
-            <label class="ml-2">employee</label>
+            <label class="ml-2">{{role.roleName}}</label>
           </div>
         </div>
+        }
+        }
       </div>
     </div>
 
     <div class="flex justify-content-start gap-2" style="direction: ltr;">
       <p-button label="الغاء" severity="secondary" (click)="showAddModal = false;" />
-      <p-button label="حفظ" />
+      <p-button label="حفظ" class="confirmBtn" (click)="addUser(userObj)"/>
     </div>
   </p-dialog>
   <!-- تعديل مستخدم -->
-  <p-dialog header="تعديل مستخدم " [modal]="true" [(visible)]="showEditModal" [style]="{ width: '60vw' }"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [draggable]="false" [resizable]="false">
+  <p-dialog *ngIf="userObj" header="تعديل مستخدم " [modal]="true" [(visible)]="showEditModal"
+    [style]="{ width: '60vw' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [draggable]="false"
+    [resizable]="false">
     <div class="flex align-items-center gap-3 mb-3 mt-1 row">
       <div class="row">
         <div class="col-md-6 gap-2 mb-2">
-          <label for="userName" [ngModel]="" class="font-semibold  block mb-2 w-3rem">الاسم </label>
-          <input pInputText id="userName" autocomplete="off" class="w-100" />
+          <label for="userName" class="font-semibold  block mb-2 w-3rem">الاسم
+          </label>
+          <input pInputText id="userName" autocomplete="off" class="w-100" [(ngModel)]="userObj.fullName"
+            ngDefaultControl />
         </div>
         <div class="col-md-6 gap-2 mb-2">
           <label for="nationalId" class="font-semibold  block mb-2 w-3rem">الرقم القومى </label>
-          <input pInputText id="nationalId" autocomplete="off" class="w-100" />
+          <input pInputText id="nationalId" autocomplete="off" class="w-100" [(ngModel)]="userObj.natId"
+            ngDefaultControl />
         </div>
       </div>
       <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">اختر الادارات الخاصة
@@ -182,9 +190,9 @@
       </div>
       <div class="row">
         @if (mainDepartements.length > 0) {
-        @for (dep of mainDepartements; track $index) {
+        @for (dep of mainDepartements; track dep.id) {
         <div class="col-md-3">
-          <p-checkbox value="{{dep.id}}" inputId="userDep" />
+          <p-checkbox value="{{dep.id}}" inputId="userDep" binary="true" [(ngModel)]="dep.checked" ngDefaultControl />
           <label for="userDep" class="fw-bold"> {{dep.name}} </label>
         </div>
         }
@@ -195,17 +203,31 @@
       <div class="row  align-items-center">
         <div class="col-md-6 gap-2 mb-2">
           <label for="userNAme" class="font-semibold  block mb-2 w-3rem">إسم المستخدم </label>
-          <input pInputText id="userNAme" autocomplete="off" class="w-100" />
+          <input pInputText id="userNAme" autocomplete="off" class="w-100" [(ngModel)]="userObj.fullName"
+            ngDefaultControl />
         </div>
         <div class="col-md-6 gap-2 pt-4">
-          <p-checkbox value="selectAll" inputId="activateUser" />
+          <p-checkbox value="selectAll" inputId="activateUser" binary="userObj.isActive" [(ngModel)]="userObj.isActive"
+            ngDefaultControl />
           <label for="activateUser" class="fw-bold">تفعيل المستخدم </label>
         </div>
       </div>
       <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">الادوار</span>
       <div class="row">
-        <div class="col-md-12 flex flex-wrap gap-3">
+
+        @if (roles) {
+        @for (role of roles; track role.id) {
+        <div class="col-md-3 flex flex-wrap gap-3">
           <div class="field-checkbox">
+            <p-radioButton name="userRole" [value]="role.roleId" [(ngModel)]="selectedRole"
+              [ngModelOptions]="{standalone: true}" />
+            <label class="ml-2">{{role.roleName}}</label>
+          </div>
+        </div>
+        }
+        }
+
+        <!-- <div class="field-checkbox">
             <p-radioButton name="userRole" [value]=" " [(ngModel)]="selectedRole"
               [ngModelOptions]="{standalone: true}" />
             <label class="ml-2">admin</label>
@@ -219,17 +241,30 @@
             <p-radioButton name="userRole" [value]="true" [(ngModel)]="selectedRole"
               [ngModelOptions]="{standalone: true}" />
             <label class="ml-2">employee</label>
-          </div>
-        </div>
+          </div> -->
       </div>
     </div>
+    <!-- </div> -->
 
     <div class="flex justify-content-start gap-2" style="direction: ltr;">
       <p-button label="الغاء" severity="secondary" (click)="showEditModal = false;" />
-      <p-button label="حفظ" />
+      <p-button label="حفظ" class="confirmBtn" />
     </div>
   </p-dialog>
 
   <p-toast />
   <p-confirmDialog />
+
+
+  <p-dialog [(visible)]="visibleConfirmDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
+    <h3 class="text-center defaultTxtColor">
+      <i class="pi pi-spin pi-cog" severity="success" style="font-size: 2.5rem"></i>
+    </h3>
+    <div class="row text-center">
+      <b class="text-center">تم تغيير رقم المرور بنجاح</b>
+    </div>
+
+
+  </p-dialog>
 </section>

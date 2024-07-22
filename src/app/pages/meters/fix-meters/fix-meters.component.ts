@@ -32,6 +32,7 @@ export default class FixMetersComponent {
   checked: boolean = false;
   showAllModalData: boolean = false;
   showAccountDiv: boolean = false;
+  showExtraFilter: boolean = false;
   offMeterObj: MeterOffInsert = {
     isDeleted: false,
     creatorById: 0,
@@ -68,9 +69,9 @@ export default class FixMetersComponent {
     isExaminationdata: true,
     mainDepartmentCode: 0,
     smallDepartmentCode: 0,
-    isMeterRecieved: false,
-    isEnded: false,
-    isMeterInstalled: false,
+    isMeterRecieved: ' ',
+    isEnded: ' ',
+    isMeterInstalled: ' ',
     maintenanceDate: new Date(),
   };
   offMeterFix: MeterFixDto = {
@@ -112,6 +113,16 @@ export default class FixMetersComponent {
       },
     });
   }
+  placesTypesList!: any[];
+  getAllPlacesTypesByActivity(activityId: number) {
+    console.log('aaaaaaaaaaa', activityId);
+
+    this.meterService.getAllPlacesTypesByActitvityId(activityId).subscribe({
+      next: (res) => {
+        this.placesTypesList = res;
+      },
+    });
+  }
   placesTypes!: any[];
   getAllPlacesTypes() {
     this.meterService.getAllPlacesTypes().subscribe({
@@ -125,6 +136,25 @@ export default class FixMetersComponent {
     this.meterService.getAllSections().subscribe({
       next: (res) => {
         this.sections = res;
+      },
+    });
+  }
+  mainDeps!: any[];
+  getAllMainDepsBySectionId(sectionId: number) {
+    this.meterService.getAllMainDepartmentsBySectionId(sectionId).subscribe({
+      next: (res) => {
+        this.mainDeps = res;
+        console.log('main by section', this.mainDeps);
+      },
+    });
+  }
+  smallDeps!: any[];
+  getAllSmallDepartmentsByMainDepId(mainId: number) {
+    console.log('mainId', mainId);
+    this.meterService.getAllSmallDepartmentsByMainDepId(mainId).subscribe({
+      next: (res) => {
+        this.smallDeps = res;
+        console.log('smallDeps by main', this.smallDeps);
       },
     });
   }
@@ -339,6 +369,7 @@ export default class FixMetersComponent {
       { name: 'يحتاج صيانه بالمعمل', id: 3 },
     ];
     //init variables
+    this.offMeterObj.isEnded = ' '
   }
   //OPEN MODAL
   showDialog() {
@@ -380,9 +411,9 @@ export default class FixMetersComponent {
       isExaminationdata: true,
       mainDepartmentCode: 0,
       smallDepartmentCode: 0,
-      isMeterRecieved: false,
-      isEnded: false,
-      isMeterInstalled: false,
+      isMeterRecieved: ' ',
+      isEnded: ' ',
+      isMeterInstalled: ' ',
       maintenanceDate: new Date(),
     };
   }
@@ -405,6 +436,40 @@ export default class FixMetersComponent {
       this.dt.filter(company.vendorCode, 'vendorCode', 'equals');
     } else {
       this.dt.filter([1, 2, 3, 4, 5, 6], 'vendorCode', 'in');
+      this.getAllOffMeters();
+    }
+  }
+
+  // حالة عطل العداد
+  filterWithEnded(val: any) {
+    console.log('IsMeterEnded:', val);
+    if (val == true) {
+      this.dt.filter(val, 'isEnded', 'equals');
+    } else if (val == false) {
+      this.dt.filter(val, 'isEnded', 'equals');
+    } else {
+      this.getAllOffMeters();
+    }
+  }
+  // حالة تركيب العداد
+  filterWithMeterInstalled(val: any) {
+    console.log('IsMeterInstalled:', val);
+    if (val == true) {
+      this.dt.filter(val, 'isMeterInstalled', 'equals');
+    } else if (val == false) {
+      this.dt.filter(val, 'isMeterInstalled', 'equals');
+    } else {
+      this.getAllOffMeters();
+    }
+  }
+  // حالة تسليم العداد للفنى
+  filterWithMeterRecieved(val: any) {
+    console.log('IsMeterInstalled:', val);
+    if (val == true) {
+      this.dt.filter(val, 'isMeterRecieved', 'equals');
+    } else if (val == false) {
+      this.dt.filter(val, 'isMeterRecieved', 'equals');
+    } else {
       this.getAllOffMeters();
     }
   }
@@ -449,7 +514,7 @@ export default class FixMetersComponent {
   }
   closeExtraFilterOp(event: any, element: any) {
     element.hide(event);
-    this.getAllOffMeters();
+    window.location.reload();
   }
   getDataByRefAddress(refObj: any) {
     this.meterService

@@ -22,3 +22,12 @@ export interface UserDto {
   lockoutEnabled: boolean;
   accessFailedCount: number;
 }
+export interface userInsert {
+  //id: 0;
+  natId: string;
+  roleId: string;
+  isActive: boolean;
+  userName: string;
+  fullName: string;
+  smallDepartmentsIds: any;
+}
