@@ -1,4 +1,5 @@
-export interface Meter {
+// off reason
+export interface MeterReason {
   code: number;
   name: string;
   uploadReasonId: number;
@@ -10,11 +11,15 @@ export interface Meter {
   modificationTime: string;
   note:string;
 }
-export interface MeterInsertDto {
+export interface MeterReasonInsertDto {
   code: number;
   name: string;
 }
-
+export interface MeterReasonUpdateDto {
+  code: number;
+  name: string;
+}
+// CMaintenence Meters Off
 export interface MeterOffDto {
   vendorCode: number;
   customerCode: string;

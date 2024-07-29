@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MeterService } from '../../../configs/meter.service';
+import { MeterService } from '../../../services/meter.service';
 import { Table, TableModule } from 'primeng/table';
 import { SharedModule } from '../../../shared/sharedModules';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';

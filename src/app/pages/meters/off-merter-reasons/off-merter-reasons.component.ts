@@ -1,8 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
-import { MeterService } from '../../../configs/meter.service';
-import { Meter, MeterInsertDto } from '../meter';
+import { MeterService } from '../../../services/meter.service';
+import { MeterReason, MeterReasonInsertDto } from '../../../modules/meter';
 import { Table, TableModule } from 'primeng/table';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -37,7 +37,7 @@ export default class OffMerterReasonsComponent {
   });
 
   MetersOffReasons!: any;
-  MetersOffReason: MeterInsertDto = {
+  MetersOffReason: MeterReasonInsertDto = {
     name: '',
     code: 0,
   };
@@ -95,7 +95,7 @@ export default class OffMerterReasonsComponent {
 
   reasonId!: number;
 
-  openEditDialog(reason: Meter) {
+  openEditDialog(reason: MeterReason) {
     this.showEdit = true;
     this.meterService.getMetersOffReasonById(reason.id).subscribe({
       next: (res) => {
