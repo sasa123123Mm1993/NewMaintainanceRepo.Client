@@ -8,8 +8,8 @@ export interface Meter {
   modifiedById: string;
   creationTime: string;
   modificationTime: string;
+  note:string;
 }
-
 export interface MeterInsertDto {
   code: number;
   name: string;

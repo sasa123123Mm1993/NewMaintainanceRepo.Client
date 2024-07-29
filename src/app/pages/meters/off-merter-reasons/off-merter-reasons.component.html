@@ -8,7 +8,7 @@
 
     <ng-template pTemplate="caption">
       <div class="p-toolbar-group-start pt-0">
-        <button pButton [raised]="true" (click)="visible = true" icon="pi pi-plus" pTooltip="إضافة"
+        <button pButton [raised]="true" (click)="openAddModal()" icon="pi pi-plus" pTooltip="إضافة"
           class="mr-2 ml-2 btnIcon defaultBtnColor"></button>
         <button pButton [raised]="true" icon="pi pi-print" class="mr-2 btnIcon defaultBtnColor"
           pTooltip="طباعة"></button>
@@ -71,34 +71,63 @@
   <!-- Add modal -->
 
   <p-dialog header="إضافة سبب" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
-    <div class="flex align-items-center gap-3 mb-3 mt-1">
-      <label for="username" class="font-semibold w-6rem">الاسم</label>
-      <input pInputText id="username" class="flex-auto" autocomplete="off" #reasonName />
-    </div>
-    <div class="flex align-items-center gap-3 mb-5">
-      <label for="email" class="font-semibold w-6rem">الكود</label>
-      <p-inputNumber mode="decimal" class="flex-auto" inputId="withoutgrouping" [useGrouping]="false" #reasonCode />
-    </div>
-    <div class="flex justify-content-end gap-2">
-      <p-button label="حفظ" class="confirmBtn" (click)="createReason(reasonName.value,reasonCode.value)" />
-      <p-button label="الغاء" severity="secondary" (click)="cancelAdd()" />
-    </div>
+    <form [formGroup]="reasonForm" (ngSubmit)="createReason(reasonName.value,reasonCode.value)" novalidate>
+      <div class="flex align-items-center gap-3 mb-3 mt-1 field">
+        <label for="username" class="font-semibold w-6rem">الاسم</label>
+        <input pInputText id="username" class="flex-auto" autocomplete="off" #reasonName formControlName="name" />
+      </div>
+      <div class="flex align-items-center gap-3 mb-3">
+        <small class="p-error block text-cenetr px-5 mx-2"
+          *ngIf="reasonForm.get('name')?.invalid && reasonForm.get('name')?.dirty">
+          الاسم مطلوب</small>
+      </div>
+      <div class="flex align-items-center gap-3 mb-3 field">
+        <label for="email" class="font-semibold w-6rem">الكود</label>
+        <p-inputNumber mode="decimal" class="flex-auto" inputId="withoutgrouping" [useGrouping]="false" #reasonCode
+          formControlName="code" />
+      </div>
+      <div class="flex align-items-center gap-3 mb-3">
+        <small class="p-error block text-cenetr px-5 mx-2"
+          *ngIf="reasonForm.get('code')?.invalid && reasonForm.get('code')?.dirty">
+          الكود مطلوب</small>
+      </div>
+      <div class="flex justify-content-end gap-2">
+        <!--  (click)="createReason(reasonName.value,reasonCode.value)" -->
+        <p-button label="حفظ" class="confirmBtn" type="submit" [disabled]="reasonForm.invalid" />
+        <p-button label="الغاء" severity="secondary" (click)="cancelAdd()" />
+      </div>
+    </form>
+
   </p-dialog>
   <!-- Edit modal -->
   <p-dialog header="تعديل سبب" [modal]="true" [(visible)]="showEdit" [style]="{ width: '25rem' }">
-    <div class="flex align-items-center gap-3 mb-3 mt-1">
+    <form [formGroup]="reasonForm" (ngSubmit)="editReason()" novalidate>
+      <div class="flex align-items-center gap-3 mb-3 mt-1 field">
       <label for="username" class="font-semibold w-6rem">الاسم</label>
-      <input pInputText id="username" class="flex-auto" autocomplete="off" [(ngModel)]="MetersOffReason.name" />
+      <input pInputText id="username" class="flex-auto" autocomplete="off" [(ngModel)]="MetersOffReason.name" formControlName="name"/>
     </div>
-    <div class="flex align-items-center gap-3 mb-5">
+    <div class="flex align-items-center gap-3 mb-3">
+      <small class="p-error block text-cenetr px-5 mx-2"
+        *ngIf="reasonForm.get('name')?.invalid && reasonForm.get('name')?.dirty">
+        الاسم مطلوب</small>
+    </div>
+    <div class="flex align-items-center gap-3 field">
       <label for="email" class="font-semibold w-6rem">الكود</label>
       <p-inputNumber [(ngModel)]="MetersOffReason.code" mode="decimal" class="flex-auto" inputId="withoutgrouping"
-        [useGrouping]="false" />
+        [useGrouping]="false" formControlName="code"/>
+    </div>
+    <div class="flex align-items-center gap-3 mb-3">
+      <small class="p-error block text-cenetr px-5 mx-2"
+        *ngIf="reasonForm.get('code')?.invalid && reasonForm.get('code')?.dirty">
+        الكود مطلوب</small>
     </div>
     <div class="flex justify-content-end gap-2">
-      <p-button label="حفظ" class="confirmBtn" (click)="editReason()" />
+      <!-- (click)="editReason()" -->
+      <p-button label="حفظ" class="confirmBtn"  type="submit" [disabled]="reasonForm.invalid" />
       <p-button label="الغاء" severity="secondary" (click)="showEdit = false" />
     </div>
+    </form>
+
   </p-dialog>
 
   <p-toast />

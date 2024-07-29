@@ -34,7 +34,7 @@ export default class UsersSettingsComponent {
   roles: any = [];
   userList: any = [];
   userObj: userInsert = {
-    natId: '',
+    nationalId: '',
     roleId: '',
     isActive: false,
     userName: '',
@@ -45,7 +45,7 @@ export default class UsersSettingsComponent {
   openAddModal() {
     this.showAddModal = true;
     this.userObj = {
-      natId: '',
+      nationalId: '',
       roleId: '',
       isActive: false,
       userName: '',
@@ -195,6 +195,8 @@ export default class UsersSettingsComponent {
     this.meterService.addUser(user).subscribe({
       next: (res) => {
         console.log('after user added', res);
+        this.showAddModal=false;
+        this.getAllUsers();
       },
     });
   }

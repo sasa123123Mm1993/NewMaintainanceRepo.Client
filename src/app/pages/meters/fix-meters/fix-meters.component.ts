@@ -195,6 +195,7 @@ export default class FixMetersComponent {
   // GET METER BY ID
   selectedOffMeterId!: any;
   getMeterById(id: number, flag: string) {
+    debugger;
     this.selectedOffMeterId = id;
     this.meterService.getOffMeterById(id).subscribe({
       next: (res) => {
@@ -239,8 +240,9 @@ export default class FixMetersComponent {
       },
     });
   }
-  // EDIT mETER
+  // EDIT METER
   editOffMeter() {
+    debugger;
     this.meterService
       .updtaeOffMeter(this.selectedOffMeterId, this.offMeterObj)
       .subscribe({
