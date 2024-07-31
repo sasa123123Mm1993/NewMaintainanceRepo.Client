@@ -1,4 +1,4 @@
-import { userInsert } from '../../../modules/user';
+import { userInsert } from '../../../models/user';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';

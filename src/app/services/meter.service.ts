@@ -11,8 +11,8 @@ import {
   MeterOffDto,
   MeterFixDto,
   MeterOffInsert,
-} from '../modules/meter';
-import { UserDto, userInsert } from '../modules/user';
+} from '../models/meter';
+import { UserDto, userInsert } from '../models/user';
 
 const headers = {
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',

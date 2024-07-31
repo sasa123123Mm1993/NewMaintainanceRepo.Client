@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
 import { MeterService } from '../../../services/meter.service';
-import { MeterReason, MeterReasonInsertDto } from '../../../modules/meter';
+import { MeterReason, MeterReasonInsertDto } from '../../../models/meter';
 import { Table, TableModule } from 'primeng/table';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, Validators } from '@angular/forms';

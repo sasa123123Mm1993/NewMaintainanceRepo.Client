@@ -1,4 +1,4 @@
-import { MeterReasonInsertDto, MeterOffInsert, MeterFixDto } from '../../../modules/meter';
+import { MeterReasonInsertDto, MeterOffInsert, MeterFixDto } from '../../../models/meter';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
