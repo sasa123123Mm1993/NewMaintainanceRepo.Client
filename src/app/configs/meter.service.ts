@@ -1,25 +1,17 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpContext,
-  HttpHeaders,
-  HttpParams,
-} from '@angular/common/http';
-import { apiUrl } from './apis';
-import {
-  Meter,
-  MeterInsertDto,
-  MeterOffDto,
-  MeterFixDto,
-  MeterOffInsert,
-} from '../pages/meters/meter';
+import {HttpClient,HttpContext,HttpErrorResponse,HttpHeaders,HttpParams,} from '@angular/common/http';
+import { apiUrl, apiUrlLocal } from './apis';
+import {Meter,MeterInsertDto,MeterOffDto,MeterFixDto,MeterOffInsert,} from '../pages/meters/meter';
 import { UserDto, userInsert } from '../pages/users/user';
+import { Login } from '../shared/models/Login';
+import { LoginRes } from '../shared/models/LoginRes';
+import { catchError, Observable, throwError } from 'rxjs';
 
 // const headers = { 'Content-Type': 'application/json', Accept: '*/*' };
 const headers = {
   // 'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
-  'Access-Control-Allow-Origin': 'http://localhost:4200',
+  'Access-Control-Allow-Origin': 'http://localhost:7095',
   'Access-Control-Allow-Headers': 'X-Requested-With,content-type',
   // 'Access-Control-Allow-Credentials': true
 };
@@ -33,10 +25,26 @@ export class MeterService {
     this.corsHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'Access-Control-Allow-Origin': 'http://localhost:4200',
+      'Access-Control-Allow-Origin': 'http://192.168.15.10:1501',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
     });
   }
+
+  
+
+  Login(LoginObj: Login) : Observable<any>{
+    debugger;
+    return this.http.post<LoginRes>(
+      apiUrl + 'Auth/Login/login',
+      LoginObj
+    ).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => new Error('Login failed'));
+      })
+    );
+  }
+
+
 
   ////////////////// METER OFF REASONS //////////////////////
   getAllMetersOffReasons() {
@@ -84,6 +92,7 @@ export class MeterService {
       offMeter
     );
   }
+
   getOffMeterById(id: number | string) {
     return this.http.get<MeterOffInsert>(
       apiUrl + 'CMaintenenceMetersOff/GetMaintainceMeterById/' + id
