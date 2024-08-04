@@ -31,8 +31,8 @@ export default class LoginComponent {
   password = '';
   authService = inject(AuthService);
   router = inject(Router);
-  @Input() item = ''; 
-  
+  @Input() item = '';
+
   constructor(private http: HttpClient,
     // @Inject(SESSION_STORAGE) private storage: StorageService,
     // @Inject(MY_AWESOME_SERVICE_STORAGE) private Tokenstorage: StorageService,
@@ -48,7 +48,7 @@ export default class LoginComponent {
     this.router.navigateByUrl('/dashboard');
   }
 
-  
+
 
   // OnLogin() {
   //   debugger;7095
@@ -94,12 +94,13 @@ export default class LoginComponent {
 
       .subscribe((
         res:any)=>{
-         if(res.result){
+          console.log("?????????????",res)
+         if(res.isSucceed){
           localStorage.setItem('UserId',res.userId);
           localStorage.setItem('isSucceed',res.isSucceed);
-          this.Response = res.data;
+          this.Response = res.message;
           localStorage.setItem('myData',res.message);
-          
+
           this.router.navigateByUrl('/dashboard');
          }
          else{

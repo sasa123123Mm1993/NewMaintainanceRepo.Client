@@ -2,11 +2,10 @@ import { HttpInterceptorFn } from '@angular/common/http';
 //import { LocalStorage, SessionStorage } from 'ngx-webstorage';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  
   debugger;
   //const myToken = window.localStorage.getItem('UserToken');
   //const myToken = localStorage.getItem('UserToken');
-  // const myToken = JSON.parse(localStorage.getItem('myData')!); 
+  // const myToken = JSON.parse(localStorage.getItem('myData')!);
 
   // const cloneRequest = req.clone({
   //   setHeaders:{
@@ -15,6 +14,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // });
 
   const token = localStorage.getItem('myData');
+  console.log("ttttttttttoken",token)
   const cloneRequest=req.clone({
     headers: req.headers.set('Authorization', `Bearer ${token}`)
   });
@@ -24,7 +24,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 
 // export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  
+
 //   const jwtToken = getJwtToken();
 //   if (jwtToken) {
 //     var cloned = req.clone({
@@ -39,8 +39,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 // };
 
 // function getJwtToken(): string | null {
-//   let tokens: any = localStorage.getItem('mm');  
-  
+//   let tokens: any = localStorage.getItem('mm');
+
 //   if (!tokens) return null;
 //   const token = JSON.parse(tokens).access_token;
 //   return token;

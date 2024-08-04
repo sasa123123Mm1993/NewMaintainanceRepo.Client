@@ -59,6 +59,7 @@ export default class OffMerterReasonsComponent {
   getAllReasons() {
     this.meterService.getAllMetersOffReasons().subscribe({
       next: (res) => {
+        console.log("res",res)
         this.MetersOffReasons = res;
       },
     });

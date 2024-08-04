@@ -11,7 +11,7 @@ import { identifierName } from '@angular/compiler';
 @Component({
   selector: 'app-cards',
   standalone: true,
-  imports: [SidemenuComponent, CommonModule, SharedModule, FormsModule],
+  imports: [SidemenuComponent, CommonModule, FormsModule,SharedModule],
   templateUrl: './cards.component.html',
   styleUrl: './cards.component.scss',
   providers: [ConfirmationService, MessageService],

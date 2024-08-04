@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
+
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { LoginRes } from '../models/LoginRes';
 
@@ -61,17 +61,17 @@ export class AuthService {
     return !!localStorage.getItem(this.JWT_TOKEN);
   }
 
-  isTokenExpired() {
-    const tokens = localStorage.getItem(this.JWT_TOKEN);
-    if (!tokens) return true;
-    const token = JSON.parse(tokens).access_token;
-    const decoded = jwtDecode(token);
-    if (!decoded.exp) return true;
-    const expirationDate = decoded.exp * 1000;
-    const now = new Date().getTime();
+  // isTokenExpired() {
+  //   const tokens = localStorage.getItem(this.JWT_TOKEN);
+  //   if (!tokens) return true;
+  //   const token = JSON.parse(tokens).access_token;
+  //   const decoded = jwtDecode(token);
+  //   if (!decoded.exp) return true;
+  //   const expirationDate = decoded.exp * 1000;
+  //   const now = new Date().getTime();
 
-    return expirationDate < now;
-  }
+  //   return expirationDate < now;
+  // }
 
   refreshToken() {
     let tokens: any = localStorage.getItem(this.JWT_TOKEN);
