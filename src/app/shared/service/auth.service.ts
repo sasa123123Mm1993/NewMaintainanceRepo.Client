@@ -4,8 +4,10 @@ import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { LoginRes } from '../models/LoginRes';
-import { apiUrl } from '../../configs/apis';
-import { UserDto } from '../../pages/users/user';
+
+
+import { apiUrl } from '../../environments/apis';
+import { UserDto } from '../../models/user';
 @Injectable({
   providedIn: 'root',
 })

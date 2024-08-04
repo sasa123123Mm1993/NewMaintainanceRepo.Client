@@ -5,7 +5,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { SidemenuComponent } from '../sidemenu/sidemenu.component';
 import { RouterOutlet } from '@angular/router';
 import { Location } from '@angular/common';
-import { MeterService } from '../../configs/meter.service';
+import { MeterService } from '../../services/meter.service';
 
 @Component({
   selector: 'app-main-body',

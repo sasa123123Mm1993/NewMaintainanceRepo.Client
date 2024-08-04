@@ -8,10 +8,10 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { Login } from '../../shared/models/Login';
 import { HttpClient } from '@angular/common/http';
-import { MeterService } from '../../configs/meter.service';
 import { LoginRes } from '../../shared/models/LoginRes';
 import { AuthService } from '../../shared/service/auth.service';
 import { json } from 'stream/consumers';
+import { MeterService } from '../../services/meter.service';
 const STORAGE_KEY = '';
 // export const MY_AWESOME_SERVICE_STORAGE =
 //     new InjectionToken<StorageService>('MY_AWESOME_SERVICE_STORAGE');

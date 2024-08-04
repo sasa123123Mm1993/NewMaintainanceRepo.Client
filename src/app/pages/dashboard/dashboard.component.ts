@@ -5,8 +5,9 @@ import { CardModule } from 'primeng/card';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { error } from 'console';
-import { MeterService } from '../../configs/meter.service';
+
 import { AuthService } from '../../shared/service/auth.service';
+import { MeterService } from '../../services/meter.service';
 
 @Component({
   selector: 'app-dashboard',

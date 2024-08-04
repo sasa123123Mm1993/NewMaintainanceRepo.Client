@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
-import {HttpClient,HttpContext,HttpErrorResponse,HttpHeaders,HttpParams,} from '@angular/common/http';
-import { apiUrl, apiUrlLocal } from './apis';
-import {Meter,MeterInsertDto,MeterOffDto,MeterFixDto,MeterOffInsert,} from '../pages/meters/meter';
-import { UserDto, userInsert } from '../pages/users/user';
-import { Login } from '../shared/models/Login';
-import { LoginRes } from '../shared/models/LoginRes';
-import { catchError, Observable, throwError } from 'rxjs';
+import {
+  HttpClient,
+  HttpHeaders,
+} from '@angular/common/http';
+import { apiUrl } from '../environments/apis';
+import {
+  MeterReason,
+  MeterReasonInsertDto,
+  MeterReasonUpdateDto,
+  MeterOffDto,
+  MeterFixDto,
+  MeterOffInsert,
+} from '../models/meter';
+import { UserDto, userInsert } from '../models/user';
 
-// const headers = { 'Content-Type': 'application/json', Accept: '*/*' };
 const headers = {
-  // 'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
-  'Access-Control-Allow-Origin': 'http://localhost:7095',
+  'Access-Control-Allow-Origin': 'http://localhost:4200',
   'Access-Control-Allow-Headers': 'X-Requested-With,content-type',
-  // 'Access-Control-Allow-Credentials': true
 };
 
 @Injectable({
@@ -25,58 +29,38 @@ export class MeterService {
     this.corsHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'Access-Control-Allow-Origin': 'http://192.168.15.10:1501',
+      'Access-Control-Allow-Origin': 'http://localhost:4200',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
     });
   }
 
-  
-
-  Login(LoginObj: Login) : Observable<any>{
-    debugger;
-    return this.http.post<LoginRes>(
-      apiUrl + 'Auth/Login/login',
-      LoginObj
-    ).pipe(
-      catchError((error: HttpErrorResponse) => {
-        return throwError(() => new Error('Login failed'));
-      })
-    );
-  }
-
-
-
   ////////////////// METER OFF REASONS //////////////////////
   getAllMetersOffReasons() {
-    return this.http.get<Meter[]>(apiUrl + 'MetersOffReasons/GetAll');
+    return this.http.get<MeterReason[]>(apiUrl + 'MetersOffReasons/GetAll');
   }
 
-  addMetersOffReason(meterReason: MeterInsertDto) {
-    return this.http.post<Meter>(
+  addMetersOffReason(meterReason: MeterReasonInsertDto) {
+    return this.http.post<MeterReasonInsertDto>(
       apiUrl + 'MetersOffReasons/Create',
       meterReason
     );
   }
 
   getMetersOffReasonById(reasonId: number | string) {
-    return this.http.get<Meter>(
+    return this.http.get<MeterReason>(
       apiUrl + 'MetersOffReasons/GetById/' + reasonId
     );
   }
 
-  editMetersOffReason(reasonId: number | string, meterReason: MeterInsertDto) {
-    return this.http.post<Meter>(
+  editMetersOffReason(reasonId: number | string, meterReason: MeterReasonUpdateDto) {
+    return this.http.post<MeterReasonUpdateDto>(
       apiUrl + 'MetersOffReasons/Update/' + reasonId,
-      meterReason,
-      { headers: headers }
+      meterReason
     );
   }
 
   deleteMetersOffReason(reasonId: number | string) {
-    return this.http.get<Meter>(
-      apiUrl + 'MetersOffReasons/Delete/' + reasonId
-      // { headers: headers }
-    );
+    return this.http.get<MeterReasonUpdateDto>(apiUrl + 'MetersOffReasons/Delete/' + reasonId);
   }
 
   ////////////////// CMaintenenceMetersOff //////////////////////
@@ -92,7 +76,6 @@ export class MeterService {
       offMeter
     );
   }
-
   getOffMeterById(id: number | string) {
     return this.http.get<MeterOffInsert>(
       apiUrl + 'CMaintenenceMetersOff/GetMaintainceMeterById/' + id

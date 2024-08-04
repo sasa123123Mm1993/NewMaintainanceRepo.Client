@@ -1,9 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
-import { MeterService } from '../../../configs/meter.service';
-import { Meter, MeterInsertDto } from '../meter';
+import { MeterService } from '../../../services/meter.service';
+import { MeterReason, MeterReasonInsertDto } from '../../../models/meter';
 import { Table, TableModule } from 'primeng/table';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { SharedModule } from '../../../shared/sharedModules';
 import { InputNumber, InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -17,14 +19,25 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     TableModule,
     SharedModule,
     InputNumberModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './off-merter-reasons.component.html',
   styleUrls: ['./off-merter-reasons.component.scss'],
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService, MessageService, FormBuilder, Validators],
 })
 export default class OffMerterReasonsComponent {
+  userForm = this.fb.group({
+    firstName: ['', Validators.required],
+    lastName: [''],
+  });
+  //forms
+  reasonForm = this.fb.group({
+    name: ['', Validators.required],
+    code: ['', Validators.required],
+  });
+
   MetersOffReasons!: any;
-  MetersOffReason: MeterInsertDto = {
+  MetersOffReason: MeterReasonInsertDto = {
     name: '',
     code: 0,
   };
@@ -36,7 +49,8 @@ export default class OffMerterReasonsComponent {
   constructor(
     private meterService: MeterService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private fb: FormBuilder
   ) {}
   logged: boolean = true;
   ngOnInit(): void {
@@ -49,7 +63,17 @@ export default class OffMerterReasonsComponent {
       },
     });
   }
-
+  openAddModal() {
+    this.visible = true;
+    this.MetersOffReason = {
+      name: '',
+      code: 0,
+    };
+    this.reasonForm = this.fb.group({
+      name: ['', Validators.required],
+      code: ['', Validators.required],
+    });
+  }
   createReason(name: string, code: any) {
     debugger;
     this.visible = false;
@@ -71,7 +95,7 @@ export default class OffMerterReasonsComponent {
 
   reasonId!: number;
 
-  openEditDialog(reason: Meter) {
+  openEditDialog(reason: MeterReason) {
     this.showEdit = true;
     this.meterService.getMetersOffReasonById(reason.id).subscribe({
       next: (res) => {

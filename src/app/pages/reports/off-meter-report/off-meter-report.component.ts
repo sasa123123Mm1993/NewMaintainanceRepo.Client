@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
-import { MeterService } from '../../../configs/meter.service';
+import { MeterService } from '../../../services/meter.service';
 import { Table, TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../../shared/sharedModules';

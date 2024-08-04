@@ -1,8 +1,8 @@
-import { userInsert } from './../user';
+import { userInsert } from '../../../models/user';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
-import { MeterService } from '../../../configs/meter.service';
+import { MeterService } from '../../../services/meter.service';
 import { Table, TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../../shared/sharedModules';
@@ -34,7 +34,7 @@ export default class UsersSettingsComponent {
   roles: any = [];
   userList: any = [];
   userObj: userInsert = {
-    natId: '',
+    nationalId: '',
     roleId: '',
     isActive: false,
     userName: '',
@@ -45,7 +45,7 @@ export default class UsersSettingsComponent {
   openAddModal() {
     this.showAddModal = true;
     this.userObj = {
-      natId: '',
+      nationalId: '',
       roleId: '',
       isActive: false,
       userName: '',
@@ -195,6 +195,8 @@ export default class UsersSettingsComponent {
     this.meterService.addUser(user).subscribe({
       next: (res) => {
         console.log('after user added', res);
+        this.showAddModal=false;
+        this.getAllUsers();
       },
     });
   }
