@@ -90,18 +90,24 @@ export default class LoginComponent {
       debugger;
       this.LoginObj.userName = userName;
       this.LoginObj.password = password;
-      this.meterService.Login(this.LoginObj).subscribe({
-        next: (res) => {
-          debugger;
-          // alert("Login Successfully");
+      this.meterService.Login(this.LoginObj)
+
+      .subscribe((
+        res:any)=>{
+         if(res.result){
           localStorage.setItem('UserId',res.userId);
           localStorage.setItem('isSucceed',res.isSucceed);
           this.Response = res.data;
           localStorage.setItem('myData',res.message);
           
           this.router.navigateByUrl('/dashboard');
-        },
-      });
+         }
+         else{
+          alert(res.message);
+         }
+        })
+
+
 
     }
 

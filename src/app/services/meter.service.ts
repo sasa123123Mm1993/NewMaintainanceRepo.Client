@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
+  HttpErrorResponse,
   HttpHeaders,
 } from '@angular/common/http';
 import { apiUrl } from '../environments/apis';
@@ -13,10 +14,13 @@ import {
   MeterOffInsert,
 } from '../models/meter';
 import { UserDto, userInsert } from '../models/user';
+import { Login } from '../shared/models/Login';
+import { catchError, Observable, throwError } from 'rxjs';
+import { LoginRes } from '../shared/models/LoginRes';
 
 const headers = {
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
-  'Access-Control-Allow-Origin': 'http://localhost:4200',
+  'Access-Control-Allow-Origin': 'http://192.168.15.10:1501',
   'Access-Control-Allow-Headers': 'X-Requested-With,content-type',
 };
 
@@ -39,6 +43,22 @@ export class MeterService {
     return this.http.get<MeterReason[]>(apiUrl + 'MetersOffReasons/GetAll');
   }
 
+
+  
+  Login(LoginObj: Login) : Observable<any>{
+    debugger;
+    return this.http.post<LoginRes>(
+      apiUrl + 'Auth/Login/login',
+      LoginObj
+    ).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => new Error('Login failed'));
+      })
+    );
+  }
+
+
+  
   addMetersOffReason(meterReason: MeterReasonInsertDto) {
     return this.http.post<MeterReasonInsertDto>(
       apiUrl + 'MetersOffReasons/Create',

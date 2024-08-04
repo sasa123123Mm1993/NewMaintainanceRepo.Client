@@ -24,7 +24,7 @@ export const appConfig: ApplicationConfig = {
           }
         })
       ]),
-    //provideHttpClient(withInterceptors([authInterceptor]))
+    provideHttpClient(withInterceptors([authInterceptor]))
   ],
 };
 
