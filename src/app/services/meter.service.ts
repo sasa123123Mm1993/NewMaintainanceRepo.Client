@@ -17,6 +17,7 @@ import { UserDto, userInsert } from '../models/user';
 import { Login } from '../shared/models/Login';
 import { catchError, Observable, throwError } from 'rxjs';
 import { LoginRes } from '../shared/models/LoginRes';
+import { ICard } from '../models/card';
 
 const headers = {
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
@@ -43,22 +44,14 @@ export class MeterService {
     return this.http.get<MeterReason[]>(apiUrl + 'MetersOffReasons/GetAll');
   }
 
-
-
-  Login(LoginObj: Login) : Observable<any>{
+  Login(LoginObj: Login): Observable<any> {
     debugger;
-    return this.http.post<LoginRes>(
-      apiUrl + 'Auth/Login/login',
-      LoginObj
-    ).pipe(
+    return this.http.post<LoginRes>(apiUrl + 'Auth/Login/login', LoginObj).pipe(
       catchError((error: HttpErrorResponse) => {
         return throwError(() => new Error('Login failed'));
       })
     );
   }
-
-
-
 
   addMetersOffReason(meterReason: MeterReasonInsertDto) {
     return this.http.post<MeterReasonInsertDto>(
@@ -73,7 +66,10 @@ export class MeterService {
     );
   }
 
-  editMetersOffReason(reasonId: number | string, meterReason: MeterReasonUpdateDto) {
+  editMetersOffReason(
+    reasonId: number | string,
+    meterReason: MeterReasonUpdateDto
+  ) {
     return this.http.post<MeterReasonUpdateDto>(
       apiUrl + 'MetersOffReasons/Update/' + reasonId,
       meterReason
@@ -81,7 +77,9 @@ export class MeterService {
   }
 
   deleteMetersOffReason(reasonId: number | string) {
-    return this.http.get<MeterReasonUpdateDto>(apiUrl + 'MetersOffReasons/Delete/' + reasonId);
+    return this.http.get<MeterReasonUpdateDto>(
+      apiUrl + 'MetersOffReasons/Delete/' + reasonId
+    );
   }
 
   ////////////////// CMaintenenceMetersOff //////////////////////
@@ -178,6 +176,13 @@ export class MeterService {
   }
   addUser(data: userInsert) {
     return this.http.post<userInsert>(apiUrl + 'User/AddUserWithDeps', data);
+  }
+  //////////////  //////// Card ////////////  ////////////////
+  readCard(){
+    return this.http.get<ICard>('http://localhost:8000/CardService.svc/rest/ReadCard')
+  }
+  writeCard(data:ICard){
+    return this.http.post<ICard>('http://localhost:8000/CardService.svc/rest/WriteCard',data)
   }
 
   //////////////  //////// PUBLIC ////////////  ////////////////

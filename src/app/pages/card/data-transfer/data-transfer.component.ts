@@ -1,3 +1,4 @@
+import { MeterService } from './../../../services/meter.service';
 import { Component } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
@@ -7,12 +8,28 @@ import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-data-transfer',
   standalone: true,
-  imports: [CardModule,InputTextModule,FormsModule,ButtonModule],
+  imports: [CardModule, InputTextModule, FormsModule, ButtonModule],
   templateUrl: './data-transfer.component.html',
-  styleUrl: './data-transfer.component.scss'
+  styleUrl: './data-transfer.component.scss',
 })
 export default class DataTransferComponent {
   logged: boolean = true;
-  data:string|undefined;
-  COMPort:string|undefined;
+  data: string | undefined;
+  COMPort: string | undefined;
+  constructor(private meterService: MeterService) {}
+  readCard() {
+    this.meterService.readCard().subscribe({
+      next: (res) => {
+        console.log('after read card : ', res);
+      },
+    });
+  }
+  writeCard(data:any){
+    console.log("cardData",data);
+    this.meterService.writeCard(data).subscribe({
+      next: (res) => {
+        console.log('after write card : ', res);
+      },
+    });
+  }
 }

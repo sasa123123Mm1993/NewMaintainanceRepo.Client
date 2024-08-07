@@ -6,11 +6,11 @@
     </div>
     <div class="flex flex-column gap-2 pt-4">
       <label for="data">البيانات</label>
-      <input pInputText id="data" aria-describedby="username-help" [(ngModel)]="data" />
+      <input pInputText id="data" #cardData aria-describedby="username-help" [(ngModel)]="data" />
     </div>
     <div class="flex gap-2 pt-4">
-      <p-button label="قراءة كارت" class="w-50" [raised]="true" />
-      <p-button label="كتابة على الكارت" class="w-50 defaultBtnColor" [raised]="true" severity="success" />
+      <p-button label="قراءة كارت" class="w-50" [raised]="true" (click)="readCard()"/>
+      <p-button label="كتابة على الكارت" class="w-50 defaultBtnColor" [raised]="true" severity="success" (click)="writeCard(cardData.value)"/>
     </div>
   </div>
 </section>
