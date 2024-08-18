@@ -1,3 +1,3 @@
 export interface ICard {
-  cardData: string;
+  cardData: any;
 }

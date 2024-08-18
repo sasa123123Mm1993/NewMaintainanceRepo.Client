@@ -24,9 +24,14 @@ export default class DataTransferComponent {
       },
     });
   }
-  writeCard(data:any){
-    console.log("cardData",data);
-    this.meterService.writeCard(data).subscribe({
+  cardObj = {
+    CardToken: '',
+  };
+  writeCard(data: any) {
+    console.log('cardData', data);
+    this.cardObj.CardToken = data;
+    console.log("full obj",this.cardObj)
+    this.meterService.writeCard(this.cardObj).subscribe({
       next: (res) => {
         console.log('after write card : ', res);
       },

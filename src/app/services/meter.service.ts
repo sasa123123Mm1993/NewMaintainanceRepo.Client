@@ -181,7 +181,7 @@ export class MeterService {
   readCard(){
     return this.http.get<ICard>('http://localhost:8000/CardService.svc/rest/ReadCard')
   }
-  writeCard(data:ICard){
+  writeCard(data:any){
     return this.http.post<ICard>('http://localhost:8000/CardService.svc/rest/WriteCard',data)
   }
 
