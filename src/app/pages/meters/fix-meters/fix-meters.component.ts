@@ -1,4 +1,8 @@
-import { MeterReasonInsertDto, MeterOffInsert, MeterFixDto } from '../../../models/meter';
+import {
+  MeterReasonInsertDto,
+  MeterOffInsert,
+  MeterFixDto,
+} from '../../../models/meter';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
@@ -6,6 +10,9 @@ import { MeterService } from '../../../services/meter.service';
 import { Table, TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../../shared/sharedModules';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
+
 interface Company {
   name: string;
   vendorCode: number;
@@ -20,10 +27,10 @@ interface Index {
 @Component({
   selector: 'app-fix-meters',
   standalone: true,
-  imports: [SidemenuComponent, CommonModule, SharedModule],
+  imports: [SidemenuComponent, CommonModule, SharedModule, ReactiveFormsModule],
   templateUrl: './fix-meters.component.html',
   styleUrl: './fix-meters.component.scss',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService, MessageService, FormBuilder, Validators],
 })
 export default class FixMetersComponent {
   position: string = ' ';
@@ -33,6 +40,7 @@ export default class FixMetersComponent {
   showAllModalData: boolean = false;
   showAccountDiv: boolean = false;
   showExtraFilter: boolean = false;
+  addOffMeterObj: any = {};
   offMeterObj: MeterOffInsert = {
     isDeleted: false,
     creatorById: 0,
@@ -92,11 +100,14 @@ export default class FixMetersComponent {
   showEdit: boolean = false;
   showFilter: boolean = false;
   showFix: boolean = false;
+  //ADD Form
   constructor(
     private meterService: MeterService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
-  ) {}
+    private messageService: MessageService,
+    private fb: FormBuilder
+  ) {
+  }
   //ALL FUNC TO ADD WHEN MODAL IS OPEN
   //ـــــــــــــــــــــــــــــــــــــــــ//
   indexArr: Index[] = [];
@@ -346,6 +357,41 @@ export default class FixMetersComponent {
     });
   }
 
+  addOffMeterForm = this.fb.group({
+    companyName: ['', Validators.required],
+    meterNum: ['', Validators.required],
+    customerCode: ['', Validators.required],
+    customerName: ['', Validators.required],
+    nationalId: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(
+          '^([2-3]{1})([0-9]{2})(0[1-9]|1[012])(0[1-9]|[1-2][0-9]|3[0-1])(0[1-4]|[1-2][1-9]|3[1-5]|88)[0-9]{3}([0-9]{1})[0-9]{1}$'
+        ),
+      ],
+    ],
+    customerAddress: ['', Validators.required],
+    activityType: [null, Validators.required],
+    placesType: ['', Validators.required],
+    section: ['', Validators.required],
+    mainDep: ['', Validators.required],
+    smallDep: ['', Validators.required],
+    branchNo: ['', Validators.required],
+    accountNo: ['', Validators.required],
+    regionNo: ['', Validators.required],
+    dailyNo: ['', Validators.required],
+    preparedDate: ['', Validators.required],
+    installationDate: ['', Validators.required],
+    meterOffDate: ['', Validators.required],
+    uploadDate: ['', Validators.required],
+    deliveryDateToLab: ['', Validators.required],
+    uploadReason: ['', Validators.required],
+    meterStatusOnUpload: ['', Validators.required],
+  });
+
+
+
   ngOnInit(): void {
     //init func
     this.getAllOffMeters();
@@ -371,7 +417,7 @@ export default class FixMetersComponent {
       { name: 'يحتاج صيانه بالمعمل', id: 3 },
     ];
     //init variables
-    this.offMeterObj.isEnded = ' '
+    this.offMeterObj.isEnded = ' ';
   }
   //OPEN MODAL
   showDialog() {
@@ -419,7 +465,10 @@ export default class FixMetersComponent {
       maintenanceDate: new Date(),
     };
   }
-
+  closeAddModal() {
+    this.showAddModal = false;
+    this.addOffMeterObj = {};
+  }
   //TABLE FILTERS
   @ViewChild('dt') dt!: Table;
   applyFilterGlobal($event: any, stringVal: any) {
