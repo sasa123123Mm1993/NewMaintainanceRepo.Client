@@ -39,19 +39,24 @@ export class MeterService {
     });
   }
 
-  ////////////////// METER OFF REASONS //////////////////////
-  getAllMetersOffReasons() {
-    return this.http.get<MeterReason[]>(apiUrl + 'MetersOffReasons/GetAll');
-  }
-
   Login(LoginObj: Login): Observable<any> {
     debugger;
-    return this.http.post<LoginRes>(apiUrl + 'Auth/Login/login', LoginObj).pipe(
+    return this.http.post<LoginRes>(apiUrl + 'Account/login', LoginObj).pipe(
       catchError((error: HttpErrorResponse) => {
         return throwError(() => new Error('Login failed'));
       })
     );
   }
+
+
+  
+
+  ////////////////// METER OFF REASONS //////////////////////
+  getAllMetersOffReasons() {
+    return this.http.get<MeterReason[]>(apiUrl + 'MetersOffReasons/GetAll');
+  }
+
+  
 
   addMetersOffReason(meterReason: MeterReasonInsertDto) {
     return this.http.post<MeterReasonInsertDto>(
