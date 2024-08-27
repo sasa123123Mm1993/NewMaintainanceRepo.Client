@@ -5,6 +5,9 @@ import { Table, TableModule } from 'primeng/table';
 import { SharedModule } from '../../../shared/sharedModules';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
+
 interface Category {
   name: string;
   code: string;
@@ -12,7 +15,7 @@ interface Category {
 @Component({
   selector: 'app-users-permissions',
   standalone: true,
-  imports: [CommonModule, TableModule, SharedModule],
+  imports: [CommonModule, TableModule, SharedModule, ReactiveFormsModule],
   templateUrl: './users-permissions.component.html',
   styleUrl: './users-permissions.component.scss',
   providers: [ConfirmationService, MessageService],
@@ -21,8 +24,13 @@ export default class UsersPermissionsComponent {
   constructor(
     private meterService: MeterService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private fb: FormBuilder
   ) {}
+  //forms
+  addPermissionForm = this.fb.group({
+    permissionName: ['', Validators.required],
+  });
   permissionList: any = [];
   ngOnInit(): void {
     this.meterService.getAllMetersOffReasons().subscribe({
@@ -60,5 +68,8 @@ export default class UsersPermissionsComponent {
         });
       },
     });
+  }
+  createPermission(permission: any) {
+    console.log('perm', permission);
   }
 }

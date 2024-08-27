@@ -1,5 +1,5 @@
 <section>
-  @if (userList) {
+  <!-- @if (userList) { -->
   <p-table #dt [value]="userList" styleClass="p-datatable-striped"
     [tableStyle]="{ 'max-width': '100vw , padding-bottom: 1.25rem' }" [scrollable]="true" scrollHeight="450px"
     [paginator]="true" [rows]="5" [showCurrentPageReport]="true" columnResizeMode="expand"
@@ -11,9 +11,10 @@
       <div class="p-toolbar-group-start pt-0">
         <button pButton [raised]="true" icon="pi pi-plus" pTooltip="إضافة" class=" btnIcon defaultBtnColor"
           (click)="openAddModal()"></button>
-        <button pButton icon="pi pi-print" [raised]="true" class="mr-2 btnIcon defaultBtnColor"
+        <button pButton icon="pi pi-print" [raised]="true" class="mr-2 btnIcon defaultBtnColor" *ngIf="userList.length > 1"
           pTooltip="طباعة"></button>
       </div>
+      @if (userList.length > 1) {
       <div class="flex">
         <p-iconField iconPosition="left" class="ml-auto mt-1" pTooltip="بحث">
           <p-inputIcon>
@@ -25,6 +26,7 @@
         <button pButton icon="pi pi-refresh" [raised]="true" class="mr-2 btnIcon defaultBtnColor" pTooltip="اعادة تحميل"
           (click)="reloadPage()"></button>
       </div>
+    }
     </ng-template>
 
     <ng-template pTemplate="header">
@@ -84,7 +86,7 @@
       </tr>
     </ng-template>
   </p-table>
-  }
+  <!-- }
   @else {
   <div class="row pt-5 mt-5">
     <div class="col-md-12 mt-5" style="margin: auto;display: flex;justify-content: center;">
@@ -94,7 +96,7 @@
       <h4>من فضلك تأكد من الاتصال بالخادم</h4>
     </div>
   </div>
-  }
+  } -->
 
   <!-- إضافة مستخدم -->
   <p-dialog header="إضافة مستخدم " [modal]="true" [(visible)]="showAddModal" [style]="{ width: '60vw' }"

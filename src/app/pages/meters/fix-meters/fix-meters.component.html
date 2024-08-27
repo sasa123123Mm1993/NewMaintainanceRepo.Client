@@ -25,7 +25,7 @@
     </div>
 
   </div>
-  @if (offMetersList) {
+  <!-- @if (offMetersList) { -->
   <p-table #dt [value]="offMetersList" styleClass="p-datatable-striped"
     [tableStyle]="{ 'max-width': '100vw , padding-bottom: 1.25rem' }" [scrollable]="true" scrollHeight="450px"
     [paginator]="true" [rows]="5" [showCurrentPageReport]="true" columnResizeMode="expand"
@@ -36,7 +36,7 @@
       <div class="flex"><button pButton (click)="showDialog()" [raised]="true" icon="pi pi-plus" pTooltip="إضافة"
           class=" btnIcon defaultBtnColor"></button>
       </div>
-
+      @if (offMetersList) {
       <div class="flex"><button pButton icon="pi pi-print" [raised]="true" class="mr-2 btnIcon defaultBtnColor"
           pTooltip="طباعة"></button>
       </div>
@@ -82,15 +82,11 @@
         <button pButton icon="pi pi-filter" [raised]="true" class="mr-2 btnIcon defaultBtnColor" pTooltip="تصفية اضافية"
           (click)="op.toggle($event)"></button>
       </div>
-      <!-- <div class="flex">
-        <button pButton icon="pi pi-filter" [raised]="true" class="mr-2 btnIcon defaultBtnColor" pTooltip="تصفية اضافية"
-          (click)="showExtraFilter = true;"></button>
-      </div> -->
       <div class="flex">
         <button pButton icon="pi pi-refresh" [raised]="true" class="mr-2 btnIcon defaultBtnColor" pTooltip="اعادة تحميل"
           (click)="reloadPage()"></button>
       </div>
-
+    }
     </ng-template>
 
     <ng-template pTemplate="header">
@@ -178,53 +174,44 @@
       </tr>
     </ng-template>
   </p-table>
-  }
-  @else {
-  <div class="row pt-5 mt-5">
+  <!-- } -->
+  <!-- @else { -->
+  <!-- <div class="row pt-5 mt-5">
     <div class="col-md-12 mt-5" style="margin: auto;display: flex;justify-content: center;">
       <i class='bx bx-error fa-10x'></i>
     </div>
     <div class="col-md-12" style="margin: auto;display: flex;justify-content: center;">
       <h4>من فضلك تأكد من الاتصال بالخادم</h4>
     </div>
-  </div>
-  }
+  </div> -->
+  <!-- } -->
   <!-- إضافة عطل -->
-  <p-dialog header="إضافة عداد معطل" [modal]="true" [(visible)]="showAddModal" [style]="{ width: '75vw' }"
+  <p-dialog header="إضافة عداد معطل" [modal]="true" [(visible)]="showAddModal" [style]="{ width: '75vw',height:'75vh' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [draggable]="false" [resizable]="false">
-    <form [formGroup]="addOffMeterForm" (ngSubmit)="addOffMeter(addOffMeterObj)" novalidate>
-      <div class="flex align-items-center gap-3 mb-3 mt-1">
-        <label for="company" class="font-semibold w-8rem">الشركة المصنعة</label>
-        <p-dropdown [options]="companies" class="w-25 row-cols-1" [(ngModel)]="addOffMeterObj.vendorCode"
-          optionValue="vendorCode" optionLabel="name" formControlName="companyName" [filter]="true" filterBy="name"
-          [showClear]="true" placeholder="اختر الشركة" id="company">
-          <ng-template pTemplate="selectedOption.id" let-selectedOption>
-            <div class="flex align-items-center gap-2">
-              <div>{{ selectedOption.name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-        <div class="flex align-items-center gap-3 mb-3">
-          <small class="p-error block text-cenetr px-5 mx-2"
-          *ngIf="addOffMeterForm.get('companyName')?.invalid && addOffMeterForm.get('companyName')?.dirty">
-            اسم الشركة مطلوب</small>
-        </div>
-        @if (addOffMeterObj.vendorCode == 6) {
-        <label for="serialNum" class="flex font-semibold w-3rem">رقم العداد</label>
-        <p-inputNumber [useGrouping]="false" id="serialNum" class="flex flex-auto" autocomplete="off"
-          formControlName="meterNum" [(ngModel)]="addOffMeterObj.serialNumber" />
-        <div class="flex  gap-3 mb-3">
-          <small class="p-error block pt-2"
-            *ngIf="addOffMeterForm.get('meterNum')?.invalid && addOffMeterForm.get('meterNum')?.dirty">
-            رقم العداد مطلوب</small>
-        </div>
-        <button type="button" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-search" pTooltip="بحث"
-          (click)="searchByMeterNum(addOffMeterObj.serialNumber);"></button>
-        }
 
-      </div>
-      <p-divider />
-      @if (addOffMeterObj.vendorCode != 6) {
+    <div class="flex align-items-center gap-3 mb-3 mt-1">
+      <label for="company" class="font-semibold w-8rem">الشركة المصنعة</label>
+      <p-dropdown [options]="companies" class="w-25 row-cols-1" [(ngModel)]="addOffMeterObj.vendorCode"
+        optionValue="vendorCode" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true"
+        placeholder="اختر الشركة" id="company">
+        <ng-template pTemplate="selectedOption.id" let-selectedOption>
+          <div class="flex align-items-center gap-2">
+            <div>{{ selectedOption.name }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      @if (addOffMeterObj.vendorCode == 6) {
+      <label for="serialNum" class="flex font-semibold w-3rem">رقم العداد</label>
+      <p-inputNumber [useGrouping]="false" id="serialNum" class="flex flex-auto" autocomplete="off"
+        [(ngModel)]="addOffMeterObj.serialNumber" />
+      <button type="button" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-search" pTooltip="بحث"
+        (click)="searchByMeterNum(addOffMeterObj.serialNumber);" [disabled]="addOffMeterObj.serialNumber == null"></button>
+      }
+    </div>
+    <!-- <p-divider /> -->
+    @if (addOffMeterObj.vendorCode != 6 && addOffMeterObj.vendorCode != null) {
+    <form [formGroup]="addOffMeterForm" (ngSubmit)="addOffMeter(addOffMeterObj)" novalidate>
+      <!-- الجزء الخاص  بغير جيزة -->
       <h4 class="darkBack">بيانات العميل الحالى</h4>
       <div class="row">
         <div class="col-md-4 gap-2 mb-2">
@@ -262,10 +249,10 @@
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem">الرقم القومى </label>
           <input pInputText id="serialNum" autocomplete="off" formControlName="nationalId" class="w-100"
-            [(ngModel)]="addOffMeterObj.nationalId" [maxlength]="14"/>
-          <div class="flex  gap-3 mb-3" *ngIf="addOffMeterForm.get('nationalId')?.invalid && addOffMeterForm.get('nationalId')?.dirty">
-            <small class="p-error block pt-2"
-              *ngIf="addOffMeterForm.get('nationalId')?.hasError('required')">
+            [(ngModel)]="addOffMeterObj.nationalId" [maxlength]="14" />
+          <div class="flex  gap-3 mb-3"
+            *ngIf="addOffMeterForm.get('nationalId')?.invalid && addOffMeterForm.get('nationalId')?.dirty">
+            <small class="p-error block pt-2" *ngIf="addOffMeterForm.get('nationalId')?.hasError('required')">
               الرقم القومى مطلوب</small>
             <small class="p-error block pt-2" *ngIf="addOffMeterForm.get('nationalId')?.hasError('pattern')">
               الرقم القومى غير صحيح</small>
@@ -288,18 +275,33 @@
           <p-dropdown [options]="activityTypes" class="row-cols-1" [(ngModel)]="addOffMeterObj.activityTypeId"
             optionLabel="name" optionValue="id" placeholder="اختر نوع النشاط" formControlName="activityType"
             (onChange)="getAllPlacesTypesByActivity(addOffMeterObj.activityTypeId)" required />
+          <div class="flex  gap-3 mb-3">
+            <small class="p-error block pt-2"
+              *ngIf="addOffMeterForm.get('activityType')?.invalid && addOffMeterForm.get('activityType')?.dirty">
+              نوع النشاط مطلوب </small>
+          </div>
         </div>
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem">وصف المكان</label>
           <p-dropdown [options]="placesTypesList" [disabled]="!addOffMeterObj.activityTypeId" class="row-cols-1"
             [(ngModel)]="addOffMeterObj.placeTypeId" optionLabel="name" optionValue="id" placeholder="اختر وصف المكان"
             formControlName="placesType" [disabled]="!addOffMeterObj.activityTypeId" />
+          <div class="flex  gap-3 mb-3">
+            <small class="p-error block pt-2"
+              *ngIf="addOffMeterForm.get('placesType')?.invalid && addOffMeterForm.get('placesType')?.dirty">
+              وصف المكان مطلوب </small>
+          </div>
         </div>
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> القطاع</label>
           <p-dropdown [options]="sections" class="row-cols-1" [(ngModel)]="addOffMeterObj.sectionId" optionLabel="name"
             formControlName="section" optionValue="id" placeholder="اختر القطاع"
             (onChange)="getAllMainDepsBySectionId(addOffMeterObj.sectionId)" />
+          <div class="flex  gap-3 mb-3">
+            <small class="p-error block pt-2"
+              *ngIf="addOffMeterForm.get('section')?.invalid && addOffMeterForm.get('section')?.dirty">
+              القطاع مطلوب </small>
+          </div>
         </div>
       </div>
       <div class="row">
@@ -309,12 +311,22 @@
             formControlName="mainDep" optionLabel="name" optionValue="id" placeholder="اختر الادارة الرئيسية"
             [disabled]="!addOffMeterObj.sectionId"
             (onChange)="getAllSmallDepartmentsByMainDepId(addOffMeterObj.mainDepartmentId)" />
+          <div class="flex  gap-3 mb-3">
+            <small class="p-error block pt-2"
+              *ngIf="addOffMeterForm.get('mainDep')?.invalid && addOffMeterForm.get('mainDep')?.dirty">
+              الادارة الرئيسية مطلوبة </small>
+          </div>
         </div>
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> ادارة فرعية</label>
           <p-dropdown [options]="smallDeps" class="row-cols-1" [(ngModel)]="addOffMeterObj.smallDepartmentId"
             formControlName="smallDep" optionLabel="name" optionValue="id" placeholder="اختر الادارة الفرعية"
             [disabled]="!addOffMeterObj.mainDepartmentId" />
+          <div class="flex  gap-3 mb-3">
+            <small class="p-error block pt-2"
+              *ngIf="addOffMeterForm.get('smallDep')?.invalid && addOffMeterForm.get('smallDep')?.dirty">
+              الادارة الفرعية مطلوبة </small>
+          </div>
         </div>
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> فرعي</label>
@@ -343,33 +355,164 @@
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem">منطقة</label>
           <p-dropdown [options]="indexArr" class="row-cols-1" optionLabel="id" optionValue="id"
             formControlName="regionNo" [(ngModel)]="addOffMeterObj.regionNo" placeholder="اختر المنطقة" />
+          <div class="flex  gap-3 mb-3">
+            <small class="p-error block pt-2"
+              *ngIf="addOffMeterForm.get('regionNo')?.invalid && addOffMeterForm.get('regionNo')?.dirty">
+              المنطقة مطلوبة</small>
+          </div>
         </div>
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem">يومية</label>
           <p-dropdown [options]="indexArr" class="row-cols-1" optionLabel="id" optionValue="id"
             formControlName="dailyNo" [(ngModel)]="addOffMeterObj.dailyNo" placeholder="اختر اليومية" />
+          <div class="flex  gap-3 mb-3">
+            <small class="p-error block pt-2"
+              *ngIf="addOffMeterForm.get('dailyNo')?.invalid && addOffMeterForm.get('dailyNo')?.dirty">
+              اليومية مطلوبة</small>
+          </div>
         </div>
 
       </div>
       <div class="row">
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التهيئة</label>
-          <p-calendar [(ngModel)]="addOffMeterObj.meterPreparedDate" class="row-cols-1" formControlName="preparedDate"
-            [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
-            dateFormat="dd/mm/yy" />
+          <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.meterPreparedDate" class="row-cols-1"
+            formControlName="preparedDate" [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'"
+            [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" />
+          <div class="flex  gap-3 mb-3"
+            *ngIf="addOffMeterForm.get('preparedDate')?.invalid && addOffMeterForm.get('preparedDate')?.dirty">
+            <small class="p-error block pt-2" *ngIf="addOffMeterForm.get('preparedDate')?.hasError('required')">
+              تاريخ التهيئة مطلوب </small>
+          </div>
         </div>
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التركيب</label>
-          <p-calendar [(ngModel)]="addOffMeterObj.meterInstallationDate" class="row-cols-1"
+          <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.meterInstallationDate" class="row-cols-1"
             formControlName="installationDate" [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'"
             [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" />
+          <div class="flex  gap-3 mb-3"
+            *ngIf="addOffMeterForm.get('installationDate')?.invalid && addOffMeterForm.get('installationDate')?.dirty">
+            <small class="p-error block pt-2" *ngIf="addOffMeterForm.get('installationDate')?.hasError('required')">
+              تاريخ التركيب مطلوب </small>
+          </div>
         </div>
       </div>
-
       <p-divider></p-divider>
-      }
+      <!-- الجزء المشترك بين جيزة و غيرها -->
+      <div>
+        <div class="row">
+          <div class="col-md-4 gap-2 mb-2">
+            <label for="meterOffDate" class="font-semibold  block mb-2 block mb-2">تاريخ العطل</label>
+            <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.meterOffDate" class="row-cols-1"
+              [styleClass]="'calenderBottom-class'" formControlName="meterOffDate" [iconDisplay]="'input'"
+              [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterForm.get('meterOffDate')?.invalid && addOffMeterForm.get('meterOffDate')?.dirty">
+                تاريخ العطل مطلوب </small>
+            </div>
+          </div>
+          <div class="col-md-4 gap-2 mb-2">
+            <label for="uploadDate" class="font-semibold  block mb-2 ">تاريخ رفع العداد</label>
+            <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.uploadDate" class="row-cols-1"
+              [styleClass]="'calenderBottom-class'" formControlName="uploadDate" [iconDisplay]="'input'"
+              [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterForm.get('uploadDate')?.invalid && addOffMeterForm.get('uploadDate')?.dirty">
+                تاريخ رفع العداد مطلوب </small>
+            </div>
+          </div>
+          <div class="col-md-4 gap-2 mb-2">
+            <label for="deliveryDateToLaboratory" class="font-semibold  block mb-2 ">تاريخ استلام العداد فى
+              المعمل</label>
+            <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.deliveryDateToLaboratory" class="row-cols-1"
+              [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
+              formControlName="deliveryDateToLab" dateFormat="dd/mm/yy" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterForm.get('deliveryDateToLab')?.invalid && addOffMeterForm.get('deliveryDateToLab')?.dirty">
+                تاريخ استلام العداد فى المعمل مطلوب </small>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 gap-2 mb-2">
+            <label for="MetersOffReasons" class="font-semibold  block mb-2 ">سبب الرفع</label>
+            <p-dropdown [options]="MetersOffReasons" class="row-cols-1"
+              [(ngModel)]="addOffMeterObj.cUploadMainteneceMetersOffReasonId" optionLabel="name" optionValue="id"
+              formControlName="uploadReason" placeholder="اختر سبب الرفع" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterForm.get('uploadReason')?.invalid && addOffMeterForm.get('uploadReason')?.dirty">
+                سبب الرفع مطلوب </small>
+            </div>
+          </div>
+          <div class="col-md-4 gap-2 mb-2">
+            <label for="offReason" class="font-semibold  block mb-2 ">حالة العداد عند الرفع</label>
+            <p-dropdown [options]="meterStatus" class="row-cols-1" [(ngModel)]="addOffMeterObj.meterOffStatusId"
+              formControlName="meterStatusOnUpload" optionLabel="name" optionValue="id"
+              placeholder="اختر حالة العداد" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterForm.get('meterStatusOnUpload')?.invalid && addOffMeterForm.get('meterStatusOnUpload')?.dirty">
+                حالة العداد عند الرفع مطلوبة</small>
+            </div>
+          </div>
+          <div class="col-md-4 gap-2 mb-2">
+            <label for="meterOffReason" class="font-semibold  block mb-2 ">سبب العطل</label>
+            <input pInputText id="meterOffReason" class="w-100" autocomplete="off"
+              [(ngModel)]="addOffMeterObj.meterOffReason" />
+          </div>
+        </div>
+        <div class="row">
+          <label for="notes" class="font-semibold  block mb-2 ">ملاحظات</label>
+          <textarea rows="3" cols="100" pInputTextarea [autoResize]="false"
+            [(ngModel)]="addOffMeterObj.meterOffMaintainNote"></textarea>
+        </div>
+
+        <div class="row mb-2 mt-2">
+          <div class="col-md-12 gap-2 mb-2">
+            <p-checkbox [(ngModel)]="addOffMeterObj.isExaminationdata" [binary]="true"
+              (onChange)="onCheckboxChange($event)" [ngModelOptions]="{standalone: true}" />
+            <label for="binary" class="mr-2">بيانات الفحص </label>
+          </div>
+          @if (addOffMeterObj.isExaminationdata == true) {
+          <div class="col-md-6 gap-2 mb-2">
+            <label for="examinationDate" class="font-semibold  block mb-2 ">تاريخ العطل</label>
+            <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.examinationDate" class="row-cols-1"
+              [styleClass]="'calenderTop-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
+              formControlName="examinationDate" dateFormat="dd/mm/yy" required />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterForm.get('examinationDate')?.invalid && addOffMeterForm.get('examinationDate')?.dirty">
+                تاريخ العطل مطلوب </small>
+            </div>
+          </div>
+          <div class="col-md-6 gap-2 mb-2">
+            <label for="examinationNumber" class="font-semibold  block mb-2 ">رقم الفحص </label>
+            <input pInputText id="examinationNumber" class="w-100" autocomplete="off"
+              formControlName="examinationNumber" [(ngModel)]="addOffMeterObj.examinationNumber" required
+              maxlength="8" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterForm.get('examinationNumber')?.invalid && addOffMeterForm.get('examinationNumber')?.dirty">
+                رقم الفحص مطلوب </small>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      <div class="flex justify-content-start gap-2" style="direction: ltr;">
+        <p-button label="الغاء" severity="secondary" (click)="closeAddModal()" />
+        <p-button label="حفظ" class="confirmBtn" type="submit" [disabled]="addOffMeterForm.invalid" />
+      </div>
+
+    </form>
+    }
+    @if (addOffMeterObj.vendorCode == 6 && showAllModalData) {
+    <form [formGroup]="addOffMeterFormGiza" (ngSubmit)="addOffMeter(addOffMeterObj)" novalidate>
       <!-- الجزء الخاص بجيزة -->
-      @if (addOffMeterObj.vendorCode == 6 && showAllModalData) {
       <h4 class="darkBack">بيانات العميل الحالى</h4>
       <div class="row">
         <div class="col-md-4 gap-2 mb-2">
@@ -457,41 +600,56 @@
       <div class="row">
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التهيئة</label>
-          <p-calendar [(ngModel)]="addOffMeterObj.meterPreparedDate" class="row-cols-1"
+          <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.meterPreparedDate" class="row-cols-1"
             [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
             [disabled]="true" dateFormat="dd/mm/yy" />
         </div>
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التركيب</label>
-          <p-calendar [(ngModel)]="addOffMeterObj.meterInstallationDate" class="row-cols-1"
+          <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.meterInstallationDate" class="row-cols-1"
             [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
             [disabled]="true" dateFormat="dd/mm/yy" />
         </div>
       </div>
 
       <p-divider></p-divider>
-      }
+
       <!-- الجزء المشترك بين جيزة و غيرها -->
       <div>
         <div class="row">
           <div class="col-md-4 gap-2 mb-2">
             <label for="meterOffDate" class="font-semibold  block mb-2 block mb-2">تاريخ العطل</label>
-            <p-calendar [(ngModel)]="addOffMeterObj.meterOffDate" class="row-cols-1"
+            <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.meterOffDate" class="row-cols-1"
               [styleClass]="'calenderBottom-class'" formControlName="meterOffDate" [iconDisplay]="'input'"
               [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterFormGiza.get('meterOffDate')?.invalid && addOffMeterFormGiza.get('meterOffDate')?.dirty">
+                تاريخ العطل مطلوب </small>
+            </div>
           </div>
           <div class="col-md-4 gap-2 mb-2">
             <label for="uploadDate" class="font-semibold  block mb-2 ">تاريخ رفع العداد</label>
-            <p-calendar [(ngModel)]="addOffMeterObj.uploadDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-              formControlName="uploadDate" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
-              dateFormat="dd/mm/yy" />
+            <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.uploadDate" class="row-cols-1"
+              [styleClass]="'calenderBottom-class'" formControlName="uploadDate" [iconDisplay]="'input'"
+              [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterFormGiza.get('uploadDate')?.invalid && addOffMeterFormGiza.get('uploadDate')?.dirty">
+                تاريخ رفع العداد مطلوب </small>
+            </div>
           </div>
           <div class="col-md-4 gap-2 mb-2">
             <label for="deliveryDateToLaboratory" class="font-semibold  block mb-2 ">تاريخ استلام العداد فى
               المعمل</label>
-            <p-calendar [(ngModel)]="addOffMeterObj.deliveryDateToLaboratory" class="row-cols-1"
+            <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.deliveryDateToLaboratory" class="row-cols-1"
               [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
               formControlName="deliveryDateToLab" dateFormat="dd/mm/yy" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterFormGiza.get('deliveryDateToLab')?.invalid && addOffMeterFormGiza.get('deliveryDateToLab')?.dirty">
+                تاريخ استلام العداد فى المعمل مطلوب </small>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -500,12 +658,22 @@
             <p-dropdown [options]="MetersOffReasons" class="row-cols-1"
               [(ngModel)]="addOffMeterObj.cUploadMainteneceMetersOffReasonId" optionLabel="name" optionValue="id"
               formControlName="uploadReason" placeholder="اختر سبب الرفع" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterFormGiza.get('uploadReason')?.invalid && addOffMeterFormGiza.get('uploadReason')?.dirty">
+                سبب الرفع مطلوب </small>
+            </div>
           </div>
           <div class="col-md-4 gap-2 mb-2">
             <label for="offReason" class="font-semibold  block mb-2 ">حالة العداد عند الرفع</label>
             <p-dropdown [options]="meterStatus" class="row-cols-1" [(ngModel)]="addOffMeterObj.meterOffStatusId"
               formControlName="meterStatusOnUpload" optionLabel="name" optionValue="id"
               placeholder="اختر حالة العداد" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterFormGiza.get('meterStatusOnUpload')?.invalid && addOffMeterFormGiza.get('meterStatusOnUpload')?.dirty">
+                حالة العداد عند الرفع مطلوبة</small>
+            </div>
           </div>
           <div class="col-md-4 gap-2 mb-2">
             <label for="meterOffReason" class="font-semibold  block mb-2 ">سبب العطل</label>
@@ -521,31 +689,42 @@
 
         <div class="row mb-2 mt-2">
           <div class="col-md-12 gap-2 mb-2">
-            <p-checkbox [(ngModel)]="addOffMeterObj.isExaminationdata" [binary]="true" inputId="binary" />
-            <label for="binary" class="mr-2">بيانات الفحص</label>
+            <p-checkbox [(ngModel)]="addOffMeterObj.isExaminationdata" [binary]="true"
+              (onChange)="onCheckboxChange($event)" [ngModelOptions]="{standalone: true}" />
+            <label for="binary" class="mr-2">بيانات الفحص </label>
           </div>
           @if (addOffMeterObj.isExaminationdata == true) {
           <div class="col-md-6 gap-2 mb-2">
             <label for="examinationDate" class="font-semibold  block mb-2 ">تاريخ العطل</label>
-            <p-calendar [(ngModel)]="addOffMeterObj.examinationDate" class="row-cols-1"
+            <p-calendar showButtonBar="true" [(ngModel)]="addOffMeterObj.examinationDate" class="row-cols-1"
               [styleClass]="'calenderTop-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
-              dateFormat="dd/mm/yy" />
+              formControlName="examinationDate" dateFormat="dd/mm/yy" required />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterFormGiza.get('examinationDate')?.invalid && addOffMeterFormGiza.get('examinationDate')?.dirty">
+                تاريخ العطل مطلوب </small>
+            </div>
           </div>
           <div class="col-md-6 gap-2 mb-2">
             <label for="examinationNumber" class="font-semibold  block mb-2 ">رقم الفحص </label>
             <input pInputText id="examinationNumber" class="w-100" autocomplete="off"
-              [(ngModel)]="addOffMeterObj.examinationNumber" />
+              formControlName="examinationNumber" [(ngModel)]="addOffMeterObj.examinationNumber" required
+              maxlength="8" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="addOffMeterFormGiza.get('examinationNumber')?.invalid && addOffMeterFormGiza.get('examinationNumber')?.dirty">
+                رقم الفحص مطلوب </small>
+            </div>
           </div>
           }
         </div>
       </div>
-
-
       <div class="flex justify-content-start gap-2" style="direction: ltr;">
         <p-button label="الغاء" severity="secondary" (click)="closeAddModal()" />
-        <p-button label="حفظ" class="confirmBtn" type="submit" [disabled]="addOffMeterForm.invalid" />
+        <p-button label="حفظ" class="confirmBtn" type="submit" [disabled]="addOffMeterFormGiza.invalid" />
       </div>
     </form>
+    }
   </p-dialog>
   <!-- تعديل عطل -->
   <p-dialog header="إضافة عداد معطل" [modal]="true" [(visible)]="showEdit" [style]="{ width: '75vw' }"
@@ -652,12 +831,13 @@
     <div class="row">
       <div class="col-md-4 gap-2 mb-2">
         <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التهيئة</label>
-        <p-calendar [(ngModel)]="offMeterObj.meterPreparedDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" />
+        <p-calendar showButtonBar="true" [(ngModel)]="offMeterObj.meterPreparedDate" class="row-cols-1"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
+          dateFormat="dd/mm/yy" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التركيب</label>
-        <p-calendar [(ngModel)]="offMeterObj.meterInstallationDate" class="row-cols-1"
+        <p-calendar showButtonBar="true" [(ngModel)]="offMeterObj.meterInstallationDate" class="row-cols-1"
           [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
           dateFormat="dd/mm/yy" />
       </div>
@@ -669,17 +849,19 @@
     <div class="row">
       <div class="col-md-4 gap-2 mb-2">
         <label for="meterOffDate" class="font-semibold  block mb-2 block mb-2">تاريخ العطل</label>
-        <p-calendar [(ngModel)]="offMeterObj.meterOffDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" />
+        <p-calendar showButtonBar="true" [(ngModel)]="offMeterObj.meterOffDate" class="row-cols-1"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
+          dateFormat="dd/mm/yy" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="uploadDate" class="font-semibold  block mb-2 ">تاريخ رفع العداد</label>
-        <p-calendar [(ngModel)]="offMeterObj.uploadDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" />
+        <p-calendar showButtonBar="true" [(ngModel)]="offMeterObj.uploadDate" class="row-cols-1"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
+          dateFormat="dd/mm/yy" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
         <label for="deliveryDateToLaboratory" class="font-semibold  block mb-2 ">تاريخ استلام العداد فى المعمل</label>
-        <p-calendar [(ngModel)]="offMeterObj.deliveryDateToLaboratory" class="row-cols-1"
+        <p-calendar showButtonBar="true" [(ngModel)]="offMeterObj.deliveryDateToLaboratory" class="row-cols-1"
           [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
           dateFormat="dd/mm/yy" />
       </div>
@@ -716,8 +898,9 @@
       @if (offMeterObj.isExaminationdata == true) {
       <div class="col-md-6 gap-2 mb-2">
         <label for="examinationDate" class="font-semibold  block mb-2 ">تاريخ العطل</label>
-        <p-calendar [(ngModel)]="offMeterObj.examinationDate" class="row-cols-1" [styleClass]="'calenderTop-class'"
-          [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" />
+        <p-calendar showButtonBar="true" [(ngModel)]="offMeterObj.examinationDate" class="row-cols-1"
+          [styleClass]="'calenderTop-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
+          dateFormat="dd/mm/yy" />
       </div>
       <div class="col-md-6 gap-2 mb-2">
         <label for="examinationNumber" class="font-semibold  block mb-2 ">رقم الفحص </label>
@@ -739,20 +922,23 @@
 
     <div class="flex align-items-center gap-5 mb-4 mt-2">
       <label for="fixMeterDate" class="font-semibold w-6rem">تاريخ اصلاح العداد</label>
-      <p-calendar class="w-100  row-cols-1" [(ngModel)]="offMeterFix.maintenanceDate" dateFormat="dd/mm/yy"
-        [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      <p-calendar showButtonBar="true" class="w-100  row-cols-1" [(ngModel)]="offMeterFix.maintenanceDate"
+        dateFormat="dd/mm/yy" [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true"
+        inputId="icondisplay" />
     </div>
 
     <div class="flex align-items-center gap-5 mb-4">
       <label for="date" class="font-semibold w-6rem">تاريخ تسليم العداد للفنى</label>
-      <p-calendar class="w-100  row-cols-1" dateFormat="dd/mm/yy" [(ngModel)]="offMeterFix.deliveryDateToTechnician"
-        [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      <p-calendar showButtonBar="true" class="w-100  row-cols-1" dateFormat="dd/mm/yy"
+        [(ngModel)]="offMeterFix.deliveryDateToTechnician" [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'"
+        [showIcon]="true" inputId="icondisplay" />
     </div>
 
     <div class="flex align-items-center gap-5 mb-4">
       <label for="date" class="font-semibold w-6rem">تاريخ التركيب بعد الاصلاح</label>
-      <p-calendar class="w-100  row-cols-1" [(ngModel)]="offMeterFix.installationDate" dateFormat="dd/mm/yy"
-        [styleClass]="'calenderTop-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      <p-calendar showButtonBar="true" class="w-100  row-cols-1" [(ngModel)]="offMeterFix.installationDate"
+        dateFormat="dd/mm/yy" [styleClass]="'calenderTop-class'" [iconDisplay]="'input'" [showIcon]="true"
+        inputId="icondisplay" />
     </div>
 
     <div class="flex justify-content-end gap-2 pt-5 mt-5">

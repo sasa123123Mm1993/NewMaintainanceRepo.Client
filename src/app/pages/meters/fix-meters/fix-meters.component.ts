@@ -3,7 +3,7 @@ import {
   MeterOffInsert,
   MeterFixDto,
 } from '../../../models/meter';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
 import { MeterService } from '../../../services/meter.service';
@@ -105,9 +105,9 @@ export default class FixMetersComponent {
     private meterService: MeterService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private fb: FormBuilder
-  ) {
-  }
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
+  ) {}
   //ALL FUNC TO ADD WHEN MODAL IS OPEN
   //ـــــــــــــــــــــــــــــــــــــــــ//
   indexArr: Index[] = [];
@@ -357,9 +357,19 @@ export default class FixMetersComponent {
     });
   }
 
+  addOffMeterFormGiza = this.fb.group({
+    meterOffDate: ['', Validators.required],
+    uploadDate: ['', Validators.required],
+    deliveryDateToLab: ['', Validators.required],
+    uploadReason: ['', Validators.required],
+    meterStatusOnUpload: ['', Validators.required],
+    examinationNumber: ['', Validators.required],
+    examinationDate: ['', Validators.required],
+  })
+
   addOffMeterForm = this.fb.group({
-    companyName: ['', Validators.required],
-    meterNum: ['', Validators.required],
+    //companyName: ['', Validators.required],
+    //meterNum: ['', Validators.required],
     customerCode: ['', Validators.required],
     customerName: ['', Validators.required],
     nationalId: [
@@ -388,9 +398,9 @@ export default class FixMetersComponent {
     deliveryDateToLab: ['', Validators.required],
     uploadReason: ['', Validators.required],
     meterStatusOnUpload: ['', Validators.required],
+    examinationNumber: ['', Validators.required],
+    examinationDate: ['', Validators.required],
   });
-
-
 
   ngOnInit(): void {
     //init func
@@ -423,47 +433,12 @@ export default class FixMetersComponent {
   showDialog() {
     this.showAddModal = true;
     this.showAllModalData = false;
-    this.offMeterObj = {
-      isDeleted: false,
-      creatorById: 0,
-      modifiedById: 0,
-      creationTime: new Date().toISOString().slice(0, 10),
-      modificationTime: new Date().toISOString().slice(0, 10),
-      vendorCode: 6,
-      customerCode: '',
-      serialNumber: 0,
-      customerName: '',
-      nationalId: '',
-      address: '',
-      placeTypeId: 0,
-      activityTypeId: 0,
-      sectionId: 0,
-      mainDepartmentId: 0,
-      smallDepartmentId: 0,
-      branchNo: 0,
-      accountNo: 0,
-      dailyNo: 0,
-      regionNo: 0,
-      meterPreparedDate: new Date(),
-      meterInstallationDate: new Date(),
-      meterOffDate: new Date(),
-      uploadDate: new Date(),
-      deliveryDateToLaboratory: new Date(),
-      cUploadMainteneceMetersOffReasonId: 0,
-      meterOffStatusId: 0,
-      meterOffReason: '',
-      meterOffMaintainNote: '',
-      examinationNumber: '',
-      examinationDate: new Date(),
-      meterTypeId: 1,
-      isExaminationdata: true,
-      mainDepartmentCode: 0,
-      smallDepartmentCode: 0,
-      isMeterRecieved: ' ',
-      isEnded: ' ',
-      isMeterInstalled: ' ',
-      maintenanceDate: new Date(),
-    };
+    this.addOffMeterObj = {};
+    this.addOffMeterObj.isExaminationdata = false;
+  }
+  onCheckboxChange(event: any) {
+    this.addOffMeterObj.isExaminationdata = event.checked;
+    this.cdr.detectChanges(); // Trigger change detection after model update
   }
   closeAddModal() {
     this.showAddModal = false;
@@ -558,6 +533,7 @@ export default class FixMetersComponent {
           this.offMeterObj.dailyNo = res.DailyNo;
           this.offMeterObj.meterPreparedDate = res.MeterPreparedDate;
           this.offMeterObj.meterInstallationDate = res.MeterInstallationDate;
+          console.log("the resssssssssss",this.offMeterObj)
           this.showAllModalData = true;
         }
       },
