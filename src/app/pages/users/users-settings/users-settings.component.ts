@@ -8,6 +8,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../../shared/sharedModules';
 // import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LoaderService } from '../../../services/loader.service';
 
 @Component({
   selector: 'app-users-settings',
@@ -18,30 +19,23 @@ import { ActivatedRoute, Router } from '@angular/router';
   providers: [ConfirmationService, MessageService],
 })
 export default class UsersSettingsComponent {
-  showAddModal: boolean = false;
-  showEditModal: boolean = false;
-  visibleConfirmDialog: boolean = false;
-  // formGroup!: FormGroup;
-  selectedRole!: string;
-
   constructor(
     private meterService: MeterService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private loaderService: LoaderService
   ) {}
+
+  showAddModal: boolean = false;
+  showEditModal: boolean = false;
+  visibleConfirmDialog: boolean = false;
   mainDepartements: any = [];
   roles: any = [];
   userList: any = [];
-  userObj: userInsert = {
-    nationalId: '',
-    roleId: '',
-    isActive: false,
-    userName: '',
-    fullName: '',
-    smallDepartmentsIds: undefined,
-  };
+  userObj: any = {};
   userDepartments: any = [];
+  selectedRole: any;
   openAddModal() {
     this.showAddModal = true;
     this.userObj = {
@@ -54,14 +48,14 @@ export default class UsersSettingsComponent {
     };
   }
   //get all main departements
-  getMainDepartements() {
-    this.meterService.getAllMainDepartments().subscribe({
+  getSmallDeps() {
+    this.meterService.getSmallDeps().subscribe({
       next: (res) => {
         this.mainDepartements = res;
         this.mainDepartements.forEach(function (item: any) {
           item.checked = false;
         });
-        console.log(this.mainDepartements);
+        console.log('deeeeeeeeeeeeps', this.mainDepartements);
       },
     });
   }
@@ -76,30 +70,30 @@ export default class UsersSettingsComponent {
   }
   //get list to fill table
   getAllUsers() {
+    this.loaderService.showLoader();
     this.meterService.getAllUsers().subscribe({
       next: (res) => {
         this.userList = res;
         console.log(this.userList);
+        this.loaderService.hideLoader();
       },
     });
   }
   selectedDeps: any = [];
   getUserById(userId: any) {
     console.log('idddddd', userId);
+    this.getSmallDeps();
     this.meterService.getUserById(userId, '').subscribe({
       next: (res) => {
         console.log('the user is :', res);
         this.userObj = res;
-        this.userDepartments = res.departments;
+        this.userDepartments = res.userSmallDepartmentIDs;
         if (this.userDepartments.length > 0) {
-          debugger;
           for (let i = 0; i < this.mainDepartements.length; i++) {
             for (let j = 0; j < this.userDepartments.length; j++) {
-              if (this.mainDepartements[i].id == this.userDepartments[j].id) {
+              if (this.mainDepartements[i].id == this.userDepartments[j]) {
                 this.mainDepartements[i].checked = true;
-                console.log(this.mainDepartements[i]);
-              } else {
-                this.mainDepartements[i].checked = false;
+                console.log('main with checked', this.mainDepartements[i]);
               }
             }
           }
@@ -108,12 +102,7 @@ export default class UsersSettingsComponent {
       },
     });
   }
-  ngOnInit(): void {
-    //init func
-    this.getAllUsers();
-    this.getMainDepartements();
-    this.getRoles();
-  }
+
   banUser(event: Event, userId: any) {
     console.log(userId);
     this.confirmationService.confirm({
@@ -195,10 +184,42 @@ export default class UsersSettingsComponent {
     this.meterService.addUser(user).subscribe({
       next: (res) => {
         console.log('after user added', res);
-        this.showAddModal=false;
+        this.showAddModal = false;
         this.getAllUsers();
       },
     });
+  }
+  smallDepsIds: any = [];
+  updateUser(userObj: any) {
+    console.log('updated user', userObj);
+    for (let i = 0; i < this.mainDepartements.length; i++) {
+      if (this.mainDepartements[i].checked == true) {
+        this.smallDepsIds.push(this.mainDepartements[i].id);
+        console.log('selected with checked in update', this.smallDepsIds);
+      }
+    }
+    console.log('checked deps in updated user', this.mainDepartements);
+    const userObjToUpdate = {
+      natId: userObj.nationalId,
+      roleId: userObj.roleId,
+      isActive: userObj.isActive,
+      userName: userObj.userName,
+      fullName: userObj.fullName,
+      smallDepartmentsIds: this.smallDepsIds,
+    };
+    console.log('updated user', userObjToUpdate);
+    this.meterService.updateUser(userObj.id, userObjToUpdate).subscribe({
+      next: (res) => {
+        console.log('updated user', res);
+        this.showEditModal = false;
+      },
+    });
+  }
+  ngOnInit(): void {
+    //init func
+    this.getAllUsers();
+    this.getSmallDeps();
+    this.getRoles();
   }
   @ViewChild('dt') dt!: Table;
   applyFilterGlobal($event: any, stringVal: any) {

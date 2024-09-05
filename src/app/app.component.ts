@@ -3,10 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { SidemenuComponent } from './shared/sidemenu/sidemenu.component';
 import { MainBodyComponent } from './shared/main-body/main-body.component';
+import { LoaderComponent } from "./shared/loader/loader.component";
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,ButtonModule,SidemenuComponent,MainBodyComponent],
+  imports: [RouterOutlet, ButtonModule, SidemenuComponent, MainBodyComponent, LoaderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

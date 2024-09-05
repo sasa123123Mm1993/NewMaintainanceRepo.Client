@@ -19,7 +19,7 @@ import { MeterService } from '../../services/meter.service';
 export default class DashboardComponent{
   authService = inject(AuthService);
   user?: any;
-  
+
   logged: boolean = true;
   users:any[]=[];
   userList: any = [];
@@ -43,7 +43,6 @@ export default class DashboardComponent{
 
 
   getAllUsers() {
-    debugger;
     this.meterService.getAllUsers().subscribe({
       next: (res) => {
         this.userList = res;

@@ -2,7 +2,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 //import { LocalStorage, SessionStorage } from 'ngx-webstorage';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  debugger;
+
   //const myToken = window.localStorage.getItem('UserToken');
   //const myToken = localStorage.getItem('UserToken');
   // const myToken = JSON.parse(localStorage.getItem('myData')!);

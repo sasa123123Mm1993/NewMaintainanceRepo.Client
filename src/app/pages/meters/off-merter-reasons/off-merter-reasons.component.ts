@@ -9,6 +9,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { SharedModule } from '../../../shared/sharedModules';
 import { InputNumber, InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { LoaderService } from '../../../services/loader.service';
 
 @Component({
   selector: 'app-off-merter-reasons',
@@ -50,17 +51,22 @@ export default class OffMerterReasonsComponent {
     private meterService: MeterService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private loaderService: LoaderService
   ) {}
   logged: boolean = true;
   ngOnInit(): void {
     this.getAllReasons();
   }
   getAllReasons() {
+    this.loaderService.showLoader();
     this.meterService.getAllMetersOffReasons().subscribe({
       next: (res) => {
-        console.log("res",res)
-        this.MetersOffReasons = res;
+        console.log('res', res);
+        this.MetersOffReasons = res.filter(
+          (reasons) => reasons.isDeleted == false
+        );
+        this.loaderService.hideLoader();
       },
     });
   }
@@ -76,7 +82,7 @@ export default class OffMerterReasonsComponent {
     });
   }
   createReason(name: string, code: any) {
-    debugger;
+    this.loaderService.showLoader();
     this.visible = false;
     this.MetersOffReason.name = name;
     this.MetersOffReason.code = code;
@@ -85,6 +91,7 @@ export default class OffMerterReasonsComponent {
         this.getAllReasons();
         this.reasonNameRef.nativeElement.value = '';
         this.inputNumberComponent.value = 0;
+        this.loaderService.hideLoader();
       },
     });
   }
@@ -97,27 +104,33 @@ export default class OffMerterReasonsComponent {
   reasonId!: number;
 
   openEditDialog(reason: MeterReason) {
+    this.loaderService.showLoader();
     this.showEdit = true;
     this.meterService.getMetersOffReasonById(reason.id).subscribe({
       next: (res) => {
         this.MetersOffReason = res;
         this.reasonId = res.id;
+        this.loaderService.hideLoader();
       },
     });
   }
 
   editReason() {
+    this.loaderService.showLoader();
     this.meterService
       .editMetersOffReason(this.reasonId, this.MetersOffReason)
       .subscribe({
         next: (res) => {
           this.getAllReasons();
           this.showEdit = false;
+          this.loaderService.hideLoader();
         },
       });
   }
 
-  deleteReason(event: Event, reasonId: number) {
+  deleteReason(event: Event, reasonObj: any) {
+
+    console.log('reeeeeeeeeeeeesssssssssssssson', reasonObj);
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: ' هل تريد تأكيد حذف العنصر ؟',
@@ -129,7 +142,8 @@ export default class OffMerterReasonsComponent {
       rejectIcon: 'none',
 
       accept: () => {
-        this.meterService.deleteMetersOffReason(reasonId).subscribe({
+        this.loaderService.showLoader();
+        this.meterService.deleteMetersOffReason(reasonObj.id).subscribe({
           next: (res) => {
             this.messageService.add({
               severity: 'info',

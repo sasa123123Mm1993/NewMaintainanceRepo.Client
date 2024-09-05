@@ -21,7 +21,7 @@ export class AuthService {
   constructor() {}
 
   login(user: { email: string; password: string }): Observable<any> {
-    debugger;
+
     return this.http
       .post<LoginRes>( apiUrl + 'Auth/Login/login',
         user)
@@ -33,14 +33,14 @@ export class AuthService {
   }
 
   private doLoginUser(email: string, token: any) {
-    debugger;
+
     this.loggedUser = email;
     this.storeJwtToken(token);
     this.isAuthenticatedSubject.next(true);
   }
 
   private storeJwtToken(jwt: string) {
-    debugger;
+
     localStorage.setItem(this.JWT_TOKEN, jwt);
   }
 

@@ -7,16 +7,30 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../../shared/sharedModules';
 import { FormsModule } from '@angular/forms';
 import { identifierName } from '@angular/compiler';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-cards',
   standalone: true,
-  imports: [SidemenuComponent, CommonModule, FormsModule,SharedModule],
+  imports: [
+    SidemenuComponent,
+    CommonModule,
+    FormsModule,
+    SharedModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './cards.component.html',
   styleUrl: './cards.component.scss',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService, MessageService, FormBuilder, Validators],
 })
 export default class CardsComponent {
+  constructor(
+    private meterService: MeterService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
+    private fb: FormBuilder
+  ) {}
   logged: boolean = true;
   cardTasks: any = [];
   techList: any = [];
@@ -28,11 +42,13 @@ export default class CardsComponent {
     cardEndDate: new Date(),
     meterType: 0,
   };
-  constructor(
-    private meterService: MeterService,
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService
-  ) {}
+  releaseCardForm = this.fb.group({
+    cardId: ['', Validators.required],
+    techId: ['', Validators.required],
+  });
+  save() {
+    console.log('form content : ', this.releaseCardForm);
+  }
   ngOnInit(): void {
     this.cardTasks = [
       { name: 'ضبط الوقت و التاريخ اوتوماتيك', id: 1 },

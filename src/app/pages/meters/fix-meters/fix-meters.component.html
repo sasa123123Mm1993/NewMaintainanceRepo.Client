@@ -86,7 +86,7 @@
         <button pButton icon="pi pi-refresh" [raised]="true" class="mr-2 btnIcon defaultBtnColor" pTooltip="اعادة تحميل"
           (click)="reloadPage()"></button>
       </div>
-    }
+      }
     </ng-template>
 
     <ng-template pTemplate="header">
@@ -205,18 +205,19 @@
       <p-inputNumber [useGrouping]="false" id="serialNum" class="flex flex-auto" autocomplete="off"
         [(ngModel)]="addOffMeterObj.serialNumber" />
       <button type="button" class="btnIcon defaultBtnColor" pButton pRipple icon="pi pi-search" pTooltip="بحث"
-        (click)="searchByMeterNum(addOffMeterObj.serialNumber);" [disabled]="addOffMeterObj.serialNumber == null"></button>
+        (click)="searchByMeterNum(addOffMeterObj.serialNumber);"
+        [disabled]="addOffMeterObj.serialNumber == null"></button>
       }
     </div>
     <!-- <p-divider /> -->
     @if (addOffMeterObj.vendorCode != 6 && addOffMeterObj.vendorCode != null) {
-    <form [formGroup]="addOffMeterForm" (ngSubmit)="addOffMeter(addOffMeterObj)" novalidate>
+    <form [formGroup]="addOffMeterForm" (ngSubmit)="addOffMeter(addOffMeterObj,offReason.value,note.value)" novalidate>
       <!-- الجزء الخاص  بغير جيزة -->
       <h4 class="darkBack">بيانات العميل الحالى</h4>
       <div class="row">
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem">رقم العداد</label>
-          <input pInputText id="serialNum" autocomplete="off" formControlName="meterNum" class="w-100"
+          <p-inputNumber [useGrouping]="false" id="serialNum" formControlName="meterNum" class="w-100"
             [(ngModel)]="addOffMeterObj.serialNumber" [maxlength]="8" />
           <div class="flex  gap-3 mb-3">
             <small class="p-error block pt-2"
@@ -462,13 +463,13 @@
           <div class="col-md-4 gap-2 mb-2">
             <label for="meterOffReason" class="font-semibold  block mb-2 ">سبب العطل</label>
             <input pInputText id="meterOffReason" class="w-100" autocomplete="off"
-              [(ngModel)]="addOffMeterObj.meterOffReason" />
+              [(ngModel)]="addOffMeterObj.meterOffReason" #offReason />
           </div>
         </div>
         <div class="row">
           <label for="notes" class="font-semibold  block mb-2 ">ملاحظات</label>
           <textarea rows="3" cols="100" pInputTextarea [autoResize]="false"
-            [(ngModel)]="addOffMeterObj.meterOffMaintainNote"></textarea>
+            [(ngModel)]="addOffMeterObj.meterOffMaintainNote" #note></textarea>
         </div>
 
         <div class="row mb-2 mt-2">
@@ -511,13 +512,14 @@
     </form>
     }
     @if (addOffMeterObj.vendorCode == 6 && showAllModalData) {
-    <form [formGroup]="addOffMeterFormGiza" (ngSubmit)="addOffMeter(addOffMeterObj)" novalidate>
+    <form [formGroup]="addOffMeterFormGiza" (ngSubmit)="addOffMeter(addOffMeterObj,offReason.value,note.value)"
+      novalidate>
       <!-- الجزء الخاص بجيزة -->
       <h4 class="darkBack">بيانات العميل الحالى</h4>
       <div class="row">
         <div class="col-md-4 gap-2 mb-2">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem">رقم العداد</label>
-          <input pInputText id="serialNum" autocomplete="off" class="w-100" [(ngModel)]="addOffMeterObj.serialNumber"
+          <p-inputNumber [useGrouping]="false" id="serialNum" class="w-100" [(ngModel)]="addOffMeterObj.serialNumber"
             [disabled]="true" />
         </div>
         <div class="col-md-4 gap-2 mb-2">
@@ -657,7 +659,7 @@
             <label for="MetersOffReasons" class="font-semibold  block mb-2 ">سبب الرفع</label>
             <p-dropdown [options]="MetersOffReasons" class="row-cols-1"
               [(ngModel)]="addOffMeterObj.cUploadMainteneceMetersOffReasonId" optionLabel="name" optionValue="id"
-              formControlName="uploadReason" placeholder="اختر سبب الرفع" />
+              formControlName="uploadReason" placeholder="اختر سبب الرفع" #offReason />
             <div class="flex  gap-3 mb-3">
               <small class="p-error block pt-2"
                 *ngIf="addOffMeterFormGiza.get('uploadReason')?.invalid && addOffMeterFormGiza.get('uploadReason')?.dirty">
@@ -684,7 +686,7 @@
         <div class="row">
           <label for="notes" class="font-semibold  block mb-2 ">ملاحظات</label>
           <textarea rows="3" cols="100" pInputTextarea [autoResize]="false"
-            [(ngModel)]="addOffMeterObj.meterOffMaintainNote"></textarea>
+            [(ngModel)]="addOffMeterObj.meterOffMaintainNote" #note></textarea>
         </div>
 
         <div class="row mb-2 mt-2">

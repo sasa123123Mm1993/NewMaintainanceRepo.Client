@@ -12,6 +12,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../../shared/sharedModules';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, Validators } from '@angular/forms';
+import { LoaderService } from '../../../services/loader.service';
 
 interface Company {
   name: string;
@@ -33,6 +34,14 @@ interface Index {
   providers: [ConfirmationService, MessageService, FormBuilder, Validators],
 })
 export default class FixMetersComponent {
+  constructor(
+    private meterService: MeterService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef,
+    private loaderService: LoaderService
+  ) {}
   position: string = ' ';
   offMetersList: any;
   MetersOffReasons!: any;
@@ -100,14 +109,7 @@ export default class FixMetersComponent {
   showEdit: boolean = false;
   showFilter: boolean = false;
   showFix: boolean = false;
-  //ADD Form
-  constructor(
-    private meterService: MeterService,
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService,
-    private fb: FormBuilder,
-    private cdr: ChangeDetectorRef
-  ) {}
+
   //ALL FUNC TO ADD WHEN MODAL IS OPEN
   //ـــــــــــــــــــــــــــــــــــــــــ//
   indexArr: Index[] = [];
@@ -196,17 +198,18 @@ export default class FixMetersComponent {
 
   //LIST TABLE
   getAllOffMeters() {
+    this.loaderService.showLoader();
     this.meterService.getAllOffMeters().subscribe({
       next: (res) => {
         this.offMetersList = res;
         console.log('list :', this.offMetersList);
+        this.loaderService.hideLoader();
       },
     });
   }
   // GET METER BY ID
   selectedOffMeterId!: any;
   getMeterById(id: number, flag: string) {
-    debugger;
     this.selectedOffMeterId = id;
     this.meterService.getOffMeterById(id).subscribe({
       next: (res) => {
@@ -234,7 +237,7 @@ export default class FixMetersComponent {
         }
         if (flag == 'fix') {
           this.showFix = true;
-          debugger;
+
           if (res.maintenanceDate) {
             this.offMeterFix.maintenanceDate = new Date(res.maintenanceDate);
           } else {
@@ -253,18 +256,21 @@ export default class FixMetersComponent {
   }
   // EDIT METER
   editOffMeter() {
-    debugger;
+    console.log('update', this.offMeterObj);
     this.meterService
       .updtaeOffMeter(this.selectedOffMeterId, this.offMeterObj)
       .subscribe({
         next: (res) => {
           console.log('edit', res);
+          this.showEdit = false;
+          this.getAllOffMeters();
         },
       });
   }
   // FIX METER
   fixMeter(fixMeterObj: any) {
     console.log('fixxxxxxxxxxx', fixMeterObj);
+    fixMeterObj.id = 0;
     if (fixMeterObj.maintenanceDate) {
       fixMeterObj.maintenanceDate = new Date(fixMeterObj.maintenanceDate);
     }
@@ -322,7 +328,21 @@ export default class FixMetersComponent {
     });
   }
   //ADD NEW ITEM
-  addOffMeter(addMeterObj: any) {
+  addOffMeter(addMeterObj: any, reason: any, note: any) {
+    // addMeterObj.placeType = null;
+    // addMeterObj.activityType = null;
+    // addMeterObj.section = null;
+    // addMeterObj.mainDepartment = null;
+    // addMeterObj.smallDepartment = null;
+    // addMeterObj.isMeterRecieved = null;
+    // addMeterObj.uploadMainteneceMetersOffReason = null;
+    // addMeterObj.deliveryDateToTechnician = null;
+    // addMeterObj.maintenanceDate = null;
+    // addMeterObj.meterType = null;
+    // addMeterObj.isEnded = null;
+    addMeterObj.meterOffReason = reason;
+    addMeterObj.meterOffMaintainNote = note;
+    addMeterObj.meterTypeId = 1;
     if (addMeterObj.meterPreparedDate) {
       addMeterObj.meterPreparedDate = new Date(addMeterObj.meterPreparedDate);
     }
@@ -365,11 +385,11 @@ export default class FixMetersComponent {
     meterStatusOnUpload: ['', Validators.required],
     examinationNumber: ['', Validators.required],
     examinationDate: ['', Validators.required],
-  })
+  });
 
   addOffMeterForm = this.fb.group({
     //companyName: ['', Validators.required],
-    //meterNum: ['', Validators.required],
+    meterNum: ['', Validators.required],
     customerCode: ['', Validators.required],
     customerName: ['', Validators.required],
     nationalId: [
@@ -533,7 +553,7 @@ export default class FixMetersComponent {
           this.offMeterObj.dailyNo = res.DailyNo;
           this.offMeterObj.meterPreparedDate = res.MeterPreparedDate;
           this.offMeterObj.meterInstallationDate = res.MeterInstallationDate;
-          console.log("the resssssssssss",this.offMeterObj)
+          console.log('the resssssssssss', this.offMeterObj);
           this.showAllModalData = true;
         }
       },

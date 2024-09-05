@@ -51,7 +51,7 @@ export default class LoginComponent {
 
 
   // OnLogin() {
-  //   debugger;7095
+  //  7095
   //   this.http.post('http://192.168.15.10:1501/v1/api/Auth/Login/',this.LoginObj).subscribe((
   //   res:any)=>{
   //    if(res.result){
@@ -67,7 +67,7 @@ export default class LoginComponent {
 
 
   login(event: Event) {
-    debugger;
+
     event.preventDefault();
     console.log(`Login: ${this.email} / ${this.password}`);
     this.authService
@@ -87,7 +87,7 @@ export default class LoginComponent {
 
 
   OnLogin(userName: string, password: any) {
-      debugger;
+
       this.LoginObj.userName = userName;
       this.LoginObj.password = password;
       this.meterService.Login(this.LoginObj)

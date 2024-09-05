@@ -40,7 +40,6 @@ export class MeterService {
   }
 
   Login(LoginObj: Login): Observable<any> {
-    debugger;
     return this.http.post<LoginRes>(apiUrl + 'Account/login', LoginObj).pipe(
       catchError((error: HttpErrorResponse) => {
         return throwError(() => new Error('Login failed'));
@@ -48,15 +47,10 @@ export class MeterService {
     );
   }
 
-
-  
-
   ////////////////// METER OFF REASONS //////////////////////
   getAllMetersOffReasons() {
     return this.http.get<MeterReason[]>(apiUrl + 'MetersOffReasons/GetAll');
   }
-
-  
 
   addMetersOffReason(meterReason: MeterReasonInsertDto) {
     return this.http.post<MeterReasonInsertDto>(
@@ -112,7 +106,6 @@ export class MeterService {
     );
   }
   deleteOffMeter(id: number | string) {
-    debugger;
     console.log('delete id', id);
     return this.http.get<MeterOffInsert>(
       apiUrl + 'CMaintenenceMetersOff/Delete/' + id,
@@ -120,7 +113,6 @@ export class MeterService {
     );
   }
   FixOffMeter(id: number, offMeterData: MeterFixDto) {
-    debugger;
     return this.http.post<MeterOffInsert>(
       apiUrl + 'CMaintenenceMetersOff/AddFixedMeterToTechinicion/' + id,
       offMeterData
@@ -163,31 +155,46 @@ export class MeterService {
   }
   getUserById(userId: any, data: any) {
     return this.http.post<any>(
-      apiUrl + 'User/GetUserWithDepartments?userId=' + userId,
+      apiUrl + 'User/GetUserDataById?userId=' + userId,
+      //apiUrl + 'User/GetUserDataById/' + userId,
       data
     );
   }
   deactiveUser(userId: number, data: any) {
     return this.http.post<UserDto>(
-      apiUrl + 'User/DeactivateUser?userId=' + userId,
+      apiUrl + 'User/DeactivateUser/' + userId,
       data
     );
   }
   resetUserPassword(userId: number, data: any) {
     return this.http.post<UserDto>(
-      apiUrl + 'User/ResetPassword?userId=' + userId,
+      apiUrl + 'User/ResetPassword/' + userId,
       data
     );
   }
   addUser(data: userInsert) {
     return this.http.post<userInsert>(apiUrl + 'User/AddUserWithDeps', data);
   }
-  //////////////  //////// Card ////////////  ////////////////
-  readCard(){
-    return this.http.get<ICard>('http://localhost:8000/CardService.svc/rest/ReadCard')
+  updateUser(userId: number, data: any) {
+    return this.http.post<userInsert>(
+      apiUrl + 'User/EditUserWithDeps?userId=' + userId,
+      data
+    );
   }
-  writeCard(data:any){
-    return this.http.post<ICard>('http://localhost:8000/CardService.svc/rest/WriteCard',data)
+  getSmallDeps() {
+    return this.http.get<any>(apiUrl + 'User/GetAllSmallDepartments');
+  }
+  //////////////  //////// Card ////////////  ////////////////
+  readCard() {
+    return this.http.get<ICard>(
+      'http://localhost:8000/CardService.svc/rest/ReadCard'
+    );
+  }
+  writeCard(data: any) {
+    return this.http.post<ICard>(
+      'http://localhost:8000/CardService.svc/rest/WriteCard',
+      data
+    );
   }
 
   //////////////  //////// PUBLIC ////////////  ////////////////
