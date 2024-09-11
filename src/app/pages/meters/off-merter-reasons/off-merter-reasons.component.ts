@@ -27,10 +27,6 @@ import { LoaderService } from '../../../services/loader.service';
   providers: [ConfirmationService, MessageService, FormBuilder, Validators],
 })
 export default class OffMerterReasonsComponent {
-  userForm = this.fb.group({
-    firstName: ['', Validators.required],
-    lastName: [''],
-  });
   //forms
   reasonForm = this.fb.group({
     name: ['', Validators.required],
@@ -129,7 +125,6 @@ export default class OffMerterReasonsComponent {
   }
 
   deleteReason(event: Event, reasonObj: any) {
-
     console.log('reeeeeeeeeeeeesssssssssssssson', reasonObj);
     this.confirmationService.confirm({
       target: event.target as EventTarget,

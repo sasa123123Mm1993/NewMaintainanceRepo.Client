@@ -329,17 +329,15 @@ export default class FixMetersComponent {
   }
   //ADD NEW ITEM
   addOffMeter(addMeterObj: any, reason: any, note: any) {
-    // addMeterObj.placeType = null;
-    // addMeterObj.activityType = null;
-    // addMeterObj.section = null;
-    // addMeterObj.mainDepartment = null;
-    // addMeterObj.smallDepartment = null;
-    // addMeterObj.isMeterRecieved = null;
-    // addMeterObj.uploadMainteneceMetersOffReason = null;
-    // addMeterObj.deliveryDateToTechnician = null;
-    // addMeterObj.maintenanceDate = null;
-    // addMeterObj.meterType = null;
-    // addMeterObj.isEnded = null;
+    addMeterObj.mainDepartmentCode= 0;
+    addMeterObj.smallDepartmentCode= 0;
+    addMeterObj.isDeleted= false;
+    addMeterObj.modifiedById= 0;
+    addMeterObj.creatorById= 0;
+    addMeterObj.creationTime= new Date();
+    addMeterObj.modificationTime= new Date();
+    //////////////////
+    addMeterObj.nationalId = addMeterObj.nationalId.toString();
     addMeterObj.meterOffReason = reason;
     addMeterObj.meterOffMaintainNote = note;
     addMeterObj.meterTypeId = 1;

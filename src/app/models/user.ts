@@ -24,7 +24,7 @@ export interface UserDto {
 }
 export interface userInsert {
   //id: 0;
-  nationalId: string;
+  natId: string;
   roleId: string;
   isActive: boolean;
   userName: string;

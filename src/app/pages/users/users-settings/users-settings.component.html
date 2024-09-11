@@ -5,8 +5,6 @@
     [paginator]="true" [rows]="5" [showCurrentPageReport]="true" columnResizeMode="expand"
     [globalFilterFields]="['nationalId']" [rowsPerPageOptions]="[5, 10, 20]"
     currentPageReportTemplate="عرض {first}  الى  {last}   من {totalRecords} سبب">
-
-
     <ng-template pTemplate="caption">
       <div class="p-toolbar-group-start pt-0">
         <button pButton [raised]="true" icon="pi pi-plus" pTooltip="إضافة" class=" btnIcon defaultBtnColor"
@@ -101,68 +99,106 @@
   <!-- إضافة مستخدم -->
   <p-dialog header="إضافة مستخدم " [modal]="true" [(visible)]="showAddModal" [style]="{ width: '60vw' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [draggable]="false" [resizable]="false">
-    <div class="flex align-items-center gap-3 mb-3 mt-1 row">
-      <div class="row">
-        <div class="col-md-6 gap-2 mb-2">
-          <label for="userName" class="font-semibold  block mb-2 w-3rem">الاسم </label>
-          <input pInputText id="userName" autocomplete="off" class="w-100" [(ngModel)]="userObj.fullName" />
-        </div>
-        <div class="col-md-6 gap-2 mb-2">
-          <label for="nationalId" class="font-semibold  block mb-2 w-3rem">الرقم القومى </label>
-          <input pInputText id="nationalId" autocomplete="off" class="w-100" [(ngModel)]="userObj.natId" />
-        </div>
-      </div>
-      <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">اختر الادارات الخاصة
-        بالمستخدم</span>
-      <div class="row">
-        <div class="col-md-12">
-          <p-checkbox value="selectAll" inputId="userDep" />
-          <label for="userDep" class="fw-bold">تحديد الكل </label>
-        </div>
-      </div>
-      <div class="row">
-        @if (mainDepartements.length > 0) {
-        @for (dep of mainDepartements; track $index) {
-        <div class="col-md-3">
-          <p-checkbox value="{{dep.id}}" inputId="userDep" [(ngModel)]="userObj.smallDepartmentsIds" />
-          <label for="userDep" class="fw-bold"> {{dep.name}} </label>
-        </div>
-        }
-        }
+    <form [formGroup]="userForm" (ngSubmit)="addUser(userObj)" novalidate>
+      <div class="flex align-items-center gap-3 mb-3 mt-1 row">
+        <div class="row">
+          <div class="col-md-6 gap-2 mb-2">
+            <label for="userName" class="font-semibold  block mb-2 w-3rem">الاسم </label>
+            <input pInputText id="userName" autocomplete="off" class="w-100" formControlName="fullName"
+              [(ngModel)]="userObj.fullName" />
+            <div class="flex gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="userForm.get('fullName')?.invalid && userForm.get('fullName')?.dirty">
+                الاسم مطلوب</small>
+            </div>
+          </div>
+          <div class="col-md-6 gap-2 mb-2">
+            <label for="nationalId" class="font-semibold  block mb-2 w-3rem">الرقم القومى </label>
+            <!-- <input pInputText id="nationalId" autocomplete="off" class="w-100" formControlName="nationalId" [(ngModel)]="userObj.natId" /> -->
 
-      </div>
-      <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">بيانات دخول المستخدم</span>
-      <div class="row  align-items-center">
-        <div class="col-md-6 gap-2 mb-2">
-          <label for="userNAme" class="font-semibold  block mb-2 w-3rem">إسم المستخدم </label>
-          <input pInputText id="userNAme" autocomplete="off" class="w-100" [(ngModel)]="userObj.userName" />
-        </div>
-        <div class="col-md-6 gap-2 pt-4">
-          <p-checkbox value="true" inputId="activateUser" (ngModel)="userObj.isActive" />
-          <label for="activateUser" class="fw-bold">تفعيل المستخدم </label>
-        </div>
-      </div>
-      <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">الادوار</span>
-      <div class="row">
+            <p-inputNumber [useGrouping]="false" id="nationalId" formControlName="nationalId" class="w-100"
+              [(ngModel)]="userObj.natId" [maxlength]="14" />
+            <div class="flex  gap-3 mb-3"
+              *ngIf="userForm.get('nationalId')?.invalid && userForm.get('nationalId')?.dirty">
+              <small class="p-error block pt-2" *ngIf="userForm.get('nationalId')?.hasError('required')">
+                الرقم القومى مطلوب</small>
+              <small class="p-error block pt-2" *ngIf="userForm.get('nationalId')?.hasError('pattern')">
+                الرقم القومى غير صحيح</small>
+            </div>
 
-        @if (roles) {
-        @for (role of roles; track role.id) {
-        <div class="col-md-3 flex flex-wrap gap-3">
-          <div class="field-checkbox">
-            <p-radioButton name="userRole" [value]="role.roleId" [(ngModel)]="userObj.roleId"
-              [ngModelOptions]="{standalone: true}" />
-            <label class="ml-2">{{role.roleName}}</label>
           </div>
         </div>
-        }
-        }
-      </div>
-    </div>
+        <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">اختر الادارات الخاصة
+          بالمستخدم</span>
+        <div class="row">
+          <div class="col-md-12">
+            <p-checkbox value="selectAll" inputId="userDep" />
+            <label for="userDep" class="fw-bold">تحديد الكل </label>
+          </div>
+        </div>
+        <div class="row">
+          @if (mainDepartements.length > 0) {
+          @for (dep of mainDepartements; track $index) {
+          <div class="col-md-3">
+            <p-checkbox value="{{dep.id}}" inputId="userDep" formControlName="smallDepId"
+              [(ngModel)]="userObj.smallDepartmentsIds" />
+            <label for="userDep" class="fw-bold"> {{dep.name}} </label>
+          </div>
+          }
+          }
+          <div class="flex gap-3 mt-3 fw-bold">
+            <small class="p-error block pt-2"
+              *ngIf="userForm.get('smallDepId')?.invalid && userForm.get('smallDepId')?.dirty">
+              من فضلك اختر ادارة واحدة على الاقل</small>
+          </div>
+        </div>
+        <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">بيانات دخول المستخدم</span>
+        <div class="row  align-items-center">
+          <div class="col-md-6 gap-2 mb-2">
+            <label for="userName" class="font-semibold  block mb-2 w-3rem">إسم المستخدم </label>
+            <input pInputText id="userName" autocomplete="off" class="w-100" formControlName="userName"
+              [(ngModel)]="userObj.userName" />
+              <div class="flex gap-3 mb-3">
+                <small class="p-error block pt-2"
+                  *ngIf="userForm.get('userName')?.invalid && userForm.get('userName')?.dirty">
+                  إسم المستخدم مطلوب</small>
+              </div>
+          </div>
+          <div class="col-md-6 gap-2 pt-4">
+            <p-checkbox value="true" inputId="activateUser" [binary]="true"  formControlName="isActive" value="{{userObj.isActive}}"  [inputId]="userObj.isActive" [(ngModel)]="userObj.isActive" ngDefaultControl/>
+            <label for="activateUser" class="fw-bold">تفعيل المستخدم </label>
+          </div>
+        </div>
+        <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">الادوار</span>
+        <div class="row">
 
-    <div class="flex justify-content-start gap-2" style="direction: ltr;">
-      <p-button label="الغاء" severity="secondary" (click)="showAddModal = false;" />
-      <p-button label="حفظ" class="confirmBtn" (click)="addUser(userObj)" />
-    </div>
+          @if (roles) {
+          @for (role of roles; track role.id) {
+          <div class="col-md-3 flex flex-wrap gap-3">
+            <div class="field-checkbox">
+              <p-radioButton name="userRole" [value]="role.roleId" formControlName="userRole"
+                [(ngModel)]="userObj.roleId" />
+              <!-- [ngModelOptions]="{standalone: true}" -->
+              <label class="ml-2">{{role.roleName}}</label>
+            </div>
+          </div>
+          }
+          }
+          <div class="flex gap-3 mt-3 fw-bold">
+            <small class="p-error block pt-2"
+              *ngIf="userForm.get('userRole')?.invalid && userForm.get('userRole')?.dirty">
+              من فضلك اختر دور للمستخدم </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-content-start gap-2" style="direction: ltr;">
+        <p-button label="الغاء" severity="secondary" (click)="showAddModal = false;" />
+        <p-button label="حفظ" class="confirmBtn" type="submit" [disabled]="userForm.invalid" />
+      </div>
+
+    </form>
+
   </p-dialog>
   <!-- تعديل مستخدم -->
   <p-dialog *ngIf="userObj" header="تعديل مستخدم " [modal]="true" [(visible)]="showEditModal"
@@ -204,8 +240,8 @@
       <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">بيانات دخول المستخدم</span>
       <div class="row  align-items-center">
         <div class="col-md-6 gap-2 mb-2">
-          <label for="userNAme" class="font-semibold  block mb-2 w-3rem">إسم المستخدم </label>
-          <input pInputText id="userNAme" autocomplete="off" class="w-100" [(ngModel)]="userObj.fullName"
+          <label for="userName" class="font-semibold  block mb-2 w-3rem">إسم المستخدم </label>
+          <input pInputText id="userName" autocomplete="off" class="w-100" [(ngModel)]="userObj.fullName"
             ngDefaultControl />
         </div>
         <div class="col-md-6 gap-2 pt-4">

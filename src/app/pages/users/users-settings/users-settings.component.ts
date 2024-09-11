@@ -6,26 +6,44 @@ import { MeterService } from '../../../services/meter.service';
 import { Table, TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../../shared/sharedModules';
-// import { FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from '../../../services/loader.service';
 
 @Component({
   selector: 'app-users-settings',
   standalone: true,
-  imports: [SidemenuComponent, CommonModule, SharedModule],
+  imports: [SidemenuComponent, CommonModule, SharedModule, ReactiveFormsModule],
   templateUrl: './users-settings.component.html',
   styleUrl: './users-settings.component.scss',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService, MessageService, FormBuilder, Validators],
 })
 export default class UsersSettingsComponent {
   constructor(
     private meterService: MeterService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private router: Router,
+    private fb: FormBuilder,
     private loaderService: LoaderService
   ) {}
+
+  //forms
+  userForm = this.fb.group({
+    fullName: ['', Validators.required],
+    nationalId: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(
+          '^([2-3]{1})([0-9]{2})(0[1-9]|1[012])(0[1-9]|[1-2][0-9]|3[0-1])(0[1-4]|[1-2][1-9]|3[1-5]|88)[0-9]{3}([0-9]{1})[0-9]{1}$'
+        ),
+      ],
+    ],
+    smallDepId: ['', Validators.required],
+    userName: ['', Validators.required],
+    userRole: ['', Validators.required],
+    isActive: true,
+  });
 
   showAddModal: boolean = false;
   showEditModal: boolean = false;
@@ -38,14 +56,7 @@ export default class UsersSettingsComponent {
   selectedRole: any;
   openAddModal() {
     this.showAddModal = true;
-    this.userObj = {
-      nationalId: '',
-      roleId: '',
-      isActive: false,
-      userName: '',
-      fullName: '',
-      smallDepartmentsIds: undefined,
-    };
+    this.userObj = {};
   }
   //get all main departements
   getSmallDeps() {
@@ -180,6 +191,8 @@ export default class UsersSettingsComponent {
     });
   }
   addUser(user: userInsert) {
+    //user.isActive = JSON.parse(isAct);
+    user.natId = user.natId.toString();
     console.log('addddddeeedddd useeeeeeeeeeeer', user);
     this.meterService.addUser(user).subscribe({
       next: (res) => {
