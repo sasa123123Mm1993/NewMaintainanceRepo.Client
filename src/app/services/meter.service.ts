@@ -139,7 +139,6 @@ export class MeterService {
   }
   //    البحـــــث برقم العـــــــــداد
   searchMeter(meterNum: number | string) {
-    console.log(meterNum);
     return this.http.get<any>(
       'http://192.168.15.10:1001/api/meter/GetMetersInfo/' + meterNum
     );
@@ -190,12 +189,7 @@ export class MeterService {
       'http://localhost:8000/CardService.svc/rest/ReadCard'
     );
   }
-  writeCard(data: any) {
-    return this.http.post<ICard>(
-      'http://localhost:8000/CardService.svc/rest/WriteCard',
-      data
-    );
-  }
+
   ////////////////// control cards ///////////////////////////
   getAlloptionsOfControlCards() {
     return this.http.get<any>(apiUrl + 'ControlCard/GetAll');
@@ -206,6 +200,15 @@ export class MeterService {
   createControlCard(data: any) {
     return this.http.post<any>(apiUrl + 'ControlCard/Create', data);
   }
+
+  //////////////  //////// LOCAL ////////////  ////////////////
+  writeCard(data: any) {
+    return this.http.post<any>(
+      'http://localhost:8000/CardService.svc/rest/WriteCard',
+      data
+    );
+  }
+
   //////////////  //////// PUBLIC ////////////  ////////////////
 
   //نوع النشــــــــــــاط

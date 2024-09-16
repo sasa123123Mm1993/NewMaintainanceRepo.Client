@@ -9,6 +9,8 @@ import { FormsModule } from '@angular/forms';
 import { identifierName } from '@angular/compiler';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, Validators } from '@angular/forms';
+import { LoaderService } from '../../../services/loader.service';
+import { cardCreate } from '../../../models/card';
 
 @Component({
   selector: 'app-cards',
@@ -29,22 +31,55 @@ export default class CardsComponent {
     private meterService: MeterService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private loaderService: LoaderService
   ) {}
   logged: boolean = true;
+  visibleSuccessDialog: boolean = false;
+  visibleFailDialog: boolean = false;
   cardTasks: any = [];
   techList: any = [];
-  cardObj: any = {
-    code: '',
-    techName: '',
-    techId: '',
-    cardCreationDate: new Date(),
-    cardEndDate: new Date(),
-    meterType: 0,
+  activityList: any = [];
+  dateType:string = '';
+  cardCreationDate:any=new Date();
+  cardObj: cardCreate = {
+    // code: '',
+    // techId: '',
+    // cardCreationDate: new Date(),
+    // cardEndDate: new Date(),
+    meterType: 0, //
+    employeeId: 0, //
+    propertyId: '', //
+    startDate: new Date(), //
+    expirationDate: new Date(), //
+    limitation: 0, //
+    dateTimeMode: null, //
+    cutoffAlarmLimitBalance: null, //
+    tariffTypeId: null, //
+    automaticDate: new Date(), // لازم تاريخ
+    meterSerial: '00000000', // لازم رقم عداد
+    meterTypeModel: '',  //
+    oldMeterSerial: null, //
+    newMeterSerial: null, //
+    labTestCardAvailableTime: null, //
+    company: '3', //
+    reverseCardRecoveryTime: null, //
+    labTestCardAvailableKWh: null, //
+    oldDistributionCompanyCode: null, //
+    newDistributionCompanyCode: null, //
+    modificationStyle: false, //
+    isActive: false, //
+    automaticTime: new Date(), //
+    controledMetersList: [], //
+    tampersCodes: [], //
   };
   releaseCardForm = this.fb.group({
     cardCode: ['', Validators.required],
     techId: ['', Validators.required],
+    meterType: [0, Validators.required],
+    dateType: [''],
+    automaticDate: [''],
+    reverseCardRecoveryTime: [''],
   });
 
   //get all card tasks
@@ -65,40 +100,34 @@ export default class CardsComponent {
       },
     });
   }
-
-  createControlCard(createObj: any) {
-    const cardObj = {
-      employeeId: createObj.techId,
-      propertyId: createObj.code,
-      startDate: createObj.cardCreationDate,
-      expirationDate: createObj.cardEndDate,
-      limitation: 0,
-      dateTimeMode: null,
-      cutoffAlarmLimitBalance: null,
-      meterType: 0,
-      tariffTypeId: null,
-      automaticDate: new Date(),
-      meterSerial: '00000000',
-      meterTypeModel: '',
-      oldMeterSerial: null,
-      newMeterSerial: null,
-      labTestCardAvailableTime: null,
-      company: '',
-      reverseCardRecoveryTime: null,
-      labTestCardAvailableKWh: null,
-      oldDistributionCompanyCode: null,
-      newDistributionCompanyCode: null,
-      modificationStyle: true,
-      isActive: true,
-      automaticTime: new Date(),
-      controledMetersList: [],
-      tampersCodes: [],
-    };
-    //
-
-    console.log('addedddddddddd obj :', cardObj);
-    this.meterService.createControlCard(cardObj).subscribe({
+  getAllActivities() {
+    this.meterService.getAllActivityTypes().subscribe({
       next: (res) => {
+        this.activityList = res;
+      },
+    });
+  }
+  createControlCard() {
+
+    console.log('addedddddddddd obj :', this.cardObj);
+    this.meterService.createControlCard(this.cardObj).subscribe({
+      next: (res) => {
+        this.loaderService.showLoader();
+        const writeObj = {
+          CardToken: res.payload,
+        };
+        this.meterService.writeCard(writeObj).subscribe({
+          next: (res) => {
+            console.log('after write', res);
+            if (res == 0) {
+              this.visibleSuccessDialog = true;
+              this.loaderService.hideLoader();
+            } else {
+              this.visibleFailDialog = true;
+              this.loaderService.hideLoader();
+            }
+          },
+        });
         console.log(res);
       },
     });
@@ -106,33 +135,6 @@ export default class CardsComponent {
   ngOnInit(): void {
     this.getCardTasksList();
     this.getTechniciansList();
-    // this.cardTasks = [
-    //   { name: 'ضبط الوقت و التاريخ اوتوماتيك', id: 1 },
-    //   { name: 'ازالة تلاعبات و اخطاء', id: 2 },
-    //   { name: 'فتح و غلق مفاتيح التوصيل', id: 3 },
-    //   { name: 'ضبط الوقت و التاريخ يدويا', id: 4 },
-    //   { name: 'تصفير عداد', id: 5 },
-    //   { name: 'اختبار مفتاح التوصيل', id: 6 },
-    //   { name: 'تغيير شرائح التعريفة', id: 7 },
-    //   { name: 'ضبط حد الفصل و الانذار اتوماتيك', id: 8 },
-    //   { name: 'اطلاق تيار', id: 9 },
-    //   { name: 'تغيير رقم العداد ', id: 10 },
-    //   { name: 'اصدار كارت المعمل ', id: 11 },
-    //   { name: 'تغيير كود الشركة ', id: 12 },
-    // ];
-    // this.techList = [
-    //   {
-    //     name: 'ahmed saber',
-    //     id: 1,
-    //   },
-    //   {
-    //     name: 'mostafa tawfik',
-    //     id: 2,
-    //   },
-    //   {
-    //     name: 'mohamed nabwi',
-    //     id: 3,
-    //   },
-    // ];
+    this.getAllActivities();
   }
 }

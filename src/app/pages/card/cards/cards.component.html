@@ -1,27 +1,27 @@
 <section class="row">
   <p-button label="مسح الكارت" class="w-50 pb-4" [raised]="true" />
   <div class="card flex justify-content-center px-5 py-3">
-    <form action="" [formGroup]="releaseCardForm" novalidate (ngSubmit)="createControlCard(cardObj)">
+    <form action="" [formGroup]="releaseCardForm" novalidate (ngSubmit)="createControlCard()">
       <div class="row">
         <div class="col-md-3 gap-2 mb-2">
-          <label for="companies" class="font-semibold  block mb-2 ">وظيفة الكارت </label>
+          <label for="companies" class="font-semibold  block mb-2 ">وظيفة الكارت {{cardObj.propertyId}}</label>
           <p-dropdown [options]="cardTasks" class="row-cols-1" optionLabel="name" optionValue="code"
-            placeholder="اختر وظيفة الكارت" [(ngModel)]="cardObj.code" formControlName="cardCode" />
+            placeholder="اختر وظيفة الكارت" [(ngModel)]="cardObj.propertyId" formControlName="cardCode" />
         </div>
         <div class="col-md-3 gap-2 mb-2">
           <label for="companies" class="font-semibold  block mb-2 ">اسم الفنى </label>
           <p-dropdown [options]="techList" class="row-cols-1" optionLabel="name" optionValue="id"
-            placeholder="اختر الفنى " [(ngModel)]="cardObj.techId" formControlName="techId" />
+            placeholder="اختر الفنى " [(ngModel)]="cardObj.employeeId" formControlName="techId" />
         </div>
         <div class="col-md-3 gap-2 mb-2">
           <label for="companies" class="font-semibold  block mb-2 ">تاريخ الاصدار </label>
           <input pInputText id="meterOffReason" class="w-100" autocomplete="off" disabled
-            value="{{cardObj.cardCreationDate | date:'dd-MM-yyyy'}}" />
+            value="{{cardCreationDate | date:'dd-MM-yyyy'}}" />
         </div>
         <div class="col-md-3 gap-2 mb-2">
           <label for="companies" class="font-semibold  block mb-2 ">تاريخ انتهاء الكارت </label>
           <input pInputText id="meterOffReason" class="w-100" autocomplete="off" disabled
-            value="{{cardObj.cardCreationDate | date:'dd-MM-yyyy'}}" />
+            value="{{cardCreationDate | date:'dd-MM-yyyy'}}" />
         </div>
       </div>
 
@@ -31,15 +31,15 @@
           تحديد العدادات :
         </div>
         <div class="col-md-3">
-          <p-radioButton name="meterType" [value]="1" [(ngModel)]="cardObj.meterType" />
+          <p-radioButton name="meterType" [value]="1" [(ngModel)]="cardObj.meterType" formControlName="meterType"/>
           <label class="ml-2">عداد واحد</label>
         </div>
         <div class="col-md-3">
-          <p-radioButton name="meterType" [value]="2" [(ngModel)]="cardObj.meterType" />
+          <p-radioButton name="meterType" [value]="2" [(ngModel)]="cardObj.meterType" formControlName="meterType"/>
           <label class="ml-2">مجموعة عدادات</label>
         </div>
         <div class="col-md-3">
-          <p-radioButton name="meterType" [value]="0" [(ngModel)]="cardObj.meterType" />
+          <p-radioButton name="meterType" [value]="0" [(ngModel)]="cardObj.meterType" formControlName="meterType"/>
           <label class="ml-2">غير محدد</label>
         </div>
       </div>
@@ -70,32 +70,32 @@
       <hr>
       <div class="flex-column gap-2 pt-4">
         <!-- ضبط وقت و تاريخ اوتوماتيك -->
-        @if (cardObj.cardId == 1) {
+        @if (cardObj.propertyId == 0) {
         <div class="row w-100">
           <div class="col-md-4 fw-bold">نمط التعديل :</div>
           <div class="col-md-4">
-            <p-radioButton name="dateToEdit" [value]="'selectDate'" [(ngModel)]="cardObj.dateType" />
+            <p-radioButton name="dateToEdit" [value]="'selectDate'" [(ngModel)]="dateType" formControlName="dateType"/>
             <label class="ml-2">تحديد تاريخ معين </label>
           </div>
           <div class="col-md-4">
-            <p-radioButton name="dateToEdit" [value]="'serverDate'" [(ngModel)]="cardObj.dateType" />
+            <p-radioButton name="dateToEdit" [value]="'serverDate'" [(ngModel)]="dateType" formControlName="dateType"/>
             <label class="ml-2">تاريخ تلقائى من السيرفر </label>
           </div>
-          @if (cardObj.dateType == 'selectDate') {
+          @if (dateType == 'selectDate') {
           <div class="row w-100 pt-4">
             <div class="col-md-4"></div>
             <div class="col-md-1 fw-bold mx-3"> اختر التاريخ :</div>
             <div class="col-md-5">
-              <p-calendar [(ngModel)]="cardObj.dateToEdit" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-                [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" />
+              <p-calendar [(ngModel)]="cardObj.automaticDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
+                [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" formControlName="automaticDate" />
             </div>
           </div>
           }
         </div>
         }
         <!-- ازالة تلاعبات و اخطاء -->
-        @if (cardObj.cardId == 2) {
-        <div class="row w-100">
+        @if (cardObj.propertyId == 3) {
+        <!-- <div class="row w-100">
           <div class="col-md-4 fw-bold">قائمة التلاعبات التي يمكن ازالتها :</div>
           <div class="col-md-8">
             <div class="row w-100">
@@ -129,34 +129,34 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
 
         }
         <!-- فتح و غلق مفتاح التوصيل -->
-        @if (cardObj.cardId == 3) {
+        @if (cardObj.propertyId == 5) {
         <div class="row w-100">
           <div class="col-md-3 fw-bold align-content-around">
             الوقت المستغرق لفتح الريلاي بالدقائق :
           </div>
           <div class="col-md-9 fw-bold">
-            <input pInputText id="meterOffReason" class="w-100" autocomplete="off" />
+            <input pInputText id="meterOffReason" class="w-100" autocomplete="off" [(ngModel)]="cardObj.reverseCardRecoveryTime" formControlName="reverseCardRecoveryTime" />
           </div>
         </div>
         }
         <!-- تغيير شرائح التعريفة -->
-        @if (cardObj.cardId == 7) {
+        @if (cardObj.propertyId == 7) {
         <div class="row w-100">
           <div class="col-md-3 fw-bold align-content-around">
             نوع النشاط :
           </div>
           <div class="col-md-9 fw-bold">
-            <p-dropdown [options]="techList" class="row-cols-1" optionLabel="name" optionValue="id"
-              placeholder="اختر الفنى " [ngModel]="cardObj.techId" />
+            <p-dropdown [options]="activityList" class="row-cols-1" optionLabel="name" optionValue="id"
+              placeholder="اختر نوع النشاط " [ngModel]="cardObj.tariffTypeId" />
           </div>
         </div>
         }
         <!-- تغيير رقم العداد -->
-        @if (cardObj.cardId == 10) {
+        @if (cardObj.propertyId == 51) {
         <div class="row w-100">
           <div class="col-md-3 fw-bold align-content-around text-center">
             رقم العداد القديم :
@@ -173,7 +173,7 @@
         </div>
         }
         <!-- اصدار كارت المعمل  -->
-        @if (cardObj.cardId == 11) {
+        @if (cardObj.propertyId == 53) {
         <div class="row w-100">
           <div class="col-md-3 fw-bold align-content-around text-center">
             سماحية كارت المعمل بالدقائق :
@@ -188,7 +188,7 @@
             <input pInputText id="meterOffReason" class="w-100" autocomplete="off" />
           </div>
         </div>
-        <div class="row w-100 py-4">
+        <!-- <div class="row w-100 py-4">
           <div class="col-md-3 fw-bold">ضع علامة لاختبار مفتاح الفصل والتوصيل :</div>
           <div class="col-md-9">
             <div class="row w-100">
@@ -202,11 +202,11 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
 
         }
         <!-- تغيير كود الشركة -->
-        @if (cardObj.cardId == 12) {
+        @if (cardObj.propertyId == 50) {
         <div class="row w-100">
           <div class="col-md-3 fw-bold align-content-around text-center">
             كود الشركة القديمة :
@@ -229,4 +229,22 @@
       </div>
     </form>
   </div>
+  <p-dialog [(visible)]="visibleSuccessDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
+    <h3 class="text-center defaultTxtColor">
+      <i class="pi pi-thumbs-up-fill" severity="success" style="font-size: 2.5rem;"></i>
+    </h3>
+    <div class="row text-center py-4">
+      <b class="text-center">تم الكتابة على الكارت بنجاح</b>
+    </div>
+  </p-dialog>
+  <p-dialog [(visible)]="visibleFailDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
+    <h3 class="text-center defaultTxtColor">
+      <i class="pi pi-thumbs-down" severity="danger"  style="font-size: 2.5rem;color: darkred;"></i>
+    </h3>
+    <div class="row text-center py-4">
+      <b class="text-center">خطأ فى  الكتابة على الكارت </b>
+    </div>
+  </p-dialog>
 </section>
