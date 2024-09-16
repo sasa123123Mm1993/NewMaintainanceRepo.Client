@@ -44,6 +44,23 @@ export default class UsersSettingsComponent {
     userRole: ['', Validators.required],
     isActive: true,
   });
+  editUserForm = this.fb.group({
+    fullName: ['', Validators.required],
+    nationalId: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(
+          '^([2-3]{1})([0-9]{2})(0[1-9]|1[012])(0[1-9]|[1-2][0-9]|3[0-1])(0[1-4]|[1-2][1-9]|3[1-5]|88)[0-9]{3}([0-9]{1})[0-9]{1}$'
+        ),
+      ],
+    ],
+    smallDepId: ['', Validators.required],
+    userName: ['', Validators.required],
+    userRole: ['', Validators.required],
+    isActive: true,
+  });
+
 
   showAddModal: boolean = false;
   showEditModal: boolean = false;
@@ -53,13 +70,13 @@ export default class UsersSettingsComponent {
   userList: any = [];
   userObj: any = {};
   userDepartments: any = [];
-  selectedRole: any;
   openAddModal() {
     this.showAddModal = true;
     this.userObj = {};
   }
   //get all main departements
   getSmallDeps() {
+    this.loaderService.showLoader();
     this.meterService.getSmallDeps().subscribe({
       next: (res) => {
         this.mainDepartements = res;
@@ -67,6 +84,7 @@ export default class UsersSettingsComponent {
           item.checked = false;
         });
         console.log('deeeeeeeeeeeeps', this.mainDepartements);
+        this.loaderService.hideLoader();
       },
     });
   }
@@ -92,6 +110,7 @@ export default class UsersSettingsComponent {
   }
   selectedDeps: any = [];
   getUserById(userId: any) {
+    this.loaderService.showLoader();
     console.log('idddddd', userId);
     this.getSmallDeps();
     this.meterService.getUserById(userId, '').subscribe({
@@ -110,6 +129,7 @@ export default class UsersSettingsComponent {
           }
           console.log('main', this.mainDepartements);
         }
+        this.loaderService.hideLoader();
       },
     });
   }

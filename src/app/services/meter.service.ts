@@ -196,7 +196,16 @@ export class MeterService {
       data
     );
   }
-
+  ////////////////// control cards ///////////////////////////
+  getAlloptionsOfControlCards() {
+    return this.http.get<any>(apiUrl + 'ControlCard/GetAll');
+  }
+  getAllTechinicians() {
+    return this.http.get<any>(apiUrl + 'ControlCard/GetAllTechinicions');
+  }
+  createControlCard(data: any) {
+    return this.http.post<any>(apiUrl + 'ControlCard/Create', data);
+  }
   //////////////  //////// PUBLIC ////////////  ////////////////
 
   //نوع النشــــــــــــاط
