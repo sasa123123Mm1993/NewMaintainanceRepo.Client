@@ -54,13 +54,13 @@
           رقم العداد :
         </div>
         <div class="col-md-9 fw-bold">
-          <p-inputNumber [useGrouping]="false" [maxlength]="8"  id="meterNumber" class="w-100"
-            autocomplete="off" formControlName="meterNumber" />
-            <div class="flex  gap-3 mb-3">
-              <small class="p-error block pt-2"
-                *ngIf="releaseCardForm.get('meterNumber')?.invalid && releaseCardForm.get('meterNumber')?.dirty">
-                رقم العداد مطلوب</small>
-            </div>
+          <p-inputNumber [useGrouping]="false" [maxlength]="8" id="meterNumber" class="w-100" autocomplete="off"
+            formControlName="meterNumber" />
+          <div class="flex  gap-3 mb-3">
+            <small class="p-error block pt-2"
+              *ngIf="releaseCardForm.get('meterNumber')?.invalid && releaseCardForm.get('meterNumber')?.dirty">
+              رقم العداد مطلوب</small>
+          </div>
         </div>
       </div>
       }
@@ -70,8 +70,8 @@
           رقم العداد :
         </div>
         <div class="col-md-7 fw-bold">
-          <p-inputNumber [useGrouping]="false" [maxlength]="8" id="addNewMeter" class="w-100 ng-invalid ng-dirty" autocomplete="off" [(ngModel)]="newMeter"
-            formControlName="newMeter" />
+          <p-inputNumber [useGrouping]="false" [maxlength]="8" id="addNewMeter" class="w-100 ng-invalid ng-dirty"
+            autocomplete="off" [(ngModel)]="newMeter" formControlName="newMeter" />
         </div>
         <div class="col-md-2">
           <p-button label="إضافة" class="w-50 pb-4" [raised]="true" (click)="addMeter()" />
@@ -108,9 +108,9 @@
             <div class="col-md-4"></div>
             <div class="col-md-1 fw-bold mx-3"> اختر التاريخ :</div>
             <div class="col-md-5">
-              <p-calendar [(ngModel)]="cardObj.AutomaticDate" class="row-cols-1 calenderTop-class" [styleClass]="'date-time-align'"
-                [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" hourFormat="12"
-                formControlName="automaticDate" [showTime]="true"/>
+              <p-calendar [(ngModel)]="cardObj.AutomaticDate" class="row-cols-1 calenderTop-class"
+                [styleClass]="'date-time-align'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
+                dateFormat="dd/mm/yy" hourFormat="12" formControlName="automaticDate" [showTime]="true" />
 
             </div>
           </div>
@@ -144,11 +144,11 @@
           <div class="col-md-9 fw-bold">
             <input pInputText id="meterOffReason" class="w-100" autocomplete="off"
               [(ngModel)]="cardObj.reverseCardRecoveryTime" formControlName="reverseCardRecoveryTime" />
-              <div class="flex  gap-3 mb-3">
-                <small class="p-error block pt-2"
-                  *ngIf="releaseCardForm.get('reverseCardRecoveryTime')?.invalid && releaseCardForm.get('reverseCardRecoveryTime')?.dirty">
-                  الوقت المستغرق لفتح الريلاي بالدقائق مطلوب</small>
-              </div>
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="releaseCardForm.get('reverseCardRecoveryTime')?.invalid && releaseCardForm.get('reverseCardRecoveryTime')?.dirty">
+                الوقت المستغرق لفتح الريلاي بالدقائق مطلوب</small>
+            </div>
           </div>
         </div>
         }
@@ -160,24 +160,42 @@
           </div>
           <div class="col-md-9 fw-bold">
             <p-dropdown [options]="activityList" class="row-cols-1" optionLabel="name" optionValue="id"
-              placeholder="اختر نوع النشاط " [ngModel]="cardObj.tariffTypeId" />
+              placeholder="اختر نوع النشاط " [(ngModel)]="cardObj.tariffTypeId" formControlName="TariffTypeId" />
           </div>
         </div>
         }
         <!-- تغيير رقم العداد -->
         @if (cardObj.propertyId == '51') {
         <div class="row w-100">
-          <div class="col-md-3 fw-bold align-content-around text-center">
+          <div class="col-md-2 fw-bold align-content-around text-center">
             رقم العداد القديم :
           </div>
-          <div class="col-md-3">
-            <input pInputText id="meterOffReason" class="w-100" autocomplete="off" />
+          <div class="col-md-4">
+            <input pInputText id="OldMeterSerial" class="w-100" autocomplete="off" [(ngModel)]="cardObj.OldMeterSerial"
+              formControlName="oldMeterNum" />
           </div>
-          <div class="col-md-3 fw-bold align-content-around text-center">
+          <div class="col-md-2 fw-bold align-content-around text-center">
             رقم العداد الجديد :
           </div>
-          <div class="col-md-3">
-            <input pInputText id="meterOffReason" class="w-100" autocomplete="off" />
+          <div class="col-md-4">
+            <input pInputText id="NewMeterSerial" class="w-100" autocomplete="off" [(ngModel)]="cardObj.NewMeterSerial"
+              formControlName="newMeterNum" />
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-4">
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="releaseCardForm.get('oldMeterNum')?.invalid && releaseCardForm.get('oldMeterNum')?.dirty">
+                رقم العداد القديم مطلوب</small>
+            </div>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-4">
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="releaseCardForm.get('newMeterNum')?.invalid && releaseCardForm.get('newMeterNum')?.dirty">
+                رقم العداد الجديد مطلوب</small>
+            </div>
           </div>
         </div>
         }
@@ -187,14 +205,32 @@
           <div class="col-md-3 fw-bold align-content-around text-center">
             سماحية كارت المعمل بالدقائق :
           </div>
-          <div class="col-md-3">
-            <input pInputText id="meterOffReason" class="w-100" autocomplete="off" />
+          <div class="col-md-2">
+            <input pInputText id="LabTestCardAvailableTime" class="w-100" autocomplete="off"
+              [(ngModel)]="cardObj.LabTestCardAvailableTime" formControlName="labAvailableTime" />
           </div>
-          <div class="col-md-3 fw-bold align-content-around text-center">
+          <div class="col-md-4 fw-bold align-content-around text-center">
             سماحية كارت المعمل بالكيلو وات:
           </div>
-          <div class="col-md-3">
-            <input pInputText id="meterOffReason" class="w-100" autocomplete="off" />
+          <div class="col-md-2">
+            <input pInputText id="LabTestCardAvailableKWh" class="w-100" autocomplete="off"
+              [(ngModel)]="cardObj.LabTestCardAvailableKWh" formControlName="labAvailableKWh" />
+          </div>
+          <div class="3"></div>
+          <div class="2">
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="releaseCardForm.get('labAvailableTime')?.invalid && releaseCardForm.get('labAvailableTime')?.dirty">
+                الدقائق مطلوبة </small>
+            </div>
+          </div>
+          <div class="4"></div>
+          <div class="2">
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="releaseCardForm.get('labAvailableKWh')?.invalid && releaseCardForm.get('labAvailableKWh')?.dirty">
+                الكيلو وات مطلوبة </small>
+            </div>
           </div>
         </div>
         <!-- <div class="row w-100 py-4">
@@ -221,13 +257,31 @@
             كود الشركة القديمة :
           </div>
           <div class="col-md-3">
-            <input pInputText id="meterOffReason" class="w-100" autocomplete="off" />
+            <input pInputText id="meterOffReason" class="w-100" autocomplete="off"
+              [(ngModel)]="cardObj.OldDistributionCompanyCode" formControlName="oldCompanyCode" />
           </div>
           <div class="col-md-3 fw-bold align-content-around text-center">
             كود الشركة الجديدة :
           </div>
           <div class="col-md-3">
-            <input pInputText id="meterOffReason" class="w-100" autocomplete="off" />
+            <input pInputText id="meterOffReason" class="w-100" autocomplete="off"
+              [(ngModel)]="cardObj.NewDistributionCompanyCode" formControlName="newCompanyCode" />
+          </div>
+          <div class="col-md-3"></div>
+          <div class="col-md-3">
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="releaseCardForm.get('oldCompanyCode')?.invalid && releaseCardForm.get('oldCompanyCode')?.dirty">
+                كود الشركة القديم مطلوب </small>
+            </div>
+          </div>
+          <div class="col-md-3"></div>
+          <div class="col-md-3">
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="releaseCardForm.get('newCompanyCode')?.invalid && releaseCardForm.get('newCompanyCode')?.dirty">
+                كود الشركة الجديد مطلوب </small>
+            </div>
           </div>
         </div>
 

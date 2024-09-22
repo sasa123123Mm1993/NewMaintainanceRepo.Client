@@ -82,14 +82,14 @@ export default class CardsComponent {
     AutomaticDate: new Date(), // لازم تاريخ
     // meterSerial: '00000000', // لازم رقم عداد
     meterTypeModel: '', //
-    oldMeterSerial: null, //
-    newMeterSerial: null, //
-    labTestCardAvailableTime: null, //
+    OldMeterSerial: null, //
+    NewMeterSerial: null, //
+    LabTestCardAvailableTime: null, //
     company: '3', //
     reverseCardRecoveryTime: null, //
-    labTestCardAvailableKWh: null, //
-    oldDistributionCompanyCode: null, //
-    newDistributionCompanyCode: null, //
+    LabTestCardAvailableKWh: null, //
+    OldDistributionCompanyCode: null, //
+    NewDistributionCompanyCode: null, //
     modificationStyle: false, //
     isActive: false, //
     AutomaticTime: new Date(), //
@@ -109,6 +109,13 @@ export default class CardsComponent {
     tampersCodes: [],
     selectedMeter: [''],
     newMeter: [''],
+    TariffTypeId: [''],
+    newMeterNum: [''],
+    oldMeterNum: [''],
+    labAvailableKWh: [''],
+    labAvailableTime: [''],
+    oldCompanyCode: [''],
+    newCompanyCode: [''],
     metersNumsList: [[]],
   });
 
@@ -149,7 +156,7 @@ export default class CardsComponent {
       if (this.cardObj.AutomaticDate) {
         // const timeString = this.cardObj.AutomaticDate.toTimeString();
         // this.cardObj.AutomaticTime =(timeString.split(' ')[0]).toJSON() ;
-         this.cardObj.AutomaticTime =this.cardObj.AutomaticDate.toISOString() ;
+        this.cardObj.AutomaticTime = this.cardObj.AutomaticDate.toISOString();
       }
     }
 
@@ -234,7 +241,62 @@ export default class CardsComponent {
       }
       reverseCardRecoveryTime?.updateValueAndValidity();
     });
-    //  تلاعب
+    //  تغيير شريحة تعريفة
+    this.releaseCardForm.get('cardCode')?.valueChanges.subscribe((value) => {
+      console.log('vallll', value);
+      const tarrifType = this.releaseCardForm.get('TariffTypeId');
+      if (value == '7') {
+        tarrifType?.setValidators([Validators.required]);
+      } else {
+        tarrifType?.clearValidators();
+      }
+      tarrifType?.updateValueAndValidity();
+    });
+    //  تغيير رقم عداد
+    this.releaseCardForm.get('cardCode')?.valueChanges.subscribe((value) => {
+      console.log('vallll', value);
+      const oldMeterNum = this.releaseCardForm.get('oldMeterNum');
+      const newMeterNum = this.releaseCardForm.get('newMeterNum');
+      if (value == '51') {
+        oldMeterNum?.setValidators([Validators.required]);
+        newMeterNum?.setValidators([Validators.required]);
+      } else {
+        oldMeterNum?.clearValidators();
+        newMeterNum?.clearValidators();
+      }
+      oldMeterNum?.updateValueAndValidity();
+      newMeterNum?.updateValueAndValidity();
+    });
+    //  اصدار كارت المعمل
+    this.releaseCardForm.get('cardCode')?.valueChanges.subscribe((value) => {
+      console.log('vallll', value);
+      const labAvailableTime = this.releaseCardForm.get('labAvailableTime');
+      const labAvailableKWh = this.releaseCardForm.get('labAvailableKWh');
+      if (value == '53') {
+        labAvailableTime?.setValidators([Validators.required]);
+        labAvailableKWh?.setValidators([Validators.required]);
+      } else {
+        labAvailableTime?.clearValidators();
+        labAvailableKWh?.clearValidators();
+      }
+      labAvailableTime?.updateValueAndValidity();
+      labAvailableKWh?.updateValueAndValidity();
+    });
+    // تغيير كود الشركة
+    this.releaseCardForm.get('cardCode')?.valueChanges.subscribe((value) => {
+      console.log('vallll', value);
+      const oldCompanyCode = this.releaseCardForm.get('oldCompanyCode');
+      const newCompanyCode = this.releaseCardForm.get('newCompanyCode');
+      if (value == '50') {
+        oldCompanyCode?.setValidators([Validators.required]);
+        newCompanyCode?.setValidators([Validators.required]);
+      } else {
+        oldCompanyCode?.clearValidators();
+        newCompanyCode?.clearValidators();
+      }
+      oldCompanyCode?.updateValueAndValidity();
+      newCompanyCode?.updateValueAndValidity();
+    });
   }
   getCardCode(code: any) {
     this.loaderService.showLoader();
@@ -246,11 +308,10 @@ export default class CardsComponent {
           this.loaderService.hideLoader();
         },
       });
-    }else if(code == 0){
-      this.dateType='serverDate';
+    } else if (code == 0) {
+      this.dateType = 'serverDate';
       this.loaderService.hideLoader();
-    }
-    else {
+    } else {
       this.loaderService.hideLoader();
     }
   }
