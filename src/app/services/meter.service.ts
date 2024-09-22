@@ -200,7 +200,25 @@ export class MeterService {
   createControlCard(data: any) {
     return this.http.post<any>(apiUrl + 'ControlCard/Create', data);
   }
-
+  getCardExpDate() {
+    return this.http.get<any>(
+      apiUrl + 'ControlCard/GetTechinicianExpirationDate'
+    );
+  }
+  getCardReleaseDate() {
+    return this.http.get<any>(
+      apiUrl + 'ControlCard/GetTechinicianActivationDate'
+    );
+  }
+  getAllTampers() {
+    return this.http.get<any>(apiUrl + 'ControlCard/GetAllTampers');
+  }
+  cancelControlCardRelease(controlCardId: any) {
+    return this.http.post<any>(
+      apiUrl + 'ControlCard/CancelControlCard?controlCardId=' + controlCardId,
+      ''
+    );
+  }
   //////////////  //////// LOCAL ////////////  ////////////////
   writeCard(data: any) {
     return this.http.post<any>(

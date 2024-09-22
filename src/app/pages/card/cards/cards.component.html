@@ -1,12 +1,14 @@
 <section class="row">
   <p-button label="مسح الكارت" class="w-50 pb-4" [raised]="true" />
-  <div class="card flex justify-content-center px-5 py-3">
+  <div class="card flex justify-content-center px-5 py-3 mb-5">
+    <!-- ng-invalid ng-dirty -->
     <form action="" [formGroup]="releaseCardForm" novalidate (ngSubmit)="createControlCard()">
       <div class="row">
         <div class="col-md-3 gap-2 mb-2">
           <label for="companies" class="font-semibold  block mb-2 ">وظيفة الكارت {{cardObj.propertyId}}</label>
           <p-dropdown [options]="cardTasks" class="row-cols-1" optionLabel="name" optionValue="code"
-            placeholder="اختر وظيفة الكارت" [(ngModel)]="cardObj.propertyId" formControlName="cardCode" />
+            placeholder="اختر وظيفة الكارت" [(ngModel)]="cardObj.propertyId" formControlName="cardCode"
+            (onChange)="getCardCode(cardObj.propertyId)" />
         </div>
         <div class="col-md-3 gap-2 mb-2">
           <label for="companies" class="font-semibold  block mb-2 ">اسم الفنى </label>
@@ -21,7 +23,7 @@
         <div class="col-md-3 gap-2 mb-2">
           <label for="companies" class="font-semibold  block mb-2 ">تاريخ انتهاء الكارت </label>
           <input pInputText id="meterOffReason" class="w-100" autocomplete="off" disabled
-            value="{{cardCreationDate | date:'dd-MM-yyyy'}}" />
+            value="{{cardExpireDate | date:'dd-MM-yyyy'}}" />
         </div>
       </div>
 
@@ -31,15 +33,18 @@
           تحديد العدادات :
         </div>
         <div class="col-md-3">
-          <p-radioButton name="meterType" [value]="1" [(ngModel)]="cardObj.meterType" formControlName="meterType"/>
+          <p-radioButton id="meterType" name="meterType" [value]="1" [(ngModel)]="cardObj.meterType"
+            formControlName="meterType" />
           <label class="ml-2">عداد واحد</label>
         </div>
         <div class="col-md-3">
-          <p-radioButton name="meterType" [value]="2" [(ngModel)]="cardObj.meterType" formControlName="meterType"/>
+          <p-radioButton id="meterType" name="meterType" [value]="2" [(ngModel)]="cardObj.meterType"
+            formControlName="meterType" />
           <label class="ml-2">مجموعة عدادات</label>
         </div>
         <div class="col-md-3">
-          <p-radioButton name="meterType" [value]="0" [(ngModel)]="cardObj.meterType" formControlName="meterType"/>
+          <p-radioButton id="meterType" name="meterType" [value]="0" [(ngModel)]="cardObj.meterType"
+            formControlName="meterType" />
           <label class="ml-2">غير محدد</label>
         </div>
       </div>
@@ -49,7 +54,13 @@
           رقم العداد :
         </div>
         <div class="col-md-9 fw-bold">
-          <input pInputText id="meterOffReason" class="w-100" autocomplete="off" />
+          <p-inputNumber [useGrouping]="false" [maxlength]="8"  id="meterNumber" class="w-100"
+            autocomplete="off" formControlName="meterNumber" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="releaseCardForm.get('meterNumber')?.invalid && releaseCardForm.get('meterNumber')?.dirty">
+                رقم العداد مطلوب</small>
+            </div>
         </div>
       </div>
       }
@@ -59,26 +70,37 @@
           رقم العداد :
         </div>
         <div class="col-md-7 fw-bold">
-          <input pInputText id="meterOffReason" class="w-100" autocomplete="off" />
+          <p-inputNumber [useGrouping]="false" [maxlength]="8" id="addNewMeter" class="w-100 ng-invalid ng-dirty" autocomplete="off" [(ngModel)]="newMeter"
+            formControlName="newMeter" />
         </div>
         <div class="col-md-2">
-          <p-button label=" إضافة" class="w-50 pb-4" [raised]="true" />
+          <p-button label="إضافة" class="w-50 pb-4" [raised]="true" (click)="addMeter()" />
         </div>
+
+      </div>
+      <div class="row pt-4">
+        @if (metersNums.length > 0) {
+        <p-listbox [options]="metersNums" [(ngModel)]="selectedMeter" formControlName="metersNumsList"
+          ngDefaultControl></p-listbox>
+        <button pButton type="button" (click)="removeMeter()" label="Remove" class="p-button-danger my-3 mx-2"></button>
+        }
+
+
       </div>
       }
 
       <hr>
       <div class="flex-column gap-2 pt-4">
         <!-- ضبط وقت و تاريخ اوتوماتيك -->
-        @if (cardObj.propertyId == 0) {
+        @if (cardObj.propertyId == '0') {
         <div class="row w-100">
           <div class="col-md-4 fw-bold">نمط التعديل :</div>
           <div class="col-md-4">
-            <p-radioButton name="dateToEdit" [value]="'selectDate'" [(ngModel)]="dateType" formControlName="dateType"/>
+            <p-radioButton name="dateToEdit" [value]="'selectDate'" [(ngModel)]="dateType" formControlName="dateType" />
             <label class="ml-2">تحديد تاريخ معين </label>
           </div>
           <div class="col-md-4">
-            <p-radioButton name="dateToEdit" [value]="'serverDate'" [(ngModel)]="dateType" formControlName="dateType"/>
+            <p-radioButton name="dateToEdit" [value]="'serverDate'" [(ngModel)]="dateType" formControlName="dateType" />
             <label class="ml-2">تاريخ تلقائى من السيرفر </label>
           </div>
           @if (dateType == 'selectDate') {
@@ -86,65 +108,52 @@
             <div class="col-md-4"></div>
             <div class="col-md-1 fw-bold mx-3"> اختر التاريخ :</div>
             <div class="col-md-5">
-              <p-calendar [(ngModel)]="cardObj.automaticDate" class="row-cols-1" [styleClass]="'calenderBottom-class'"
-                [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" formControlName="automaticDate" />
+              <p-calendar [(ngModel)]="cardObj.AutomaticDate" class="row-cols-1 calenderTop-class" [styleClass]="'date-time-align'"
+                [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" hourFormat="12"
+                formControlName="automaticDate" [showTime]="true"/>
+
             </div>
           </div>
           }
         </div>
         }
         <!-- ازالة تلاعبات و اخطاء -->
-        @if (cardObj.propertyId == 3) {
-        <!-- <div class="row w-100">
+        @if (cardObj.propertyId == '3') {
+        <div class="row w-100">
           <div class="col-md-4 fw-bold">قائمة التلاعبات التي يمكن ازالتها :</div>
           <div class="col-md-8">
             <div class="row w-100">
-              <div class="col-md-3 py-2">
-                <p-checkbox [(ngModel)]="cardObj.tamperId" [binary]="true" inputId="binary" />
-                <label for="binary" class="mr-2">فتح غطاء التوصيل</label>
+              @for (tamper of tampersList; track tamper.id) {
+              <div class="col-md-4 py-2">
+                <p-checkbox [(ngModel)]="tamper.id" (click)="getSelectedTampersCodes(tamper.code)" [binary]="true"
+                  inputId="binary" formControlName="tampersCodes" />
+                <label for="binary" class="mr-2">{{tamper.name}}</label>
               </div>
-              <div class="col-md-3 py-2">
-                <p-checkbox [(ngModel)]="cardObj.tamperId" [binary]="true" inputId="binary" />
-                <label for="binary" class="mr-2">فتح غطاء التوصيل</label>
-              </div>
-              <div class="col-md-3 py-2">
-                <p-checkbox [(ngModel)]="cardObj.tamperId" [binary]="true" inputId="binary" />
-                <label for="binary" class="mr-2">فتح غطاء التوصيل</label>
-              </div>
-              <div class="col-md-3 py-2">
-                <p-checkbox [(ngModel)]="cardObj.tamperId" [binary]="true" inputId="binary" />
-                <label for="binary" class="mr-2">فتح غطاء التوصيل</label>
-              </div>
-              <div class="col-md-3 py-2">
-                <p-checkbox [(ngModel)]="cardObj.tamperId" [binary]="true" inputId="binary" />
-                <label for="binary" class="mr-2">فتح غطاء التوصيل</label>
-              </div>
-              <div class="col-md-3 py-2">
-                <p-checkbox [(ngModel)]="cardObj.tamperId" [binary]="true" inputId="binary" />
-                <label for="binary" class="mr-2">فتح غطاء التوصيل</label>
-              </div>
-              <div class="col-md-3 py-2">
-                <p-checkbox [(ngModel)]="cardObj.tamperId" [binary]="true" inputId="binary" />
-                <label for="binary" class="mr-2">فتح غطاء التوصيل</label>
-              </div>
+              }
             </div>
           </div>
-        </div> -->
+        </div>
 
         }
         <!-- فتح و غلق مفتاح التوصيل -->
-        @if (cardObj.propertyId == 5) {
+        @if (cardObj.propertyId == '5') {
         <div class="row w-100">
           <div class="col-md-3 fw-bold align-content-around">
             الوقت المستغرق لفتح الريلاي بالدقائق :
           </div>
           <div class="col-md-9 fw-bold">
-            <input pInputText id="meterOffReason" class="w-100" autocomplete="off" [(ngModel)]="cardObj.reverseCardRecoveryTime" formControlName="reverseCardRecoveryTime" />
+            <input pInputText id="meterOffReason" class="w-100" autocomplete="off"
+              [(ngModel)]="cardObj.reverseCardRecoveryTime" formControlName="reverseCardRecoveryTime" />
+              <div class="flex  gap-3 mb-3">
+                <small class="p-error block pt-2"
+                  *ngIf="releaseCardForm.get('reverseCardRecoveryTime')?.invalid && releaseCardForm.get('reverseCardRecoveryTime')?.dirty">
+                  الوقت المستغرق لفتح الريلاي بالدقائق مطلوب</small>
+              </div>
           </div>
         </div>
         }
         <!-- تغيير شرائح التعريفة -->
-        @if (cardObj.propertyId == 7) {
+        @if (cardObj.propertyId == '7') {
         <div class="row w-100">
           <div class="col-md-3 fw-bold align-content-around">
             نوع النشاط :
@@ -156,7 +165,7 @@
         </div>
         }
         <!-- تغيير رقم العداد -->
-        @if (cardObj.propertyId == 51) {
+        @if (cardObj.propertyId == '51') {
         <div class="row w-100">
           <div class="col-md-3 fw-bold align-content-around text-center">
             رقم العداد القديم :
@@ -173,7 +182,7 @@
         </div>
         }
         <!-- اصدار كارت المعمل  -->
-        @if (cardObj.propertyId == 53) {
+        @if (cardObj.propertyId == '53') {
         <div class="row w-100">
           <div class="col-md-3 fw-bold align-content-around text-center">
             سماحية كارت المعمل بالدقائق :
@@ -206,7 +215,7 @@
 
         }
         <!-- تغيير كود الشركة -->
-        @if (cardObj.propertyId == 50) {
+        @if (cardObj.propertyId == '50') {
         <div class="row w-100">
           <div class="col-md-3 fw-bold align-content-around text-center">
             كود الشركة القديمة :
@@ -241,10 +250,10 @@
   <p-dialog [(visible)]="visibleFailDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
     <h3 class="text-center defaultTxtColor">
-      <i class="pi pi-thumbs-down" severity="danger"  style="font-size: 2.5rem;color: darkred;"></i>
+      <i class="pi pi-thumbs-down" severity="danger" style="font-size: 2.5rem;color: darkred;"></i>
     </h3>
     <div class="row text-center py-4">
-      <b class="text-center">خطأ فى  الكتابة على الكارت </b>
+      <b class="text-center">خطأ فى الكتابة على الكارت </b>
     </div>
   </p-dialog>
 </section>

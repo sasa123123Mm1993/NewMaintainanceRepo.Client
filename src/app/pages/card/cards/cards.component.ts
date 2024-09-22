@@ -40,15 +40,38 @@ export default class CardsComponent {
   cardTasks: any = [];
   techList: any = [];
   activityList: any = [];
-  dateType:string = '';
-  cardCreationDate:any=new Date();
+  tampersList: any = [];
+  tampersCodes: any = [];
+  dateType: string = '';
+  cardCreationDate: any;
+  cardExpireDate: any;
+  ///////////////////////////
+  metersNums: any[] = [];
+  newMeter: any = '';
+  selectedMeter: string | null = null;
+
+  addMeter(): void {
+    debugger;
+    console.log('jj');
+    if (this.newMeter) {
+      this.metersNums.push(this.newMeter); // Add new item to the list
+      this.newMeter = ''; // Reset the input
+    }
+  }
+
+  removeMeter(): void {
+    if (this.selectedMeter) {
+      this.metersNums = this.metersNums.filter(
+        (item) => item !== this.selectedMeter
+      ); // Remove the selected item
+      this.selectedMeter = null; // Reset the selection
+    }
+  }
+
+  ///////////////////////////
   cardObj: cardCreate = {
-    // code: '',
-    // techId: '',
-    // cardCreationDate: new Date(),
-    // cardEndDate: new Date(),
     meterType: 0, //
-    employeeId: 0, //
+    employeeId: '', //
     propertyId: '', //
     startDate: new Date(), //
     expirationDate: new Date(), //
@@ -56,9 +79,9 @@ export default class CardsComponent {
     dateTimeMode: null, //
     cutoffAlarmLimitBalance: null, //
     tariffTypeId: null, //
-    automaticDate: new Date(), // لازم تاريخ
-    meterSerial: '00000000', // لازم رقم عداد
-    meterTypeModel: '',  //
+    AutomaticDate: new Date(), // لازم تاريخ
+    // meterSerial: '00000000', // لازم رقم عداد
+    meterTypeModel: '', //
     oldMeterSerial: null, //
     newMeterSerial: null, //
     labTestCardAvailableTime: null, //
@@ -69,17 +92,24 @@ export default class CardsComponent {
     newDistributionCompanyCode: null, //
     modificationStyle: false, //
     isActive: false, //
-    automaticTime: new Date(), //
+    AutomaticTime: new Date(), //
     controledMetersList: [], //
     tampersCodes: [], //
+    ControledMetersList: [],
   };
+
   releaseCardForm = this.fb.group({
     cardCode: ['', Validators.required],
     techId: ['', Validators.required],
     meterType: [0, Validators.required],
+    meterNumber: [''],
     dateType: [''],
     automaticDate: [''],
     reverseCardRecoveryTime: [''],
+    tampersCodes: [],
+    selectedMeter: [''],
+    newMeter: [''],
+    metersNumsList: [[]],
   });
 
   //get all card tasks
@@ -108,11 +138,26 @@ export default class CardsComponent {
     });
   }
   createControlCard() {
+    // ارقام العدادات المضافة
+    if (this.cardObj.meterType == 2) {
+      if (this.metersNums) {
+        this.cardObj.ControledMetersList = this.metersNums;
+      }
+    }
+    // الوقت المحدد فى حالة اختيار ضبط الوقت و التاريخ اتوماتيك
+    if (this.cardObj.propertyId == '0') {
+      if (this.cardObj.AutomaticDate) {
+        // const timeString = this.cardObj.AutomaticDate.toTimeString();
+        // this.cardObj.AutomaticTime =(timeString.split(' ')[0]).toJSON() ;
+         this.cardObj.AutomaticTime =this.cardObj.AutomaticDate.toISOString() ;
+      }
+    }
 
     console.log('addedddddddddd obj :', this.cardObj);
     this.meterService.createControlCard(this.cardObj).subscribe({
       next: (res) => {
         this.loaderService.showLoader();
+        const cardId = res.controlCardId;
         const writeObj = {
           CardToken: res.payload,
         };
@@ -123,8 +168,13 @@ export default class CardsComponent {
               this.visibleSuccessDialog = true;
               this.loaderService.hideLoader();
             } else {
-              this.visibleFailDialog = true;
-              this.loaderService.hideLoader();
+              this.meterService.cancelControlCardRelease(cardId).subscribe({
+                next: (res) => {
+                  this.visibleFailDialog = true;
+                  alert(res);
+                  this.loaderService.hideLoader();
+                },
+              });
             }
           },
         });
@@ -132,9 +182,103 @@ export default class CardsComponent {
       },
     });
   }
+  getExpDate() {
+    this.meterService.getCardExpDate().subscribe({
+      next: (res) => {
+        console.log('expppppppp', res);
+        this.cardExpireDate = res;
+      },
+    });
+  }
+  getReleaseDate() {
+    this.meterService.getCardReleaseDate().subscribe({
+      next: (res) => {
+        console.log('releaseeeeee', res);
+        this.cardCreationDate = res;
+      },
+    });
+  }
+  setupConditionalValidation() {
+    //عداد واحد
+    this.releaseCardForm.get('meterType')?.valueChanges.subscribe((value) => {
+      console.log('vallll', value);
+      const meterNumber = this.releaseCardForm.get('meterNumber');
+      if (value == 1) {
+        meterNumber?.setValidators([Validators.required]);
+      } else {
+        meterNumber?.clearValidators();
+      }
+      meterNumber?.updateValueAndValidity();
+    });
+    // اضافة عدادات
+    // this.releaseCardForm.get('meterType')?.valueChanges.subscribe((value) => {
+    //   console.log('vallll', value);
+    //   const metersNumsList = this.releaseCardForm.get('metersNumsList');
+    //   if (value == 2) {
+    //     metersNumsList?.setValidators([Validators.required]);
+    //   } else {
+    //     metersNumsList?.clearValidators();
+    //   }
+    //   metersNumsList?.updateValueAndValidity();
+    // });
+    // الوقت المستغرق
+    this.releaseCardForm.get('cardCode')?.valueChanges.subscribe((value) => {
+      console.log('vallll', value);
+      const reverseCardRecoveryTime = this.releaseCardForm.get(
+        'reverseCardRecoveryTime'
+      );
+      if (value == '5') {
+        reverseCardRecoveryTime?.setValidators([Validators.required]);
+      } else {
+        reverseCardRecoveryTime?.clearValidators();
+      }
+      reverseCardRecoveryTime?.updateValueAndValidity();
+    });
+    //  تلاعب
+  }
+  getCardCode(code: any) {
+    this.loaderService.showLoader();
+    if (code == 3) {
+      this.meterService.getAllTampers().subscribe({
+        next: (res) => {
+          console.log('tampers', res);
+          this.tampersList = res;
+          this.loaderService.hideLoader();
+        },
+      });
+    }else if(code == 0){
+      this.dateType='serverDate';
+      this.loaderService.hideLoader();
+    }
+    else {
+      this.loaderService.hideLoader();
+    }
+  }
+  getSelectedTampersCodes(selectedCode: any) {
+    this.tampersCodes.push(selectedCode);
+    if (this.tampersCodes.length > 2) {
+      for (let i = 0; i < this.tampersCodes.length; i++) {
+        while (this.tampersCodes.indexOf(this.tampersCodes[i], i + 1) !== -1) {
+          this.tampersCodes.splice(
+            this.tampersCodes.indexOf(this.tampersCodes[i]),
+            1
+          );
+          this.tampersCodes.splice(
+            this.tampersCodes.indexOf(this.tampersCodes[i], i + 1),
+            1
+          );
+        }
+      }
+    }
+    this.cardObj.tampersCodes = this.tampersCodes;
+    console.log('selectedddd', this.tampersCodes);
+  }
   ngOnInit(): void {
     this.getCardTasksList();
     this.getTechniciansList();
     this.getAllActivities();
+    this.getReleaseDate();
+    this.getExpDate();
+    this.setupConditionalValidation();
   }
 }

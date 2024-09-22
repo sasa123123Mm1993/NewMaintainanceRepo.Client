@@ -1,0 +1,12 @@
+::ng-deep .calenderBottom-class .p-datepicker {
+  transform-origin: center bottom !important;
+  direction: ltr;
+}
+::ng-deep .calenderTop-class .p-datepicker {
+  transform-origin: center top !important;
+  direction: ltr;
+}
+::ng-deep .date-time-align{
+  direction: ltr;
+  text-align: center !important;
+}

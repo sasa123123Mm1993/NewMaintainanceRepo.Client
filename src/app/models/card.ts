@@ -2,11 +2,7 @@ export interface ICard {
   cardData: any;
 }
 export interface cardCreate {
-  // techId: any;
-  // code: any;
-  // cardCreationDate: any;
-  // cardEndDate: any;
-  employeeId: number;
+  employeeId: any;
   propertyId: any;
   startDate: any;
   expirationDate: any;
@@ -15,8 +11,8 @@ export interface cardCreate {
   cutoffAlarmLimitBalance: any;
   meterType: number;
   tariffTypeId: any;
-  automaticDate: any;
-  meterSerial: string;
+  AutomaticDate: any;
+ // meterSerial: string;
   meterTypeModel: string;
   oldMeterSerial: any;
   newMeterSerial: any;
@@ -28,7 +24,8 @@ export interface cardCreate {
   newDistributionCompanyCode: any;
   modificationStyle: boolean;
   isActive: boolean;
-  automaticTime: any;
+  AutomaticTime: any;
   controledMetersList: [];
   tampersCodes: [];
+  ControledMetersList:any;
 }
