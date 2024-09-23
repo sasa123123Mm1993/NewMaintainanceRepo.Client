@@ -286,6 +286,24 @@
         </div>
 
         }
+        <!-- نقل بيانات عداد -->
+        @if (cardObj.propertyId == '1') {
+        <div class="row w-100">
+          <div class="col-md-3 fw-bold align-content-around">
+            رقم العداد :
+          </div>
+          <div class="col-md-9 fw-bold">
+            <p-inputNumber [useGrouping]="false" [maxlength]="8" id="meterNumberOfTransferData" class="w-100" autocomplete="off"
+              formControlName="meterNumberOfTransferData" [(ngModel)]="MeterSerial" />
+            <div class="flex  gap-3 mb-3">
+              <small class="p-error block pt-2"
+                *ngIf="releaseCardForm.get('meterNumberOfTransferData')?.invalid && releaseCardForm.get('meterNumberOfTransferData')?.dirty">
+                رقم العداد مطلوب</small>
+            </div>
+          </div>
+        </div>
+
+        }
       </div>
       <div class="row w-100 pt-4">
         <p-button label=" حفظ" class="w-50 pb-4" [raised]="true" type="submit" [disabled]="releaseCardForm.invalid" />
@@ -308,6 +326,15 @@
     </h3>
     <div class="row text-center py-4">
       <b class="text-center">خطأ فى الكتابة على الكارت </b>
+    </div>
+  </p-dialog>
+  <p-dialog [(visible)]="errorDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
+    <h3 class="text-center defaultTxtColor">
+      <i class="pi pi-thumbs-down" severity="danger" style="font-size: 2.5rem;color: darkred;"></i>
+    </h3>
+    <div class="row text-center py-4">
+      <b class="text-center">{{errMsg}}</b>
     </div>
   </p-dialog>
 </section>

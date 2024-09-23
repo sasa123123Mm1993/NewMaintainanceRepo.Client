@@ -6,61 +6,26 @@ import { MeterService } from '../../../services/meter.service';
 import { Table, TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../../shared/sharedModules';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormBuilder, Validators } from '@angular/forms';
+// import { FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoaderService } from '../../../services/loader.service';
 
 @Component({
   selector: 'app-users-settings',
   standalone: true,
-  imports: [SidemenuComponent, CommonModule, SharedModule, ReactiveFormsModule],
+  imports: [SidemenuComponent, CommonModule, SharedModule],
   templateUrl: './users-settings.component.html',
   styleUrl: './users-settings.component.scss',
-  providers: [ConfirmationService, MessageService, FormBuilder, Validators],
+  providers: [ConfirmationService, MessageService],
 })
 export default class UsersSettingsComponent {
   constructor(
     private meterService: MeterService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private fb: FormBuilder,
+    private router: Router,
     private loaderService: LoaderService
   ) {}
-
-  //forms
-  userForm = this.fb.group({
-    fullName: ['', Validators.required],
-    nationalId: [
-      '',
-      [
-        Validators.required,
-        Validators.pattern(
-          '^([2-3]{1})([0-9]{2})(0[1-9]|1[012])(0[1-9]|[1-2][0-9]|3[0-1])(0[1-4]|[1-2][1-9]|3[1-5]|88)[0-9]{3}([0-9]{1})[0-9]{1}$'
-        ),
-      ],
-    ],
-    smallDepId: ['', Validators.required],
-    userName: ['', Validators.required],
-    userRole: ['', Validators.required],
-    isActive: true,
-  });
-  editUserForm = this.fb.group({
-    fullName: ['', Validators.required],
-    nationalId: [
-      '',
-      [
-        Validators.required,
-        Validators.pattern(
-          '^([2-3]{1})([0-9]{2})(0[1-9]|1[012])(0[1-9]|[1-2][0-9]|3[0-1])(0[1-4]|[1-2][1-9]|3[1-5]|88)[0-9]{3}([0-9]{1})[0-9]{1}$'
-        ),
-      ],
-    ],
-    smallDepId: ['', Validators.required],
-    userName: ['', Validators.required],
-    userRole: ['', Validators.required],
-    isActive: true,
-  });
-
 
   showAddModal: boolean = false;
   showEditModal: boolean = false;
@@ -70,13 +35,20 @@ export default class UsersSettingsComponent {
   userList: any = [];
   userObj: any = {};
   userDepartments: any = [];
+  selectedRole: any;
   openAddModal() {
     this.showAddModal = true;
-    this.userObj = {};
+    this.userObj = {
+      nationalId: '',
+      roleId: '',
+      isActive: false,
+      userName: '',
+      fullName: '',
+      smallDepartmentsIds: undefined,
+    };
   }
   //get all main departements
   getSmallDeps() {
-    this.loaderService.showLoader();
     this.meterService.getSmallDeps().subscribe({
       next: (res) => {
         this.mainDepartements = res;
@@ -84,7 +56,6 @@ export default class UsersSettingsComponent {
           item.checked = false;
         });
         console.log('deeeeeeeeeeeeps', this.mainDepartements);
-        this.loaderService.hideLoader();
       },
     });
   }
@@ -110,7 +81,6 @@ export default class UsersSettingsComponent {
   }
   selectedDeps: any = [];
   getUserById(userId: any) {
-    this.loaderService.showLoader();
     console.log('idddddd', userId);
     this.getSmallDeps();
     this.meterService.getUserById(userId, '').subscribe({
@@ -124,12 +94,13 @@ export default class UsersSettingsComponent {
               if (this.mainDepartements[i].id == this.userDepartments[j]) {
                 this.mainDepartements[i].checked = true;
                 console.log('main with checked', this.mainDepartements[i]);
+              }else{
+                this.mainDepartements[i].checked = false;
               }
             }
           }
           console.log('main', this.mainDepartements);
         }
-        this.loaderService.hideLoader();
       },
     });
   }
@@ -211,8 +182,6 @@ export default class UsersSettingsComponent {
     });
   }
   addUser(user: userInsert) {
-    //user.isActive = JSON.parse(isAct);
-    user.natId = user.natId.toString();
     console.log('addddddeeedddd useeeeeeeeeeeer', user);
     this.meterService.addUser(user).subscribe({
       next: (res) => {
@@ -245,6 +214,7 @@ export default class UsersSettingsComponent {
       next: (res) => {
         console.log('updated user', res);
         this.showEditModal = false;
+        this.getAllUsers();
       },
     });
   }

@@ -37,6 +37,8 @@ export default class CardsComponent {
   logged: boolean = true;
   visibleSuccessDialog: boolean = false;
   visibleFailDialog: boolean = false;
+  errorDialog: boolean = false;
+  errMsg: string = '';
   cardTasks: any = [];
   techList: any = [];
   activityList: any = [];
@@ -45,6 +47,7 @@ export default class CardsComponent {
   dateType: string = '';
   cardCreationDate: any;
   cardExpireDate: any;
+  MeterSerial: any;
   ///////////////////////////
   metersNums: any[] = [];
   newMeter: any = '';
@@ -80,7 +83,7 @@ export default class CardsComponent {
     cutoffAlarmLimitBalance: null, //
     tariffTypeId: null, //
     AutomaticDate: new Date(), // لازم تاريخ
-    // meterSerial: '00000000', // لازم رقم عداد
+    //MeterSerial: '', // مع نقل بيانات فقط
     meterTypeModel: '', //
     OldMeterSerial: null, //
     NewMeterSerial: null, //
@@ -94,7 +97,7 @@ export default class CardsComponent {
     isActive: false, //
     AutomaticTime: new Date(), //
     controledMetersList: [], //
-    tampersCodes: [], //
+    TampersCodes: [], //
     ControledMetersList: [],
   };
 
@@ -116,6 +119,7 @@ export default class CardsComponent {
     labAvailableTime: [''],
     oldCompanyCode: [''],
     newCompanyCode: [''],
+    meterNumberOfTransferData: [''],
     metersNumsList: [[]],
   });
 
@@ -154,38 +158,52 @@ export default class CardsComponent {
     // الوقت المحدد فى حالة اختيار ضبط الوقت و التاريخ اتوماتيك
     if (this.cardObj.propertyId == '0') {
       if (this.cardObj.AutomaticDate) {
-        // const timeString = this.cardObj.AutomaticDate.toTimeString();
-        // this.cardObj.AutomaticTime =(timeString.split(' ')[0]).toJSON() ;
         this.cardObj.AutomaticTime = this.cardObj.AutomaticDate.toISOString();
       }
     }
-
+    //ازالة خاصية البلوك
+    if (this.cardObj.propertyId == '55') {
+      this.cardObj.propertyId = 3;
+      this.cardObj.TampersCodes = ['11'];
+    }
+    if (this.cardObj.propertyId == '1') {
+      (this.cardObj as any).MeterSerial = this.MeterSerial.toString();
+      //if (this.cardObj.MeterSerial) {
+      // this.cardObj.MeterSerial = this.cardObj.MeterSerial.toString();
+      //}
+    }
     console.log('addedddddddddd obj :', this.cardObj);
     this.meterService.createControlCard(this.cardObj).subscribe({
       next: (res) => {
-        this.loaderService.showLoader();
-        const cardId = res.controlCardId;
-        const writeObj = {
-          CardToken: res.payload,
-        };
-        this.meterService.writeCard(writeObj).subscribe({
-          next: (res) => {
-            console.log('after write', res);
-            if (res == 0) {
-              this.visibleSuccessDialog = true;
-              this.loaderService.hideLoader();
-            } else {
-              this.meterService.cancelControlCardRelease(cardId).subscribe({
-                next: (res) => {
-                  this.visibleFailDialog = true;
-                  alert(res);
-                  this.loaderService.hideLoader();
-                },
-              });
-            }
-          },
-        });
-        console.log(res);
+        if (res.error) {
+          this.loaderService.hideLoader();
+          this.errorDialog = true;
+          this.errMsg = res.error;
+        } else {
+          this.loaderService.showLoader();
+          const cardId = res.controlCardId;
+          const writeObj = {
+            CardToken: res.payload,
+          };
+          this.meterService.writeCard(writeObj).subscribe({
+            next: (res) => {
+              console.log('after write', res);
+              if (res == 0) {
+                this.visibleSuccessDialog = true;
+                this.loaderService.hideLoader();
+              } else {
+                this.meterService.cancelControlCardRelease(cardId).subscribe({
+                  next: (res) => {
+                    this.visibleFailDialog = true;
+                    alert(res);
+                    this.loaderService.hideLoader();
+                  },
+                });
+              }
+            },
+          });
+          console.log(res);
+        }
       },
     });
   }
@@ -216,6 +234,19 @@ export default class CardsComponent {
         meterNumber?.clearValidators();
       }
       meterNumber?.updateValueAndValidity();
+    });
+    //نقل بيانات عداد
+    this.releaseCardForm.get('cardCode')?.valueChanges.subscribe((value) => {
+      console.log('vallll', value);
+      const meterNumberOfTransferData = this.releaseCardForm.get(
+        'meterNumberOfTransferData'
+      );
+      if (value == '1') {
+        meterNumberOfTransferData?.setValidators([Validators.required]);
+      } else {
+        meterNumberOfTransferData?.clearValidators();
+      }
+      meterNumberOfTransferData?.updateValueAndValidity();
     });
     // اضافة عدادات
     // this.releaseCardForm.get('meterType')?.valueChanges.subscribe((value) => {
@@ -331,7 +362,7 @@ export default class CardsComponent {
         }
       }
     }
-    this.cardObj.tampersCodes = this.tampersCodes;
+    this.cardObj.TampersCodes = this.tampersCodes;
     console.log('selectedddd', this.tampersCodes);
   }
   ngOnInit(): void {

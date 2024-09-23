@@ -12,7 +12,7 @@ export interface cardCreate {
   meterType: number;
   tariffTypeId: any;
   AutomaticDate: any;
- // meterSerial: string;
+ // MeterSerial: string;
   meterTypeModel: string;
   OldMeterSerial: any;
   NewMeterSerial: any;
@@ -26,6 +26,6 @@ export interface cardCreate {
   isActive: boolean;
   AutomaticTime: any;
   controledMetersList: [];
-  tampersCodes: [];
+  TampersCodes: any;
   ControledMetersList:any;
 }
