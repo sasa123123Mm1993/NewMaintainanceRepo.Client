@@ -1,22 +1,51 @@
 <section>
 
+
+  <!-- date filter -->
+  <div>
+    <div class="flex justify-content-center mb-3">
+      <div class="col-md-3 px-2">
+        <label for="dateType" class="font-semibold  block mb-2 w-3rem">اختر التاريخ المراد البحث من خلاله</label>
+        <p-dropdown [options]="datesList" class="row-cols-1" optionLabel="name" optionValue="code"
+          placeholder="اختر نوع التاريخ" [(ngModel)]="reportFilterObj.typeFilter2" name="dateType" />
+      </div>
+      <div class="col-md-3 px-2">
+        <label for="fromDate" class="font-semibold  block mb-2 w-3rem"> الفترة
+          من </label>
+        <p-calendar name="fromDate" [(ngModel)]="reportFilterObj.fromDate" class="row-cols-1" dateFormat="dd/mm/yy"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+      <div class="col-md-3 px-2">
+        <label for="toDate" class="font-semibold  block mb-2 w-3rem">
+          الى </label>
+        <p-calendar name="toDate" [(ngModel)]="reportFilterObj.toDate" class="row-cols-1" dateFormat="dd/mm/yy"
+          [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+      </div>
+      <div class="col-md-1 px-2 align-content-end ">
+        <button pButton icon="pi pi-search" [raised]="true" class="mr-2 btnIcon defaultBtnColor" pTooltip="اعادة تحميل"
+          (click)="getSearchResult()"></button>
+      </div>
+    </div>
+
+  </div>
+  <!-- فلتر مرجع حساب -->
   <div [hidden]="!showAccountDiv">
     <div class="flex justify-content-center">
       <div class="col-md-3 gap-2 mb-2 p-2">
         <p-dropdown [options]="indexArr" class="row-cols-1" optionLabel="id" optionValue="id"
-          [(ngModel)]="refAddressObj.regionNum" placeholder="اختر المنطقة" />
+          [(ngModel)]="reportFilterObj.regionNo" placeholder="اختر المنطقة" />
       </div>
       <div class="col-md-3 gap-2 mb-2 p-2">
         <p-dropdown [options]="indexArr" class="row-cols-1" optionLabel="id" optionValue="id"
-          [(ngModel)]="refAddressObj.dailyNum" placeholder="اختر اليومية" />
+          [(ngModel)]="reportFilterObj.dailyNum" placeholder="اختر اليومية" />
       </div>
       <div class="col-auto gap-2 mb-2 p-2">
         <p-inputNumber [useGrouping]="false" id="accountNum" pTooltip="حساب" autocomplete="off"
-          [(ngModel)]="refAddressObj.accountNum" class="w-100" />
+          [(ngModel)]="reportFilterObj.accountNum" class="w-100" />
       </div>
       <div class="col-auto gap-2 mb-2 p-2">
         <p-inputNumber [useGrouping]="false" id="branchNum" pTooltip="فرع" autocomplete="off"
-          [(ngModel)]="refAddressObj.branchNum" class="w-100" />
+          [(ngModel)]="reportFilterObj.branchNum" class="w-100" />
       </div>
       <div class="col-md-1 gap-2 mb-2 p-2">
         <button pButton [raised]="true" icon="pi pi-search" pTooltip="بحث بمرجع الحساب"
@@ -25,14 +54,13 @@
     </div>
 
   </div>
-
   @if (offMetersList) {
   <p-table #dt [value]="offMetersList" styleClass="p-datatable-striped"
     [tableStyle]="{ 'max-width': '100vw , padding-bottom: 1.25rem' }" [scrollable]="true" scrollHeight="450px"
     [paginator]="true" [rows]="5" [showCurrentPageReport]="true" columnResizeMode="expand"
     [globalFilterFields]="['customerCode','serialNumber','customerName','examinationNumber']"
     [rowsPerPageOptions]="[5, 10, 20]" currentPageReportTemplate="عرض {first}  الى  {last}   من {totalRecords} سبب">
-
+    <!-- @if (offMetersList.length > 0) { -->
     <ng-template pTemplate="caption" class="row">
       <div class="flex">
         <button pButton [raised]="true" class="mr-2 defaultBtnColor w-100" label="مرجع الحساب"
@@ -79,7 +107,7 @@
 
 
     </ng-template>
-
+    <!-- } -->
     <ng-template pTemplate="header">
       <tr>
         <th>الاداره الرئيسية</th>
@@ -256,39 +284,39 @@
     <div class="flex row gap-3 w-25rem" dir="rtl">
       <div class="col-md-12 gap-2 mb-2">
         <p-checkbox [(ngModel)]="isInstallationDate" [binary]="true" inputId="binary" />
-        <label for="binary" class="mr-2">تاريخ تركيب العداد	</label>
+        <label for="binary" class="mr-2">تاريخ تركيب العداد </label>
       </div>
       <div class="col-md-12 gap-2 mb-2">
         <p-checkbox [(ngModel)]="isPreparedDate" [binary]="true" inputId="binary" />
-        <label for="binary" class="mr-2">تاريخ تهيئه  العداد	</label>
+        <label for="binary" class="mr-2">تاريخ تهيئه العداد </label>
       </div>
       <div class="col-md-12 gap-2 mb-2">
         <p-checkbox [(ngModel)]="isDeliverTolab" [binary]="true" inputId="binary" />
-        <label for="binary" class="mr-2">تاريخ استلام العداد في المعمل	</label>
+        <label for="binary" class="mr-2">تاريخ استلام العداد في المعمل </label>
       </div>
       <div class="col-md-12 gap-2 mb-2">
         <p-checkbox [(ngModel)]="isDeliverToTech" [binary]="true" inputId="binary" />
-        <label for="binary" class="mr-2"> تاريخ تسليم العداد للفني	</label>
+        <label for="binary" class="mr-2"> تاريخ تسليم العداد للفني </label>
       </div>
       <div class="col-md-12 gap-2 mb-2">
         <p-checkbox [(ngModel)]="isOffDate" [binary]="true" inputId="binary" />
-        <label for="binary" class="mr-2">تاريخ العطل 	</label>
+        <label for="binary" class="mr-2">تاريخ العطل </label>
       </div>
       <div class="col-md-12 gap-2 mb-2">
         <p-checkbox [(ngModel)]="isUploadDate" [binary]="true" inputId="binary" />
-        <label for="binary" class="mr-2">تاريخ رفع العداد	</label>
+        <label for="binary" class="mr-2">تاريخ رفع العداد </label>
       </div>
       <div class="col-md-12 gap-2 mb-2">
         <p-checkbox [(ngModel)]="isFixDate" [binary]="true" inputId="binary" />
-        <label for="binary" class="mr-2"> تاريخ رفع العداد 	</label>
+        <label for="binary" class="mr-2"> تاريخ رفع العداد </label>
       </div>
       <div class="col-md-12 gap-2 mb-2">
         <p-checkbox [(ngModel)]="isInstalledDate" [binary]="true" inputId="binary" />
-        <label for="binary" class="mr-2"> تاريخ التركيب بعد الإصلاح	</label>
+        <label for="binary" class="mr-2"> تاريخ التركيب بعد الإصلاح </label>
       </div>
       <div class="col-md-12 gap-2 mb-2">
         <p-checkbox [(ngModel)]="isExaminationDate" [binary]="true" inputId="binary" />
-        <label for="binary" class="mr-2"> تاريخ الفحص	</label>
+        <label for="binary" class="mr-2"> تاريخ الفحص </label>
       </div>
     </div>
   </p-overlayPanel>

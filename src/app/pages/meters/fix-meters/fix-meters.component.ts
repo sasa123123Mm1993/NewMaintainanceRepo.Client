@@ -329,13 +329,13 @@ export default class FixMetersComponent {
   }
   //ADD NEW ITEM
   addOffMeter(addMeterObj: any, reason: any, note: any) {
-    addMeterObj.mainDepartmentCode= 0;
-    addMeterObj.smallDepartmentCode= 0;
-    addMeterObj.isDeleted= false;
-    addMeterObj.modifiedById= 0;
-    addMeterObj.creatorById= 0;
-    addMeterObj.creationTime= new Date();
-    addMeterObj.modificationTime= new Date();
+    addMeterObj.mainDepartmentCode = 0;
+    addMeterObj.smallDepartmentCode = 0;
+    addMeterObj.isDeleted = false;
+    addMeterObj.modifiedById = 0;
+    addMeterObj.creatorById = 0;
+    addMeterObj.creationTime = new Date();
+    addMeterObj.modificationTime = new Date();
     //////////////////
     addMeterObj.nationalId = addMeterObj.nationalId.toString();
     addMeterObj.meterOffReason = reason;
@@ -416,8 +416,9 @@ export default class FixMetersComponent {
     deliveryDateToLab: ['', Validators.required],
     uploadReason: ['', Validators.required],
     meterStatusOnUpload: ['', Validators.required],
-    examinationNumber: ['', Validators.required],
-    examinationDate: ['', Validators.required],
+    examinationNumber: [''],
+    examinationDate: [''],
+    isExaminationChecked: [false],
   });
 
   ngOnInit(): void {
@@ -430,6 +431,7 @@ export default class FixMetersComponent {
     this.getAllSections();
     this.getAllPlacesTypes();
     this.getAllReasons();
+    // this.setupConditionalValidation();
     //init lists
     this.companies = [
       { name: 'الجيزة', vendorCode: 6 },
@@ -447,6 +449,21 @@ export default class FixMetersComponent {
     //init variables
     this.offMeterObj.isEnded = ' ';
   }
+  setupConditionalValidation(val: any) {
+    // بيانات الفحص
+    console.log('vallll', val);
+    const examinationDate = this.addOffMeterForm.get('examinationDate');
+    const examinationNumber = this.addOffMeterForm.get('examinationNumber');
+    if (val == true) {
+      examinationDate?.setValidators([Validators.required]);
+      examinationNumber?.setValidators([Validators.required]);
+    } else {
+      examinationDate?.clearValidators();
+      examinationNumber?.clearValidators();
+    }
+    examinationDate?.updateValueAndValidity();
+    examinationNumber?.updateValueAndValidity();
+  }
   //OPEN MODAL
   showDialog() {
     this.showAddModal = true;
@@ -457,6 +474,7 @@ export default class FixMetersComponent {
   onCheckboxChange(event: any) {
     this.addOffMeterObj.isExaminationdata = event.checked;
     this.cdr.detectChanges(); // Trigger change detection after model update
+    this.setupConditionalValidation(event.checked);
   }
   closeAddModal() {
     this.showAddModal = false;

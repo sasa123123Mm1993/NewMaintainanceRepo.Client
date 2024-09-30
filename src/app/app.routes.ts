@@ -3,19 +3,18 @@ import LoginComponent from './pages/login/login.component';
 import { authGuard } from './services/auth/auth.guard';
 
 export const routes: Routes = [
-
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   {
     path: 'login',
     // loadComponent: () => import('../loginPage/login/login.component'),
-    component:LoginComponent
+    component: LoginComponent,
   },
 
   {
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard.component'),
-  //  canActivate: [authGuard]
+    //  canActivate: [authGuard]
   },
   {
     path: 'reasons',
@@ -58,5 +57,9 @@ export const routes: Routes = [
     path: 'offMeterReport',
     loadComponent: () =>
       import('./pages/reports/off-meter-report/off-meter-report.component'),
+  },
+  {
+    path: 'NewUserComponent',
+    loadComponent: () => import('./pages/users/new-user/new-user.component'),
   },
 ];

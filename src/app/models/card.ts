@@ -1,6 +1,6 @@
-export interface ICard {
-  cardData: any;
-}
+// export interface ICard {
+//   cardData: any;
+// }
 export interface cardCreate {
   employeeId: any;
   propertyId: any;

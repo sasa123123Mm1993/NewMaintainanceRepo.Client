@@ -17,7 +17,7 @@ import { UserDto, userInsert } from '../models/user';
 import { Login } from '../shared/models/Login';
 import { catchError, Observable, throwError } from 'rxjs';
 import { LoginRes } from '../shared/models/LoginRes';
-import { ICard } from '../models/card';
+//import { ICard } from '../models/card';
 
 const headers = {
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
@@ -185,7 +185,7 @@ export class MeterService {
   }
   //////////////  //////// Card ////////////  ////////////////
   readCard() {
-    return this.http.get<ICard>(
+    return this.http.get<any>(
       'http://localhost:8000/CardService.svc/rest/ReadCard'
     );
   }
@@ -219,6 +219,14 @@ export class MeterService {
       ''
     );
   }
+  //////////////  //////// REPORTS ////////////  ////////////////
+  getOffMetersReport(data: any) {
+    return this.http.post<any>(apiUrl + 'Reports/GetMeterOffData', data);
+  }
+  getTotalOffMetersReport(data: any) {
+    return this.http.post<any>(apiUrl + 'Reports/GetAllTotalOfMeterOff', data);
+  }
+
   //////////////  //////// LOCAL ////////////  ////////////////
   writeCard(data: any) {
     return this.http.post<any>(

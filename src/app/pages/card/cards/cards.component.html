@@ -1,11 +1,12 @@
 <section class="row">
-  <p-button label="مسح الكارت" class="w-50 pb-4" [raised]="true" />
+  <p-button label="مسح الكارت" class="w-50 pb-4" [raised]="true" (click)="clearCard()"/>
   <div class="card flex justify-content-center px-5 py-3 mb-5">
     <!-- ng-invalid ng-dirty -->
     <form action="" [formGroup]="releaseCardForm" novalidate (ngSubmit)="createControlCard()">
       <div class="row">
         <div class="col-md-3 gap-2 mb-2">
-          <label for="companies" class="font-semibold  block mb-2 ">وظيفة الكارت {{cardObj.propertyId}}</label>
+          <label for="companies" class="font-semibold  block mb-2 ">وظيفة الكارت </label>
+          <!-- {{cardObj.propertyId}} -->
           <p-dropdown [options]="cardTasks" class="row-cols-1" optionLabel="name" optionValue="code"
             placeholder="اختر وظيفة الكارت" [(ngModel)]="cardObj.propertyId" formControlName="cardCode"
             (onChange)="getCardCode(cardObj.propertyId)" />
@@ -313,7 +314,7 @@
   <p-dialog [(visible)]="visibleSuccessDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
     <h3 class="text-center defaultTxtColor">
-      <i class="pi pi-thumbs-up-fill" severity="success" style="font-size: 2.5rem;"></i>
+      <i class="pi pi-check-circle" severity="success" style="font-size: 4.5rem;"></i>
     </h3>
     <div class="row text-center py-4">
       <b class="text-center">تم الكتابة على الكارت بنجاح</b>
@@ -322,7 +323,7 @@
   <p-dialog [(visible)]="visibleFailDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
     <h3 class="text-center defaultTxtColor">
-      <i class="pi pi-thumbs-down" severity="danger" style="font-size: 2.5rem;color: darkred;"></i>
+      <i class="pi pi-times-circle" severity="danger" style="font-size: 4.5rem;color: #ef233c;"></i>
     </h3>
     <div class="row text-center py-4">
       <b class="text-center">خطأ فى الكتابة على الكارت </b>
@@ -331,10 +332,19 @@
   <p-dialog [(visible)]="errorDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
     <h3 class="text-center defaultTxtColor">
-      <i class="pi pi-thumbs-down" severity="danger" style="font-size: 2.5rem;color: darkred;"></i>
+      <i class="pi pi-times-circle" severity="danger" style="font-size: 4.5rem;color: #ef233c;"></i>
     </h3>
     <div class="row text-center py-4">
       <b class="text-center">{{errMsg}}</b>
+    </div>
+  </p-dialog>
+  <p-dialog [(visible)]="successDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
+    <h3 class="text-center defaultTxtColor">
+      <i class="pi pi-check-circle" severity="success" style="font-size: 4.5rem;"></i>
+    </h3>
+    <div class="row text-center py-4">
+      <b class="text-center">{{successMsg}}</b>
     </div>
   </p-dialog>
 </section>

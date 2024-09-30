@@ -1,10 +1,14 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MeterService } from '../../../services/meter.service';
 import { Table, TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../../shared/sharedModules';
+import { LoaderService } from '../../../services/loader.service';
+
 interface Index {
   id: number;
 }
@@ -13,18 +17,19 @@ interface Company {
   vendorCode: number;
 }
 
-interface City {
-  name: string,
-  code: string
-}
-
 @Component({
   selector: 'app-off-meter-report',
   standalone: true,
-  imports: [SidemenuComponent, CommonModule, SharedModule],
+  imports: [
+    SidemenuComponent,
+    CommonModule,
+    SharedModule,
+    ReactiveFormsModule,
+    FormsModule,
+  ],
   templateUrl: './off-meter-report.component.html',
   styleUrl: './off-meter-report.component.scss',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService, MessageService,NgModule],
 })
 export default class OffMeterReportComponent {
   showAccountDiv: boolean = false;
@@ -37,25 +42,21 @@ export default class OffMeterReportComponent {
   isFixDate: boolean = false;
   isInstalledDate: boolean = false;
   isExaminationDate: boolean = false;
+
   indexArr: Index[] = [];
-  refAddressObj: any = {
-    accountNum: 0,
-    regionNum: 0,
-    dailyNum: 0,
-    branchNum: 0,
-  };
   offMetersList: any;
   companies!: Company[];
   offMeterObj: any = {};
-  cities!: City[];
-
-  selectedCities!: City[];
-
+  datesList!: any;
+  reportFilterObj: any;
+  //////////////////////reportObj
 
   constructor(
     private meterService: MeterService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private cdr: ChangeDetectorRef,
+    private loaderService: LoaderService
   ) {}
 
   getIndexArr() {
@@ -63,19 +64,57 @@ export default class OffMeterReportComponent {
       this.indexArr.push({ id: index });
     }
   }
-  getAllOffMeters() {
-    this.meterService.getAllOffMeters().subscribe({
+  formatDateToYYYYMMDD(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}/${month}/${day}`;
+  }
+
+  getSearchResult() {
+    const sentObj = {
+      filter: '',
+      typeFilter: '',
+      filter2: '',
+      vendorCode: '',
+      typeFilter2: this.reportFilterObj.typeFilter2,
+      searchType2: 0,
+      sectorNo: '',
+      departmentNo: '',
+      smallDepartmentNo: '',
+      regionNo: String(this.reportFilterObj.regionNo) ?? '',
+      dailyNo: String(this.reportFilterObj.dailyNo) ?? '',
+      accountNo: String(this.reportFilterObj.accountNo) ?? '',
+      branchNo: String(this.reportFilterObj.branchNo) ?? '',
+      status: 0,
+      pageNumber: 0,
+      pageSize: 0,
+      fromDate: this.formatDateToYYYYMMDD(this.reportFilterObj.fromDate),
+      toDate: this.formatDateToYYYYMMDD(this.reportFilterObj.toDate),
+      isDeleted: '',
+      statusOfMeter: '',
+    };
+    this.loaderService.showLoader();
+    console.log('sent obj', sentObj);
+    this.meterService.getOffMetersReport(sentObj).subscribe({
       next: (res) => {
+        console.log('resssssssssss : ', res);
         this.offMetersList = res;
-        console.log('list :', this.offMetersList);
+        this.loaderService.hideLoader();
       },
     });
   }
   ngOnInit(): void {
     //init fun
-    this.getAllOffMeters();
-
+    this.getIndexArr();
     //init lists
+    this.reportFilterObj = {
+      typeFilter2: '',
+      fromDate: new Date(),
+      toDate: new Date(),
+    };
+    this.offMetersList = [];
+
     this.companies = [
       { name: 'الجيزة', vendorCode: 6 },
       { name: 'المصرية', vendorCode: 4 },
@@ -84,13 +123,18 @@ export default class OffMeterReportComponent {
       { name: 'اسكرا', vendorCode: 2 },
       { name: 'المعصرة', vendorCode: 5 },
     ];
-    this.cities = [
-      {name: 'New York', code: 'NY'},
-      {name: 'Rome', code: 'RM'},
-      {name: 'London', code: 'LDN'},
-      {name: 'Istanbul', code: 'IST'},
-      {name: 'Paris', code: 'PRS'}
-  ];
+    this.datesList = [
+      { name: ' تاريخ تركيب العداد', code: '1' },
+      { name: ' تاريخ تهيئه العداد', code: '2' },
+      { name: ' تاريخ العطل', code: '3' },
+      { name: ' تاريخ رفع العداد', code: '4' },
+      { name: ' تاريخ إصلاح العداد', code: '5' },
+      { name: ' تاريخ التركيب بعد الإصلاح', code: '6' },
+      { name: ' تاريخ استلام العداد في المعمل', code: '7' },
+      { name: ' تاريخ تسليم العداد للفني', code: '8' },
+      { name: ' تاريخ الفحص', code: '9' },
+      { name: ' تاريخ التسجيل بالنظام', code: '10' },
+    ];
   }
   //TABLE FILTERS
   @ViewChild('dt') dt!: Table;
@@ -102,7 +146,7 @@ export default class OffMeterReportComponent {
       this.dt.filter(company.vendorCode, 'vendorCode', 'equals');
     } else {
       this.dt.filter([1, 2, 3, 4, 5, 6], 'vendorCode', 'in');
-      this.getAllOffMeters();
+      this.getSearchResult();
     }
   }
   // حالة عطل العداد
@@ -113,7 +157,7 @@ export default class OffMeterReportComponent {
     } else if (val == false) {
       this.dt.filter(val, 'isEnded', 'equals');
     } else {
-      this.getAllOffMeters();
+      this.getSearchResult();
     }
   }
   // حالة تركيب العداد
@@ -124,7 +168,7 @@ export default class OffMeterReportComponent {
     } else if (val == false) {
       this.dt.filter(val, 'isMeterInstalled', 'equals');
     } else {
-      this.getAllOffMeters();
+      this.getSearchResult();
     }
   }
   // حالة تسليم العداد للفنى
@@ -135,13 +179,13 @@ export default class OffMeterReportComponent {
     } else if (val == false) {
       this.dt.filter(val, 'isMeterRecieved', 'equals');
     } else {
-      this.getAllOffMeters();
+      this.getSearchResult();
     }
   }
 
   closeExtraFilterOp(event: any, element: any) {
     element.hide(event);
-   // window.location.reload();
+    // window.location.reload();
   }
   reloadPage() {
     window.location.reload();

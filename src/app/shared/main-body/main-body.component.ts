@@ -82,6 +82,12 @@ export class MainBodyComponent {
       link: '/totalOffMeterReport',
       active: false,
     },
+    {
+      icon: 'bx bxs-user-account',
+      title: 'مستخدمين جديد',
+      link: '/NewUserComponent',
+      active: false,
+    },
 
   ];
   selectedSection: number | undefined;

@@ -186,7 +186,7 @@
   </div> -->
   <!-- } -->
   <!-- إضافة عطل -->
-  <p-dialog header="إضافة عداد معطل" [modal]="true" [(visible)]="showAddModal" [style]="{ width: '75vw',height:'75vh' }"
+  <p-dialog header="إضافة عداد معطل" [modal]="true" [(visible)]="showAddModal" [style]="{ width: '97vw',height:'90vh' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [draggable]="false" [resizable]="false">
 
     <div class="flex align-items-center gap-3 mb-3 mt-1">
@@ -692,7 +692,8 @@
         <div class="row mb-2 mt-2">
           <div class="col-md-12 gap-2 mb-2">
             <p-checkbox [(ngModel)]="addOffMeterObj.isExaminationdata" [binary]="true"
-              (onChange)="onCheckboxChange($event)" [ngModelOptions]="{standalone: true}" />
+              (onChange)="onCheckboxChange($event)" name="isExaminationChecked" formControlName="isExaminationChecked"/>
+              <!-- [ngModelOptions]="{standalone: true}"  -->
             <label for="binary" class="mr-2">بيانات الفحص </label>
           </div>
           @if (addOffMeterObj.isExaminationdata == true) {
@@ -729,7 +730,7 @@
     }
   </p-dialog>
   <!-- تعديل عطل -->
-  <p-dialog header="إضافة عداد معطل" [modal]="true" [(visible)]="showEdit" [style]="{ width: '75vw' }"
+  <p-dialog header="إضافة عداد معطل" [modal]="true" [(visible)]="showEdit" [style]="{ width: '97vw',height:'90vh' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [draggable]="false" [resizable]="false">
     <div class="flex align-items-center gap-3 mb-3 mt-1">
       <label for="company" class="font-semibold w-8rem">الشركة المصنعة</label>
@@ -917,7 +918,7 @@
     </div>
   </p-dialog>
   <!-- اصلاح عطل عداد -->
-  <p-dialog header="إصلاح عطل العداد" [modal]="true" [(visible)]="showFix" [style]="{ width: '50rem' , height:'30rem'}">
+  <p-dialog header="إصلاح عطل العداد" [modal]="true" [(visible)]="showFix" [style]="{ width: '70vw',height:'90vh'}">
     <span class="bg-secondary-subtle block fw-bold mb-3 p-2 p-text-secondary w-100">تاريخ رفع العداد :
       {{offMeterObj.uploadDate |
       date: 'yyyy - MM - dd'}}</span>

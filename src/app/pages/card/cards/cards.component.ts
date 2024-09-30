@@ -38,7 +38,9 @@ export default class CardsComponent {
   visibleSuccessDialog: boolean = false;
   visibleFailDialog: boolean = false;
   errorDialog: boolean = false;
+  successDialog: boolean = false;
   errMsg: string = '';
+  successMsg: string = '';
   cardTasks: any = [];
   techList: any = [];
   activityList: any = [];
@@ -136,7 +138,7 @@ export default class CardsComponent {
   getTechniciansList() {
     this.meterService.getAllTechinicians().subscribe({
       next: (res) => {
-        this.techList = res;
+        this.techList = res.data;
         console.log('techList', res);
       },
     });
@@ -172,40 +174,56 @@ export default class CardsComponent {
       // this.cardObj.MeterSerial = this.cardObj.MeterSerial.toString();
       //}
     }
-    console.log('addedddddddddd obj :', this.cardObj);
-    this.meterService.createControlCard(this.cardObj).subscribe({
-      next: (res) => {
-        if (res.error) {
-          this.loaderService.hideLoader();
-          this.errorDialog = true;
-          this.errMsg = res.error;
-        } else {
-          this.loaderService.showLoader();
-          const cardId = res.controlCardId;
-          const writeObj = {
-            CardToken: res.payload,
-          };
-          this.meterService.writeCard(writeObj).subscribe({
+    //قبل الكتابة على الكارت اتاكد من التوكن الموجودة عليه الاول
+    //read card first
+    this.meterService.readCard().subscribe({
+      next: (cardData) => {
+        console.log('result of reading card is : ', cardData);
+        if (
+          cardData ==
+          '4oH1/4IBJN+DASAnelVY24DTNFt6O0y0UyMDdeFr7L8IMAag4QqrSxFxHt+CAoHId0VCc0l0RQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='
+        ) {
+          this.meterService.createControlCard(this.cardObj).subscribe({
             next: (res) => {
-              console.log('after write', res);
-              if (res == 0) {
-                this.visibleSuccessDialog = true;
+              if (res.error) {
                 this.loaderService.hideLoader();
+                this.errorDialog = true;
+                this.errMsg = res.error;
               } else {
-                this.meterService.cancelControlCardRelease(cardId).subscribe({
+                this.loaderService.showLoader();
+                const cardId = res.controlCardId;
+                const writeObj = {
+                  CardToken: res.payload,
+                };
+                this.meterService.writeCard(writeObj).subscribe({
                   next: (res) => {
-                    this.visibleFailDialog = true;
-                    alert(res);
-                    this.loaderService.hideLoader();
+                    console.log('after write', res);
+                    if (res == 0) {
+                      this.visibleSuccessDialog = true;
+                      this.loaderService.hideLoader();
+                    } else {
+                      this.meterService
+                        .cancelControlCardRelease(cardId)
+                        .subscribe({
+                          next: (res) => {
+                            this.visibleFailDialog = true;
+                            this.loaderService.hideLoader();
+                          },
+                        });
+                    }
                   },
                 });
+                console.log(res);
               }
             },
           });
-          console.log(res);
+        } else {
+          this.errorDialog = true;
+          this.errMsg = 'لا يمكن الكتابة على الكارت برجاء مسح الكارت اولا';
         }
       },
     });
+    // console.log('addedddddddddd obj :', this.cardObj);
   }
   getExpDate() {
     this.meterService.getCardExpDate().subscribe({
@@ -364,6 +382,25 @@ export default class CardsComponent {
     }
     this.cardObj.TampersCodes = this.tampersCodes;
     console.log('selectedddd', this.tampersCodes);
+  }
+  //مسح الكارت
+  clearCard() {
+    const writeObj = {
+      CardToken:
+        '4oIBPv+CASTfgwEgbHorTrfymTyIfXVzb1beOKYetrAAj0/OFQ5HZm3SfFDfggKCARB3RUJzSXRFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
+    };
+    this.meterService.writeCard(writeObj).subscribe({
+      next: (res) => {
+        if (res == 0) {
+          this.successDialog = true;
+          this.successMsg = 'تم مسح الكارت بنجاح';
+        } else {
+          this.errorDialog = true;
+          this.errMsg = 'برجاء التأكد من اتصال الكارت بالقارئ';
+        }
+        console.log('after clear card : ', res);
+      },
+    });
   }
   ngOnInit(): void {
     this.getCardTasksList();

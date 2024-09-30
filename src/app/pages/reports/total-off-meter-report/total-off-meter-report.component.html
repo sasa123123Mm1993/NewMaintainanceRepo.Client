@@ -11,26 +11,26 @@
         <div class="col-md-5">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem"> تاريخ التسجيل بالنظام
             من </label>
-          <p-calendar [(ngModel)]="date" class="row-cols-1"  dateFormat="dd/mm/yy"  [styleClass]="'calenderBottom-class'"
-            [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+          <p-calendar [(ngModel)]="reportFilterObj.fromDate" class="row-cols-1" dateFormat="dd/mm/yy"
+            [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
         </div>
         <div class="col-md-5">
           <label for="serialNum" class="font-semibold  block mb-2 w-3rem">
             الى </label>
-          <p-calendar [(ngModel)]="date" class="row-cols-1"  dateFormat="dd/mm/yy"  [styleClass]="'calenderBottom-class'"
-            [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+          <p-calendar [(ngModel)]="reportFilterObj.toDate" class="row-cols-1" dateFormat="dd/mm/yy"
+            [styleClass]="'calenderBottom-class'" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
         </div>
         <div class="col-md-2 pt-4 align-self-center flex justify-content-evenly">
-          <button pButton icon="pi pi-search" [raised]="true" class="mr-2 btnIcon defaultBtnColor"
-            pTooltip=" بحث"></button>
-            @if (totalsOffMeterList.length > 1) {
+          <button pButton icon="pi pi-search" [raised]="true" class="mr-2 btnIcon defaultBtnColor" pTooltip=" بحث"
+            (click)="getSearchResult()"></button>
+          @if (totalsOffMeterList.length > 1) {
           <button pButton icon="pi pi-print" [raised]="true" class="mr-2 btnIcon defaultBtnColor"
             pTooltip=" طباعة"></button>
           <button pButton icon="pi pi-file-excel" [raised]="true" class="mr-2 btnIcon defaultBtnColor"
             pTooltip="تحميل ملف اكسيل"></button>
           <button pButton icon="pi pi-refresh" [raised]="true" class="mr-2 btnIcon defaultBtnColor"
             pTooltip="اعادة تحميل"></button>
-            }
+          }
         </div>
       </div>
     </ng-template>
@@ -49,12 +49,12 @@
     </ng-template>
     <ng-template pTemplate="body" let-offMeter>
       <tr>
-        <td>10</td>
-        <td>12</td>
-        <td>14</td>
-        <td>6</td>
-        <td>5</td>
-        <td>6</td>
+        <td>{{offMeter.disabledMeters}}</td>
+        <td>{{offMeter.endedMeters}}</td>
+        <td>{{offMeter.recivedMeters}}</td>
+        <td>{{offMeter.notRecivedMeters}}</td>
+        <td>{{offMeter.installedMeters}}</td>
+        <td>{{offMeter.notInstalledMeters}}</td>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
