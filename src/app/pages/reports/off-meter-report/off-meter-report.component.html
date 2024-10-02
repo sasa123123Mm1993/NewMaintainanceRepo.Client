@@ -136,8 +136,19 @@
     </ng-template>
     <ng-template pTemplate="body" let-offMeter>
       <tr>
-        <td>11</td>
-        <td>{{ offMeter.smallDepartmentName }}</td>
+        @if (offMeter.mainDepartmentId == '1') {
+        <td>غرب طوخ</td>
+        }
+        @if (offMeter.mainDepartmentId == '2') {
+        <td>كفر شكر</td>
+        }
+        @if (offMeter.smallDepartmentId == '1') {
+        <td>غرب طوخ</td>
+        }
+        @if (offMeter.smallDepartmentId == '2') {
+        <td>كفر شكر</td>
+        }
+        <!-- <td>{{ offMeter.smallDepartmentName }}</td> -->
         @switch (offMeter.vendorCode) {
         @case (1) {
         <td>جلوبال</td>
@@ -162,13 +173,15 @@
         }
         }
         <td>{{ offMeter.serialNumber }}</td>
-        <td>11</td>
+        <td>أحادى</td>
+
         <td>{{ offMeter.customerCode }}</td>
         <td>{{ offMeter.customerName }}</td>
         <td>{{ offMeter.mainDepartmentCode }}/{{ offMeter.smallDepartmentCode }}/{{ offMeter.regionNo }}/{{
           offMeter.dailyNo }}/{{ offMeter.accountNo }}/{{ offMeter.branchNo }}</td>
-        <td>{{ offMeter.activityName }}</td>
-        <td>
+        <td>تجارى سلعى</td>
+        <td>سليم</td>
+        <!-- <td>
           @switch (offMeter.meterOffStatusId) {
           @case (1) {
           سليم
@@ -178,10 +191,15 @@
           }
           @case (3) {
           يحتاج صيانه بالمعمل }
+          @case (0) {
+          سليم
           }
-        </td>
-        <td>11</td>
-        <td>11</td>
+          }
+
+        </td> -->
+
+        <td>محل</td>
+        <td>123456</td>
         <!-- <td>{{ offMeter.meterPreparedDate | date:"dd-MM-yyyy"}}</td> -->
         <td *ngIf="isInstallationDate">11</td>
         <td *ngIf="isPreparedDate">11</td>

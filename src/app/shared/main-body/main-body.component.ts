@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
@@ -21,9 +21,9 @@ import { MeterService } from '../../services/meter.service';
   styleUrl: './main-body.component.scss',
 })
 export class MainBodyComponent {
-  currentUrl!: string;
   closedMenu: boolean = true;
   pageTitle!: string;
+  loggedValue: boolean = false;
   //countries
   sections!: any[];
   //sideMenu list
@@ -82,13 +82,18 @@ export class MainBodyComponent {
       link: '/totalOffMeterReport',
       active: false,
     },
+    // {
+    //   icon: 'bx bxs-user-account',
+    //   title: 'مستخدمين جديد',
+    //   link: '/NewUserComponent',
+    //   active: false,
+    // },
     {
-      icon: 'bx bxs-user-account',
-      title: 'مستخدمين جديد',
-      link: '/NewUserComponent',
+      icon: 'bx bx-log-out',
+      title: 'تسجيل خروج',
+      link: '/login',
       active: false,
     },
-
   ];
   selectedSection: number | undefined;
   currentPath!: string;
@@ -105,13 +110,22 @@ export class MainBodyComponent {
       }
     }
   }
-  getSelectedSection(){
-    console.log('jjjjjjjjjjjjjjjj',this.selectedSection)
+  getSelectedSection() {
+    console.log('jjjjjjjjjjjjjjjj', this.selectedSection);
   }
-  constructor(private location: Location, private meterService: MeterService) {}
+  constructor(
+    private location: Location,
+    private meterService: MeterService,
+  ) {}
 
   ngOnInit() {
     this.currentPath = this.location.path();
+    if (this.currentPath == '/login') {
+      this.loggedValue = true;
+    } else {
+      this.loggedValue = false;
+    }
+    console.log(this.currentPath);
     for (let i = 0; i < this.sideMenuContent.length; i++) {
       if (this.sideMenuContent[i].link == this.currentPath) {
         this.pageTitle = this.sideMenuContent[i].title;

@@ -877,7 +877,7 @@
           placeholder="اختر سبب الرفع" />
       </div>
       <div class="col-md-4 gap-2 mb-2">
-        <label for="offReason" class="font-semibold  block mb-2 ">حالة العداد عند الرفع</label>
+        <label for="offReason" class="font-semibold  block mb-2 ">حالة العداد عند الرفع  </label>
         <p-dropdown [options]="meterStatus" class="row-cols-1" [(ngModel)]="offMeterObj.meterOffStatusId"
           optionLabel="name" optionValue="id" placeholder="اختر حالة العداد" />
       </div>
@@ -1030,4 +1030,23 @@
     <b> هذا العداد غير موجود بالنظام من فضلك تأكد من رقم العداد الصحيح</b>
 
   </p-dialog>
+
+  <p-dialog [(visible)]="errorDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
+  <h3 class="text-center defaultTxtColor">
+    <i class="pi pi-times-circle" severity="danger" style="font-size: 4.5rem;color: #ef233c;"></i>
+  </h3>
+  <div class="row text-center py-4">
+    <b class="text-center">{{errMsg}}</b>
+  </div>
+</p-dialog>
+<p-dialog [(visible)]="successDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
+  <h3 class="text-center defaultTxtColor">
+    <i class="pi pi-check-circle" severity="success" style="font-size: 4.5rem;"></i>
+  </h3>
+  <div class="row text-center py-4">
+    <b class="text-center">{{successMsg}}</b>
+  </div>
+</p-dialog>
 </section>

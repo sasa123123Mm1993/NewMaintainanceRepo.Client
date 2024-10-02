@@ -2,11 +2,9 @@ import { Component } from '@angular/core';
 import { SidemenuComponent } from '../../../shared/sidemenu/sidemenu.component';
 import { CommonModule } from '@angular/common';
 import { MeterService } from '../../../services/meter.service';
-import { Table, TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SharedModule } from '../../../shared/sharedModules';
 import { FormsModule } from '@angular/forms';
-import { identifierName } from '@angular/compiler';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from '../../../services/loader.service';
@@ -34,7 +32,6 @@ export default class CardsComponent {
     private fb: FormBuilder,
     private loaderService: LoaderService
   ) {}
-  logged: boolean = true;
   visibleSuccessDialog: boolean = false;
   visibleFailDialog: boolean = false;
   errorDialog: boolean = false;
@@ -52,13 +49,13 @@ export default class CardsComponent {
   MeterSerial: any;
   ///////////////////////////
   metersNums: any[] = [];
-  newMeter: any = '';
+  newMeter: string = '';
   selectedMeter: string | null = null;
 
   addMeter(): void {
-    debugger;
     console.log('jj');
     if (this.newMeter) {
+      this.newMeter = this.newMeter.toString();
       this.metersNums.push(this.newMeter); // Add new item to the list
       this.newMeter = ''; // Reset the input
     }
@@ -122,7 +119,7 @@ export default class CardsComponent {
     oldCompanyCode: [''],
     newCompanyCode: [''],
     meterNumberOfTransferData: [''],
-    metersNumsList: [[]],
+    metersNumsList: [[], []],
   });
 
   //get all card tasks
@@ -178,6 +175,7 @@ export default class CardsComponent {
     //read card first
     this.meterService.readCard().subscribe({
       next: (cardData) => {
+        this.loaderService.showLoader();
         console.log('result of reading card is : ', cardData);
         if (
           cardData ==
@@ -218,12 +216,13 @@ export default class CardsComponent {
             },
           });
         } else {
+          this.loaderService.hideLoader();
           this.errorDialog = true;
           this.errMsg = 'لا يمكن الكتابة على الكارت برجاء مسح الكارت اولا';
         }
       },
     });
-    // console.log('addedddddddddd obj :', this.cardObj);
+    console.log('addedddddddddd obj :', this.cardObj);
   }
   getExpDate() {
     this.meterService.getCardExpDate().subscribe({
@@ -253,6 +252,22 @@ export default class CardsComponent {
       }
       meterNumber?.updateValueAndValidity();
     });
+    // مجموعه عدادات
+    this.releaseCardForm.get('meterType')?.valueChanges.subscribe((value) => {
+      console.log('vallll', value);
+      const metersNumsList = this.releaseCardForm.get('metersNumsList');
+      if (value == 2) {
+        if (this.metersNums.length == 0) {
+          this.releaseCardForm
+            .get('metersNumsList')
+            ?.setErrors({ arrayEmpty: true });
+        }
+      } else {
+        metersNumsList?.clearValidators();
+        this.metersNums = [];
+      }
+      metersNumsList?.updateValueAndValidity();
+    });
     //نقل بيانات عداد
     this.releaseCardForm.get('cardCode')?.valueChanges.subscribe((value) => {
       console.log('vallll', value);
@@ -266,17 +281,6 @@ export default class CardsComponent {
       }
       meterNumberOfTransferData?.updateValueAndValidity();
     });
-    // اضافة عدادات
-    // this.releaseCardForm.get('meterType')?.valueChanges.subscribe((value) => {
-    //   console.log('vallll', value);
-    //   const metersNumsList = this.releaseCardForm.get('metersNumsList');
-    //   if (value == 2) {
-    //     metersNumsList?.setValidators([Validators.required]);
-    //   } else {
-    //     metersNumsList?.clearValidators();
-    //   }
-    //   metersNumsList?.updateValueAndValidity();
-    // });
     // الوقت المستغرق
     this.releaseCardForm.get('cardCode')?.valueChanges.subscribe((value) => {
       console.log('vallll', value);

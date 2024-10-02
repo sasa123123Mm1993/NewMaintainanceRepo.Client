@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-sm-6" style="background-color: #2d3e50; height: 100vh">
-      <div class="row justify-content-center" style="height: 50vh">
+      <div class="row justify-content-center" style="height: 100vh">
         <div class="col-sm-8 align-self-center">
           <img src="../../assets/images/meterlogowhite.png" class="img-fluid" alt="charge" />
         </div>
@@ -14,7 +14,7 @@
             <div class="col-12 text-center pb-5">
               <p class="display-4 text-monospace font-weight-bold darkColor"> METERS OFF</p>
             </div>
-            
+
               <div class="col-12 pb-5">
                 <p-floatLabel>
                   <input name="Username" type="text" pInputText [(ngModel)]="LoginObj.userName"
@@ -28,18 +28,18 @@
               <div class="col-12  pb-5">
                 <p-floatLabel>
                   <input name="Password" type="password" pInputText [(ngModel)]="LoginObj.password"
-                    [ngModelOptions]="{standalone: true}" />
+                    [ngModelOptions]="{standalone: true}"  style="font-size: 30px;"/>
                   <label for="Password">Password</label>
                 </p-floatLabel>
               </div>
 
-           
+
             <!-- <a class="col-12" (click)="isLogged()"><a class="col-12" (click)="isLogged()"> -->
-              <p-button label="Login" (click)="OnLogin(LoginObj.userName,LoginObj.password)" 
+              <p-button label="Login" (click)="OnLogin(LoginObj.userName,LoginObj.password)"
               [text]="true" [raised]="true"></p-button>
             <!-- </a> -->
             <!-- href="/dashboard" -->
-          
+
           </div>
 
         </form>

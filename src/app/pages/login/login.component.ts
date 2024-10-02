@@ -1,4 +1,12 @@
-import { Component, Inject, inject, Injectable, InjectionToken, input, Input } from '@angular/core';
+import {
+  Component,
+  Inject,
+  inject,
+  Injectable,
+  InjectionToken,
+  input,
+  Input,
+} from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,16 +24,21 @@ const STORAGE_KEY = '';
 // export const MY_AWESOME_SERVICE_STORAGE =
 //     new InjectionToken<StorageService>('MY_AWESOME_SERVICE_STORAGE');
 @Component({
-
   selector: 'app-login',
   standalone: true,
-  imports: [FloatLabelModule,RouterModule,CommonModule,FormsModule,DividerModule,ButtonModule,InputTextModule,],
+  imports: [
+    FloatLabelModule,
+    RouterModule,
+    CommonModule,
+    FormsModule,
+    DividerModule,
+    ButtonModule,
+    InputTextModule,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-
 export default class LoginComponent {
-
   @Injectable()
   email = '';
   password = '';
@@ -33,85 +46,43 @@ export default class LoginComponent {
   router = inject(Router);
   @Input() item = '';
 
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     // @Inject(SESSION_STORAGE) private storage: StorageService,
     // @Inject(MY_AWESOME_SERVICE_STORAGE) private Tokenstorage: StorageService,
-    private meterService: MeterService,
+    private meterService: MeterService
   ) {
     this.LoginObj = new Login();
   }
-
-
+  logged: boolean = false;
   LoginObj!: Login;
-  Response!:LoginRes;
+  Response!: LoginRes;
   isLogged() {
     this.router.navigateByUrl('/dashboard');
   }
 
 
+  OnLogin(userName: string, password: any) {
 
-  // OnLogin() {
-  //  7095
-  //   this.http.post('http://192.168.15.10:1501/v1/api/Auth/Login/',this.LoginObj).subscribe((
-  //   res:any)=>{
-  //    if(res.result){
-  //     alert("Login Successfully");
-  //     localStorage.setItem('User Token',res.data.message);
-  //     this.router.navigateByUrl('/dashboard');
-  //    }
-  //    else{
-  //     alert(res.message);
-  //    }
-  //   })
-  //   }
+    this.LoginObj.userName = userName;
+    this.LoginObj.password = password;
+    this.meterService
+      .Login(this.LoginObj)
 
+      .subscribe((res: any) => {
+        console.log('?????????????', res);
+        if (res.isSucceed) {
+          localStorage.setItem('UserId', res.userId);
+          localStorage.setItem('isSucceed', res.isSucceed);
+          this.Response = res.message;
+          localStorage.setItem('myData', res.message);
 
-  login(event: Event) {
-
-    event.preventDefault();
-    console.log(`Login: ${this.email} / ${this.password}`);
-    this.authService
-      .login({
-        email: this.email,
-        password: this.password,}).subscribe({
-        next: (res) => {
-        alert('Login success!');
-        this.Response = res;
-        localStorage.setItem('JWT_TOKEN',this.Response.message);
-        // this.storage.set(STORAGE_KEY,this.Response.message);
-        localStorage.setItem('mm', JSON.stringify(this.Response.message));
-        this.router.navigate(['/']);
-          }
+          this.router.navigateByUrl('/dashboard');
+        } else {
+          alert(res.message);
+        }
       });
   }
 
 
-  OnLogin(userName: string, password: any) {
-
-      this.LoginObj.userName = userName;
-      this.LoginObj.password = password;
-      this.meterService.Login(this.LoginObj)
-
-      .subscribe((
-        res:any)=>{
-          console.log("?????????????",res)
-         if(res.isSucceed){
-          localStorage.setItem('UserId',res.userId);
-          localStorage.setItem('isSucceed',res.isSucceed);
-          this.Response = res.message;
-          localStorage.setItem('myData',res.message);
-
-          this.router.navigateByUrl('/dashboard');
-         }
-         else{
-          alert(res.message);
-         }
-        })
-
-
-
-    }
-
 }
-
-

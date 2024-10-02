@@ -50,6 +50,14 @@ export default class FixMetersComponent {
   showAccountDiv: boolean = false;
   showExtraFilter: boolean = false;
   addOffMeterObj: any = {};
+
+  errorDialog: boolean = false;
+  successDialog: boolean = false;
+  errMsg: string = '';
+  successMsg: string = '';
+
+
+
   offMeterObj: MeterOffInsert = {
     isDeleted: false,
     creatorById: 0,
@@ -257,12 +265,17 @@ export default class FixMetersComponent {
   // EDIT METER
   editOffMeter() {
     console.log('update', this.offMeterObj);
+    if (this.offMeterObj.meterOffStatusId) {
+      this.offMeterObj.meterOffStatusId = +this.offMeterObj.meterOffStatusId;
+    }
     this.meterService
       .updtaeOffMeter(this.selectedOffMeterId, this.offMeterObj)
       .subscribe({
         next: (res) => {
           console.log('edit', res);
           this.showEdit = false;
+          this.successDialog = true;
+        this.successMsg = 'تم التعديل بنجاح';
           this.getAllOffMeters();
         },
       });
@@ -288,7 +301,7 @@ export default class FixMetersComponent {
       .subscribe({
         next: (res) => {
           console.log('fixed', res);
-          window.location.reload();
+          this.getAllOffMeters();
           this.showFix = false;
         },
       });
@@ -309,11 +322,13 @@ export default class FixMetersComponent {
         this.meterService.deleteOffMeter(id).subscribe({
           next: (res) => {
             // this.offMeterObj = res;
-            this.messageService.add({
-              severity: 'info',
-              summary: 'تأكيد',
-              detail: 'تم الحذف بنجاح',
-            });
+            // this.messageService.add({
+            //   severity: 'info',
+            //   summary: 'تأكيد',
+            //   detail: 'تم الحذف بنجاح',
+            // });
+            this.successDialog = true;
+        this.successMsg = 'تم الحذف بنجاح';
             this.getAllOffMeters();
           },
         });
@@ -370,6 +385,8 @@ export default class FixMetersComponent {
     this.meterService.addOffMeter(addMeterObj).subscribe({
       next: (res) => {
         this.showAddModal = false;
+        this.successDialog = true;
+        this.successMsg = 'تم اضافة العطل بنجاح';
         this.getAllOffMeters();
       },
     });

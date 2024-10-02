@@ -33,6 +33,11 @@ export default class OffMerterReasonsComponent {
     code: ['', Validators.required],
   });
 
+  errorDialog: boolean = false;
+  successDialog: boolean = false;
+  errMsg: string = '';
+  successMsg: string = '';
+
   MetersOffReasons!: any;
   MetersOffReason: MeterReasonInsertDto = {
     name: '',
@@ -84,10 +89,14 @@ export default class OffMerterReasonsComponent {
     this.MetersOffReason.code = code;
     this.meterService.addMetersOffReason(this.MetersOffReason).subscribe({
       next: (res) => {
-        this.getAllReasons();
-        this.reasonNameRef.nativeElement.value = '';
-        this.inputNumberComponent.value = 0;
-        this.loaderService.hideLoader();
+        console.log('creeeeee', res);
+        if (res) {
+          this.successDialog = true;
+          this.successMsg = 'تم اضافة سبب بنجاح';
+          this.getAllReasons();
+          this.reasonNameRef.nativeElement.value = '';
+          this.inputNumberComponent.value = 0;
+        }
       },
     });
   }
@@ -117,6 +126,8 @@ export default class OffMerterReasonsComponent {
       .editMetersOffReason(this.reasonId, this.MetersOffReason)
       .subscribe({
         next: (res) => {
+          this.successDialog = true;
+          this.successMsg = 'تم تعديل سبب العطل بنجاح';
           this.getAllReasons();
           this.showEdit = false;
           this.loaderService.hideLoader();
@@ -140,11 +151,13 @@ export default class OffMerterReasonsComponent {
         this.loaderService.showLoader();
         this.meterService.deleteMetersOffReason(reasonObj.id).subscribe({
           next: (res) => {
-            this.messageService.add({
-              severity: 'info',
-              summary: 'تأكيد',
-              detail: 'تم الحذف بنجاح',
-            });
+            // this.messageService.add({
+            //   severity: 'info',
+            //   summary: 'تأكيد',
+            //   detail: 'تم الحذف بنجاح',
+            // });
+            this.successDialog = true;
+            this.successMsg = 'تم حذف السبب بنجاح';
             this.getAllReasons();
           },
         });

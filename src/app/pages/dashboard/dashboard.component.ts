@@ -12,16 +12,16 @@ import { MeterService } from '../../services/meter.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [SidemenuComponent, CommonModule, CardModule,FormsModule],
+  imports: [SidemenuComponent, CommonModule, CardModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export default class DashboardComponent{
+export default class DashboardComponent {
   authService = inject(AuthService);
   user?: any;
 
   logged: boolean = true;
-  users:any[]=[];
+  users: any[] = [];
   userList: any = [];
   // constructor(private http:HttpClient,private meterService: MeterService){
   //   this.authService.getCurrentAuthUser().subscribe((r) => {
@@ -30,17 +30,18 @@ export default class DashboardComponent{
   //   });
   // }
 
-    constructor(private http:HttpClient,private meterService: MeterService){
+  constructor(private http: HttpClient, private meterService: MeterService) {
     this.authService.getCurrentAuthUser().subscribe((r) => {
       console.log(r);
       this.user = r;
     });
   }
-
-  ngOnInit():void{
+  ngOnChanges(): void {
+    window.location.reload();
+  }
+  ngOnInit(): void {
     this.getAllUsers();
   }
-
 
   getAllUsers() {
     this.meterService.getAllUsers().subscribe({
@@ -49,9 +50,7 @@ export default class DashboardComponent{
         console.log(this.userList);
       },
     });
-
   }
-
 
   logout() {
     this.authService.logout();
@@ -60,6 +59,4 @@ export default class DashboardComponent{
   refreshToken() {
     this.authService.refreshToken()?.subscribe(() => {});
   }
-
-
 }

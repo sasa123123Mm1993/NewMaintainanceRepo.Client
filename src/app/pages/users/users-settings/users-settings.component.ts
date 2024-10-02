@@ -26,7 +26,13 @@ export default class UsersSettingsComponent {
     private router: Router,
     private loaderService: LoaderService
   ) {}
+  /////////////
+  errorDialog: boolean = false;
+  successDialog: boolean = false;
+  errMsg: string = '';
+  successMsg: string = '';
 
+  /////////////
   showAddModal: boolean = false;
   showEditModal: boolean = false;
   visibleConfirmDialog: boolean = false;
@@ -83,6 +89,7 @@ export default class UsersSettingsComponent {
   getUserById(userId: any) {
     console.log('idddddd', userId);
     this.getSmallDeps();
+    this.getRoles();
     this.meterService.getUserById(userId, '').subscribe({
       next: (res) => {
         console.log('the user is :', res);
@@ -94,7 +101,7 @@ export default class UsersSettingsComponent {
               if (this.mainDepartements[i].id == this.userDepartments[j]) {
                 this.mainDepartements[i].checked = true;
                 console.log('main with checked', this.mainDepartements[i]);
-              }else{
+              } else {
                 this.mainDepartements[i].checked = false;
               }
             }
@@ -122,11 +129,13 @@ export default class UsersSettingsComponent {
           next: (res) => {
             console.log(res);
             this.getAllUsers();
-            this.messageService.add({
-              severity: 'info',
-              summary: 'تأكيد',
-              detail: 'تم الحظر بنجاح',
-            });
+            // this.messageService.add({
+            //   severity: 'info',
+            //   summary: 'تأكيد',
+            //   detail: 'تم الحظر بنجاح',
+            // });
+            this.successDialog = true;
+            this.successMsg = 'تم الحظر بنجاح';
           },
         });
       },
@@ -153,11 +162,13 @@ export default class UsersSettingsComponent {
       accept: () => {
         this.meterService.deactiveUser(userId, '').subscribe({
           next: (res) => {
-            this.messageService.add({
-              severity: 'info',
-              summary: 'تأكيد',
-              detail: 'تم التفعيل بنجاح',
-            });
+            // this.messageService.add({
+            //   severity: 'info',
+            //   summary: 'تأكيد',
+            //   detail: 'تم التفعيل بنجاح',
+            // });
+            this.successDialog = true;
+            this.successMsg = 'تم تفعيل المستخدم بنجاح';
             console.log(res);
             this.getAllUsers();
           },
@@ -187,6 +198,8 @@ export default class UsersSettingsComponent {
       next: (res) => {
         console.log('after user added', res);
         this.showAddModal = false;
+        this.successDialog = true;
+        this.successMsg = 'تم اضافة مستخدم بنجاح';
         this.getAllUsers();
       },
     });
@@ -214,6 +227,8 @@ export default class UsersSettingsComponent {
       next: (res) => {
         console.log('updated user', res);
         this.showEditModal = false;
+        this.successDialog = true;
+        this.successMsg = 'تم تعديل المستخدم بنجاح';
         this.getAllUsers();
       },
     });

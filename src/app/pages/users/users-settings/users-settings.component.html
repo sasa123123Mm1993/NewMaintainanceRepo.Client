@@ -144,7 +144,7 @@
       <div class="row">
 
         @if (roles) {
-        @for (role of roles; track role.id) {
+        @for (role of roles; track role.roleId) {
         <div class="col-md-3 flex flex-wrap gap-3">
           <div class="field-checkbox">
             <!-- name="roleId" [value]="role.roleId" formControlName="roleId"
@@ -218,10 +218,10 @@
       <div class="row">
 
         @if (roles) {
-        @for (role of roles; track role.id) {
+        @for (role of roles; track role.roleId) {
         <div class="col-md-3 flex flex-wrap gap-3">
           <div class="field-checkbox">
-            <p-radioButton name="userRole" [value]="role.roleId" [(ngModel)]="selectedRole"
+            <p-radioButton name="userRole" [value]="role.roleId" [(ngModel)]="userObj.roleId"
               [ngModelOptions]="{standalone: true}" />
             <label class="ml-2">{{role.roleName}}</label>
           </div>
@@ -251,4 +251,27 @@
 
 
   </p-dialog>
+
+
+
+  <!--  -->
+  <p-dialog [(visible)]="errorDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
+  <h3 class="text-center defaultTxtColor">
+    <i class="pi pi-times-circle" severity="danger" style="font-size: 4.5rem;color: #ef233c;"></i>
+  </h3>
+  <div class="row text-center py-4">
+    <b class="text-center">{{errMsg}}</b>
+  </div>
+</p-dialog>
+<p-dialog [(visible)]="successDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
+  <h3 class="text-center defaultTxtColor">
+    <i class="pi pi-check-circle" severity="success" style="font-size: 4.5rem;"></i>
+  </h3>
+  <div class="row text-center py-4">
+    <b class="text-center">{{successMsg}}</b>
+  </div>
+</p-dialog>
+  <!--  -->
 </section>
