@@ -31,6 +31,7 @@ export default class OffMerterReasonsComponent {
   reasonForm = this.fb.group({
     name: ['', Validators.required],
     code: ['', Validators.required],
+    note: ['']
   });
 
   errorDialog: boolean = false;
@@ -41,6 +42,7 @@ export default class OffMerterReasonsComponent {
   MetersOffReasons!: any;
   MetersOffReason: MeterReasonInsertDto = {
     name: '',
+    note: '',
     code: 0,
   };
   visible: boolean = false;
@@ -63,11 +65,13 @@ export default class OffMerterReasonsComponent {
     this.loaderService.showLoader();
     this.meterService.getAllMetersOffReasons().subscribe({
       next: (res) => {
-        console.log('res', res);
-        this.MetersOffReasons = res.filter(
-          (reasons) => reasons.isDeleted == false
-        );
-        this.loaderService.hideLoader();
+        if (res.code == 200) {
+          console.log('res', res);
+          this.MetersOffReasons = res.payload.filter(
+            (reasons: { isDeleted: boolean }) => reasons.isDeleted == false
+          );
+          this.loaderService.hideLoader();
+        }
       },
     });
   }
@@ -75,27 +79,33 @@ export default class OffMerterReasonsComponent {
     this.visible = true;
     this.MetersOffReason = {
       name: '',
+      note: '',
       code: 0,
     };
     this.reasonForm = this.fb.group({
       name: ['', Validators.required],
       code: ['', Validators.required],
+      note: [''],
     });
   }
-  createReason(name: string, code: any) {
+  createReason(name: string, code: any,note:any) {
     this.loaderService.showLoader();
     this.visible = false;
     this.MetersOffReason.name = name;
     this.MetersOffReason.code = code;
+    this.MetersOffReason.note = note;
+    console.log("crrrr",this.MetersOffReason)
     this.meterService.addMetersOffReason(this.MetersOffReason).subscribe({
       next: (res) => {
         console.log('creeeeee', res);
         if (res) {
-          this.successDialog = true;
-          this.successMsg = 'تم اضافة سبب بنجاح';
-          this.getAllReasons();
-          this.reasonNameRef.nativeElement.value = '';
-          this.inputNumberComponent.value = 0;
+          if (res.code == 200) {
+            this.successDialog = true;
+            this.successMsg = 'تم اضافة سبب بنجاح';
+            this.getAllReasons();
+            this.reasonNameRef.nativeElement.value = '';
+            this.inputNumberComponent.value = 0;
+          }
         }
       },
     });
@@ -113,9 +123,11 @@ export default class OffMerterReasonsComponent {
     this.showEdit = true;
     this.meterService.getMetersOffReasonById(reason.id).subscribe({
       next: (res) => {
-        this.MetersOffReason = res;
-        this.reasonId = res.id;
-        this.loaderService.hideLoader();
+        if (res.code == 200) {
+          this.MetersOffReason = res.payload;
+          this.reasonId = res.payload.id;
+          this.loaderService.hideLoader();
+        }
       },
     });
   }
@@ -151,14 +163,16 @@ export default class OffMerterReasonsComponent {
         this.loaderService.showLoader();
         this.meterService.deleteMetersOffReason(reasonObj.id).subscribe({
           next: (res) => {
+            if (res.code == 201) {
+              this.successDialog = true;
+              this.successMsg = 'تم حذف السبب بنجاح';
+              this.getAllReasons();
+            }
             // this.messageService.add({
             //   severity: 'info',
             //   summary: 'تأكيد',
             //   detail: 'تم الحذف بنجاح',
             // });
-            this.successDialog = true;
-            this.successMsg = 'تم حذف السبب بنجاح';
-            this.getAllReasons();
           },
         });
       },

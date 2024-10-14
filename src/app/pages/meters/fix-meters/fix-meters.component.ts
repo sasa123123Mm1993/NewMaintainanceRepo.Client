@@ -130,7 +130,12 @@ export default class FixMetersComponent {
   getActivityList() {
     this.meterService.getAllActivityTypes().subscribe({
       next: (res) => {
-        this.activityTypes = res;
+        if (res.code == 200) {
+          this.activityTypes = res.payload;
+        }else{
+          this.activityTypes = [];
+        }
+
       },
     });
   }
@@ -140,7 +145,11 @@ export default class FixMetersComponent {
 
     this.meterService.getAllPlacesTypesByActitvityId(activityId).subscribe({
       next: (res) => {
-        this.placesTypesList = res;
+        if(res.code == 200){
+           this.placesTypesList = res.payload;
+        }else{
+           this.placesTypesList = [];
+        }
       },
     });
   }
@@ -148,7 +157,12 @@ export default class FixMetersComponent {
   getAllPlacesTypes() {
     this.meterService.getAllPlacesTypes().subscribe({
       next: (res) => {
-        this.placesTypes = res;
+        if (res.code == 200) {
+          this.placesTypes = res.payload;
+        }else{
+          this.placesTypes = [];
+        }
+
       },
     });
   }
@@ -156,7 +170,12 @@ export default class FixMetersComponent {
   getAllSections() {
     this.meterService.getAllSections().subscribe({
       next: (res) => {
-        this.sections = res;
+        if (res.code == 200) {
+           this.sections = res.payload;
+        }else{
+          this.sections = [];
+        }
+
       },
     });
   }
@@ -164,8 +183,13 @@ export default class FixMetersComponent {
   getAllMainDepsBySectionId(sectionId: number) {
     this.meterService.getAllMainDepartmentsBySectionId(sectionId).subscribe({
       next: (res) => {
-        this.mainDeps = res;
-        console.log('main by section', this.mainDeps);
+        if(res.code == 200){
+          this.mainDeps = res.payload;
+          console.log('main by section', this.mainDeps);
+        }else{
+          this.mainDeps = [];
+        }
+
       },
     });
   }
@@ -174,8 +198,13 @@ export default class FixMetersComponent {
     console.log('mainId', mainId);
     this.meterService.getAllSmallDepartmentsByMainDepId(mainId).subscribe({
       next: (res) => {
-        this.smallDeps = res;
+        if(res.code == 200){
+           this.smallDeps = res.payload;
         console.log('smallDeps by main', this.smallDeps);
+        }else{
+           this.smallDeps = [];
+        }
+
       },
     });
   }
@@ -183,7 +212,10 @@ export default class FixMetersComponent {
   getAllMainDepartments() {
     this.meterService.getAllMainDepartments().subscribe({
       next: (res) => {
-        this.mainDepartements = res;
+        if (res.code == 200) {
+          this.mainDepartements = res.payload;
+        }
+
       },
     });
   }
@@ -191,14 +223,20 @@ export default class FixMetersComponent {
   getAllSmallDepartments() {
     this.meterService.getAllSmallDepartments().subscribe({
       next: (res) => {
-        this.smallDepartements = res;
+        if (res.code == 200) {
+          this.smallDepartements = res.payload;
+        }
+
       },
     });
   }
   getAllReasons() {
     this.meterService.getAllMetersOffReasons().subscribe({
       next: (res) => {
-        this.MetersOffReasons = res;
+        if (res.code == 200) {
+          this.MetersOffReasons = res.payload;
+        }
+
       },
     });
   }
@@ -209,9 +247,12 @@ export default class FixMetersComponent {
     this.loaderService.showLoader();
     this.meterService.getAllOffMeters().subscribe({
       next: (res) => {
-        this.offMetersList = res;
-        console.log('list :', this.offMetersList);
-        this.loaderService.hideLoader();
+        if(res.code == 200){
+          this.offMetersList = res.payload;
+          console.log('list :', this.offMetersList);
+          this.loaderService.hideLoader();
+        }
+
       },
     });
   }
@@ -219,9 +260,13 @@ export default class FixMetersComponent {
   selectedOffMeterId!: any;
   getMeterById(id: number, flag: string) {
     this.selectedOffMeterId = id;
+    debugger;
     this.meterService.getOffMeterById(id).subscribe({
       next: (res) => {
-        this.offMeterObj = res;
+        if(res.code == 200){
+          this.offMeterObj = res.payload;
+        }
+
         if (flag == 'edit') {
           this.showEdit = true;
           console.log('meter by id  for edit:', res);
@@ -246,17 +291,17 @@ export default class FixMetersComponent {
         if (flag == 'fix') {
           this.showFix = true;
 
-          if (res.maintenanceDate) {
-            this.offMeterFix.maintenanceDate = new Date(res.maintenanceDate);
+          if (res.payload.maintenanceDate) {
+            this.offMeterFix.maintenanceDate = new Date(res.payload.maintenanceDate);
           } else {
             this.offMeterFix.maintenanceDate = new Date();
           }
 
           this.offMeterFix.installationDate = new Date(
-            res.meterInstallationDate
+            res.payload.meterInstallationDate
           );
           this.offMeterFix.deliveryDateToTechnician = new Date(
-            res.deliveryDateToLaboratory
+            res.payload.deliveryDateToLaboratory
           );
         }
       },

@@ -14,6 +14,7 @@ export interface MeterReason {
 export interface MeterReasonInsertDto {
   code: number;
   name: string;
+  note: string;
 }
 export interface MeterReasonUpdateDto {
   code: number;

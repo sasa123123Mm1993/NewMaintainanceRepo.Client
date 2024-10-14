@@ -104,26 +104,40 @@
         <div class="row">
           <div class="col-md-6 gap-2 mb-2">
             <label for="userName" class="font-semibold  block mb-2 w-3rem">الاسم </label>
-            <input pInputText id="userName" autocomplete="off" class="w-100" formControlName="userName" name="userName" />
+            <input pInputText id="userName" autocomplete="off" class="w-100" formControlName="userName"
+              name="userName" />
+              <div class="flex  gap-3 mb-3" *ngIf="userForm.get('userName')?.invalid && userForm.get('userName')?.dirty">
+                <small class="p-error block pt-2" *ngIf="userForm.get('userName')?.hasError('required')">
+                  الاسم مطلوب</small>
+              </div>
           </div>
           <div class="col-md-6 gap-2 mb-2">
-            <label for="nationalId" class="font-semibold  block mb-2 w-3rem">الرقم القومى </label>
-            <input pInputText id="nationalId" autocomplete="off" class="w-100" formControlName="natId"  name="natId"/>
+            <label for="natId" class="font-semibold  block mb-2 w-3rem">الرقم القومى </label>
+            <p-inputNumber [useGrouping]="false"  id="natId" autocomplete="off" class="w-100" formControlName="natId" name="natId"
+              [maxlength]="14" />
+            <div class="flex  gap-3 mb-3" *ngIf="userForm.get('natId')?.invalid && userForm.get('natId')?.dirty">
+              <small class="p-error block pt-2" *ngIf="userForm.get('natId')?.hasError('required')">
+                الرقم القومى مطلوب</small>
+              <small class="p-error block pt-2" *ngIf="userForm.get('natId')?.hasError('pattern')">
+                الرقم القومى غير صحيح</small>
+            </div>
           </div>
+
         </div>
         <span class="bg-secondary-subtle block fw-bold mb-2 p-2 p-text-secondary w-100">اختر الادارات الخاصة
           بالمستخدم</span>
         <div class="row">
           <div class="col-md-12">
-            <p-checkbox value="selectAll" inputId="userDep" />
-            <label for="userDep" class="fw-bold">تحديد الكل </label>
+            <p-checkbox value="selectAll" inputId="userDep" (click)="selectAll(true)"/>
+            <label for="userDep" class="fw-bold">تحديد الكل</label>
           </div>
         </div>
         <div class="row">
           @if (mainDepartements.length > 0) {
           @for (dep of mainDepartements; track $index) {
           <div class="col-md-3">
-            <p-checkbox value="{{dep.id}}" inputId="userDep" formControlName="smallDepartmentsIds" name="smallDepartmentsIds" />
+            <p-checkbox value="{{dep.id}}" inputId="userDep" formControlName="smallDepartmentsIds"
+              name="smallDepartmentsIds" />
             <label for="userDep" class="fw-bold"> {{dep.name}} </label>
           </div>
           }
@@ -134,10 +148,11 @@
         <div class="row  align-items-center">
           <div class="col-md-6 gap-2 mb-2">
             <label for="userNAme" class="font-semibold  block mb-2 w-3rem">إسم المستخدم </label>
-            <input pInputText id="userNAme" autocomplete="off" class="w-100" formControlName="fullName" name="fullName" />
+            <input pInputText id="userNAme" autocomplete="off" class="w-100" formControlName="fullName"
+              name="fullName" />
           </div>
           <div class="col-md-6 gap-2 pt-4">
-            <p-checkbox value="true" inputId="activateUser"  name="isActive" formControlName="isActive"/>
+            <p-checkbox value="true" inputId="activateUser" binary="true" name="isActive" formControlName="isActive" />
             <label for="activateUser" class="fw-bold">تفعيل المستخدم </label>
           </div>
         </div>
@@ -222,7 +237,7 @@
         @for (role of roles; track role.id) {
         <div class="col-md-3 flex flex-wrap gap-3">
           <div class="field-checkbox">
-            <p-radioButton name="userRole" [value]="role.roleId" [(ngModel)]="selectedRole"
+            <p-radioButton name="userRole" [value]="role.roleId" [(ngModel)]="userObj.roleId"
               [ngModelOptions]="{standalone: true}" />
             <label class="ml-2">{{role.roleName}}</label>
           </div>
@@ -252,4 +267,27 @@
 
 
   </p-dialog>
+
+
+
+  <!--  -->
+  <p-dialog [(visible)]="errorDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
+    <h3 class="text-center defaultTxtColor">
+      <i class="pi pi-times-circle" severity="danger" style="font-size: 4.5rem;color: #ef233c;"></i>
+    </h3>
+    <div class="row text-center py-4">
+      <b class="text-center">{{errMsg}}</b>
+    </div>
+  </p-dialog>
+  <p-dialog [(visible)]="successDialog" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ width: '25vw' }" [draggable]="false" [resizable]="false">
+    <h3 class="text-center defaultTxtColor">
+      <i class="pi pi-check-circle" severity="success" style="font-size: 4.5rem;"></i>
+    </h3>
+    <div class="row text-center py-4">
+      <b class="text-center">{{successMsg}}</b>
+    </div>
+  </p-dialog>
+  <!--  -->
 </section>

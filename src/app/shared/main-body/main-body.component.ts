@@ -48,10 +48,16 @@ export class MainBodyComponent {
     },
     {
       icon: 'bx bxs-user-account',
-      title: 'إدارة المستخدمين',
-      link: '/usersSettings',
+      title: 'مستخدمين جديد',
+      link: '/NewUserComponent',
       active: false,
     },
+    // {
+    //   icon: 'bx bxs-user-account',
+    //   title: 'إدارة المستخدمين',
+    //   link: '/usersSettings',
+    //   active: false,
+    // },
     {
       icon: 'bx bx-cog',
       title: 'صلاحيات المستخدمين',
@@ -82,12 +88,6 @@ export class MainBodyComponent {
       link: '/totalOffMeterReport',
       active: false,
     },
-    // {
-    //   icon: 'bx bxs-user-account',
-    //   title: 'مستخدمين جديد',
-    //   link: '/NewUserComponent',
-    //   active: false,
-    // },
     {
       icon: 'bx bx-log-out',
       title: 'تسجيل خروج',
@@ -134,7 +134,10 @@ export class MainBodyComponent {
     }
     this.meterService.getAllSections().subscribe({
       next: (res) => {
-        this.sections = res;
+        if(res.code == 200){
+           this.sections = res.payload;
+        }
+
       },
     });
   }

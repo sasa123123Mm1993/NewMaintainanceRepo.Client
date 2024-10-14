@@ -272,7 +272,7 @@
       </div>
       <div class="row">
         <div class="col-md-4 gap-2 mb-2">
-          <label for="activityType" class="font-semibold  block mb-2 w-3rem">نوع النشاط</label>
+          <label for="activityType" class="font-semibold  block mb-2 w-3rem">نوع النشاط{{addOffMeterObj.activityTypeId}}</label>
           <p-dropdown [options]="activityTypes" class="row-cols-1" [(ngModel)]="addOffMeterObj.activityTypeId"
             optionLabel="name" optionValue="id" placeholder="اختر نوع النشاط" formControlName="activityType"
             (onChange)="getAllPlacesTypesByActivity(addOffMeterObj.activityTypeId)" required />
@@ -294,7 +294,7 @@
           </div>
         </div>
         <div class="col-md-4 gap-2 mb-2">
-          <label for="sectionId" class="font-semibold  block mb-2 w-3rem"> القطاع</label>
+          <label for="sectionId" class="font-semibold  block mb-2 w-3rem"> القطاع {{addOffMeterObj.sectionId}}</label>
           <p-dropdown [options]="sections" class="row-cols-1" [(ngModel)]="addOffMeterObj.sectionId" optionLabel="name"
             formControlName="section" optionValue="id" placeholder="اختر القطاع"
             (onChange)="getAllMainDepsBySectionId(addOffMeterObj.sectionId)" />

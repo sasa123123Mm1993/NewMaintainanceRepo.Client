@@ -38,6 +38,12 @@ export default class NewUserComponent {
   userObj: any = {};
   userDepartments: any = [];
   selectedRole: any;
+
+  errorDialog: boolean = false;
+  successDialog: boolean = false;
+  errMsg: string = '';
+  successMsg: string = '';
+
   openAddModal() {
     this.showAddModal = true;
     this.userObj = {
@@ -52,29 +58,52 @@ export default class NewUserComponent {
   userForm = this.fb.group({
     userName: ['', Validators.required],
     fullName: ['', Validators.required],
-    natId: ['', Validators.required],
+    natId: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(
+          '^([2-3]{1})([0-9]{2})(0[1-9]|1[012])(0[1-9]|[1-2][0-9]|3[0-1])(0[1-4]|[1-2][1-9]|3[1-5]|88)[0-9]{3}([0-9]{1})[0-9]{1}$'
+        ),
+      ],
+    ],
     roleId: ['', Validators.required],
     isActive: [false],
     smallDepartmentsIds: [[], Validators.required],
   });
+
   //get all main departements
   getSmallDeps() {
     this.meterService.getSmallDeps().subscribe({
       next: (res) => {
-        this.mainDepartements = res;
-        this.mainDepartements.forEach(function (item: any) {
-          item.checked = false;
-        });
-        console.log('deeeeeeeeeeeeps', this.mainDepartements);
+        if (res.code == 200) {
+          this.mainDepartements = res.payload;
+          this.mainDepartements.forEach(function (item: any) {
+            item.checked = false;
+          });
+          console.log('deeeeeeeeeeeeps', this.mainDepartements);
+        }
       },
     });
+  }
+  //select all
+  selectAll(isChecked: boolean) {
+    this.getSmallDeps();
+    console.log('isTrue?', isChecked);
+    this.mainDepartements.forEach(function (item: any) {
+      item.checked = isChecked;
+    });
+    this.mainDepartements = this.mainDepartements;
+    console.log('deeeeeeeeeeeeps select allllll', this.mainDepartements);
   }
   //get all roles
   getRoles() {
     this.meterService.getAllRoles().subscribe({
       next: (res) => {
-        console.log('rollllllllllse', res);
-        this.roles = res;
+        if (res.code == 200) {
+          console.log('rollllllllllse', res);
+          this.roles = res.payload;
+        }
       },
     });
   }
@@ -83,9 +112,11 @@ export default class NewUserComponent {
     this.loaderService.showLoader();
     this.meterService.getAllUsers().subscribe({
       next: (res) => {
-        this.userList = res;
-        console.log(this.userList);
-        this.loaderService.hideLoader();
+        if (res.code == 200) {
+          this.userList = res.payload;
+          console.log(this.userList);
+          this.loaderService.hideLoader();
+        }
       },
     });
   }
@@ -95,21 +126,23 @@ export default class NewUserComponent {
     this.getSmallDeps();
     this.meterService.getUserById(userId, '').subscribe({
       next: (res) => {
-        console.log('the user is :', res);
-        this.userObj = res;
-        this.userDepartments = res.userSmallDepartmentIDs;
-        if (this.userDepartments.length > 0) {
-          for (let i = 0; i < this.mainDepartements.length; i++) {
-            for (let j = 0; j < this.userDepartments.length; j++) {
-              if (this.mainDepartements[i].id == this.userDepartments[j]) {
-                this.mainDepartements[i].checked = true;
-                console.log('main with checked', this.mainDepartements[i]);
-              } else {
-                this.mainDepartements[i].checked = false;
+        if (res.code == 200) {
+          console.log('the user is :', res.payload);
+          this.userObj = res.payload;
+          this.userDepartments = this.userObj.userSmallDepartmentIDs;
+          if (this.userDepartments.length > 0) {
+            for (let i = 0; i < this.mainDepartements.length; i++) {
+              for (let j = 0; j < this.userDepartments.length; j++) {
+                if (this.mainDepartements[i].id == this.userDepartments[j]) {
+                  this.mainDepartements[i].checked = true;
+                  console.log('main with checked', this.mainDepartements[i]);
+                } else {
+                  this.mainDepartements[i].checked = false;
+                }
               }
             }
+            console.log('main', this.mainDepartements);
           }
-          console.log('main', this.mainDepartements);
         }
       },
     });
@@ -191,8 +224,23 @@ export default class NewUserComponent {
       },
     });
   }
+  userToSend : any;
   addUser() {
     console.log(this.userForm.value);
+     this.userToSend = this.userForm.value;
+   this.userToSend.natId = this.userToSend.natId?.toString();
+    console.log('hhhhhhhhhhh',this.userToSend);
+    this.meterService.addUser(this.userToSend).subscribe({
+      next: (res) => {
+        if(res.code == 200){
+          this.showAddModal = false;
+          this.successDialog = true;
+          this.successMsg = 'تم اضافة مستخدم بنجاح';
+          this.getAllUsers();
+        }
+
+      },
+    });
   }
   smallDepsIds: any = [];
   updateUser(userObj: any) {

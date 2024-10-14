@@ -126,8 +126,11 @@ export default class CardsComponent {
   getCardTasksList() {
     this.meterService.getAlloptionsOfControlCards().subscribe({
       next: (res) => {
-        this.cardTasks = res;
+        if (res.code == 200) {
+          this.cardTasks = res.payload;
         console.log('tasksssssssssss', res);
+        }
+
       },
     });
   }
@@ -135,15 +138,21 @@ export default class CardsComponent {
   getTechniciansList() {
     this.meterService.getAllTechinicians().subscribe({
       next: (res) => {
-        this.techList = res.data;
+        if(res.code == 200){
+          this.techList = res.payload;
         console.log('techList', res);
+        }
+
       },
     });
   }
   getAllActivities() {
     this.meterService.getAllActivityTypes().subscribe({
       next: (res) => {
-        this.activityList = res;
+        if (res.code == 200) {
+          this.activityList = res.payload;
+        }
+
       },
     });
   }
@@ -227,16 +236,22 @@ export default class CardsComponent {
   getExpDate() {
     this.meterService.getCardExpDate().subscribe({
       next: (res) => {
-        console.log('expppppppp', res);
-        this.cardExpireDate = res;
+        if (res.code == 200) {
+           console.log('expppppppp', res);
+        this.cardExpireDate = res.payload;
+        }
+
       },
     });
   }
   getReleaseDate() {
     this.meterService.getCardReleaseDate().subscribe({
       next: (res) => {
-        console.log('releaseeeeee', res);
-        this.cardCreationDate = res;
+        if (res.code == 200) {
+           console.log('releaseeeeee', res);
+        this.cardCreationDate = res.payload;
+        }
+
       },
     });
   }
@@ -356,9 +371,14 @@ export default class CardsComponent {
     if (code == 3) {
       this.meterService.getAllTampers().subscribe({
         next: (res) => {
-          console.log('tampers', res);
-          this.tampersList = res;
+          if (res.code == 200) {
+           console.log('tampers', res);
+          this.tampersList = res.payload;
           this.loaderService.hideLoader();
+          }else{
+             this.loaderService.hideLoader();
+          }
+
         },
       });
     } else if (code == 0) {

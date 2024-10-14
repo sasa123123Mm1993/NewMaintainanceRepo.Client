@@ -49,7 +49,7 @@ export class MeterService {
 
   ////////////////// METER OFF REASONS //////////////////////
   getAllMetersOffReasons() {
-    return this.http.get<MeterReason[]>(apiUrl + 'MetersOffReasons/GetAll');
+    return this.http.get<any>(apiUrl + 'MetersOffReasons/GetAll');
   }
 
   addMetersOffReason(meterReason: MeterReasonInsertDto) {
@@ -60,7 +60,7 @@ export class MeterService {
   }
 
   getMetersOffReasonById(reasonId: number | string) {
-    return this.http.get<MeterReason>(
+    return this.http.get<any>(
       apiUrl + 'MetersOffReasons/GetById/' + reasonId
     );
   }
@@ -83,7 +83,7 @@ export class MeterService {
 
   ////////////////// CMaintenenceMetersOff //////////////////////
   getAllOffMeters() {
-    return this.http.get<MeterOffDto[]>(
+    return this.http.get<any>(
       apiUrl + 'CMaintenenceMetersOff/GetAll'
     );
   }
@@ -95,7 +95,7 @@ export class MeterService {
     );
   }
   getOffMeterById(id: number | string) {
-    return this.http.get<MeterOffInsert>(
+    return this.http.get<any>(
       apiUrl + 'CMaintenenceMetersOff/GetMaintainceMeterById/' + id
     );
   }
@@ -146,11 +146,11 @@ export class MeterService {
   //////////////  //////// USERS ////////////  ////////////////
   getAllUsers() {
     //done
-    return this.http.get<UserDto>(apiUrl + 'User/GetAllUsersWithDepartments');
+    return this.http.get<any>(apiUrl + 'User/GetAllUsersWithDepartments');
   }
   getAllRoles() {
     //done
-    return this.http.get<UserDto>(apiUrl + 'User/GetAllRoles');
+    return this.http.get<any>(apiUrl + 'User/GetAllRoles');
   }
   getUserById(userId: any, data: any) {
     return this.http.post<any>(
@@ -172,7 +172,7 @@ export class MeterService {
     );
   }
   addUser(data: userInsert) {
-    return this.http.post<userInsert>(apiUrl + 'User/AddUserWithDeps', data);
+    return this.http.post<any>(apiUrl + 'User/AddUserWithDeps', data);
   }
   updateUser(userId: number, data: any) {
     return this.http.post<userInsert>(
